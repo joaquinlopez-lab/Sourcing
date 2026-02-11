@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Roo Capital — Founder Sourcing</title>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#0A0A0A;--navy:#2D4063;--card:#1A2535;
+    --orange:#F07820;--pink:#E8294A;--purple:#8B35C8;
+    --text:#E8EAF0;--text-muted:#8892A4;--card-border:#2A3A52;
+    --gradient:linear-gradient(135deg,#F07820,#E8294A,#8B35C8);
+    --gradient-h:linear-gradient(135deg,#F8923F,#F04466,#A050E0);
+  }
+  html{font-size:15px;scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,-apple-system,sans-serif;min-height:100vh;overflow-x:hidden}
+
+  ::-webkit-scrollbar{width:6px}
+  ::-webkit-scrollbar-track{background:var(--bg)}
+  ::-webkit-scrollbar-thumb{background:var(--navy);border-radius:3px}
+
+  /* ── Header ── */
+  .header{position:sticky;top:0;z-index:100;background:rgba(10,10,10,.88);backdrop-filter:blur(20px);border-bottom:1px solid var(--card-border);padding:0 2rem}
+  .header-inner{max-width:1440px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:64px}
+  .logo-area{display:flex;align-items:center;gap:14px}
+  .logo-mark{width:38px;height:38px;border-radius:10px;background:var(--gradient);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;color:#fff;letter-spacing:-1px}
+  .logo-text{font-size:1.25rem;font-weight:700;color:#fff;letter-spacing:-.02em}
+  .logo-text span{background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+  .header-meta{display:flex;align-items:center;gap:1.5rem}
+  .live-dot{width:8px;height:8px;border-radius:50%;background:#34D399;box-shadow:0 0 8px #34D399;animation:pulse-dot 2s infinite}
+  @keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:.4}}
+  .header-stat{font-size:.8rem;color:var(--text-muted)}
+  .header-stat strong{color:var(--text);font-weight:600}
+
+  /* ── Controls ── */
+  .controls{max-width:1440px;margin:0 auto;padding:1.5rem 2rem}
+  .controls-top{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:1rem}
+  .search-box{flex:1;min-width:260px;position:relative}
+  .search-box input{width:100%;padding:10px 16px 10px 42px;background:var(--card);border:1px solid var(--card-border);border-radius:10px;color:var(--text);font-size:.9rem;outline:none;transition:border .2s}
+  .search-box input:focus{border-color:var(--orange)}
+  .search-box input::placeholder{color:var(--text-muted)}
+  .search-box svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--text-muted);width:16px;height:16px}
+  .search-clear{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:1.1rem;display:none;padding:2px 6px;border-radius:4px}
+  .search-clear:hover{color:var(--text);background:rgba(255,255,255,.06)}
+  .search-box input:not(:placeholder-shown) ~ .search-clear{display:block}
+
+  .btn{padding:10px 20px;border-radius:10px;border:none;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:8px}
+  .btn-gradient{background:var(--gradient);color:#fff;box-shadow:0 4px 20px rgba(232,41,74,.25)}
+  .btn-gradient:hover{background:var(--gradient-h);box-shadow:0 4px 28px rgba(232,41,74,.35);transform:translateY(-1px)}
+  .btn-outline{background:transparent;color:var(--text-muted);border:1px solid var(--card-border)}
+  .btn-outline:hover{border-color:var(--text);color:var(--text)}
+  .btn-outline.active{border-color:var(--orange);color:var(--orange);background:rgba(240,120,32,.08)}
+  .btn-sm{padding:6px 14px;font-size:.78rem;border-radius:8px}
+  .btn svg{width:15px;height:15px}
+
+  .filter-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .filter-label{font-size:.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-right:4px;font-weight:600}
+  .divider{width:1px;height:24px;background:var(--card-border);margin:0 8px}
+
+  .sort-select{background:var(--card);border:1px solid var(--card-border);color:var(--text);padding:6px 12px;border-radius:8px;font-size:.8rem;outline:none;cursor:pointer}
+  .sort-select:focus{border-color:var(--orange)}
+
+  .results-meta{display:flex;justify-content:space-between;align-items:center;padding:0 2rem .5rem;max-width:1440px;margin:0 auto}
+  .results-count{font-size:.82rem;color:var(--text-muted)}
+  .results-count strong{color:var(--text)}
+  .watchlist-toggle{font-size:.82rem;color:var(--text-muted);cursor:pointer;display:flex;align-items:center;gap:6px}
+  .watchlist-toggle:hover{color:var(--orange)}
+  .watchlist-toggle svg{width:14px;height:14px}
+
+  /* ── Card Grid ── */
+  .grid{max-width:1440px;margin:0 auto;padding:0 2rem 3rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(400px,1fr));gap:20px}
+
+  .card{background:var(--card);border:1px solid var(--card-border);border-radius:16px;padding:1.5rem;position:relative;transition:all .3s ease;overflow:hidden}
+  .card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gradient);opacity:0;transition:opacity .3s}
+  .card:hover{transform:translateY(-3px);border-color:#3A4A62;box-shadow:0 8px 40px rgba(240,120,32,.06),0 4px 20px rgba(232,41,74,.04),0 2px 10px rgba(139,53,200,.04)}
+  .card:hover::before{opacity:1}
+  .card.stealth-card{border-color:rgba(139,53,200,.3)}
+  .card.stealth-card:hover{border-color:rgba(139,53,200,.5);box-shadow:0 8px 40px rgba(139,53,200,.1),0 4px 20px rgba(232,41,74,.04)}
+
+  .card-top{display:flex;gap:14px;margin-bottom:12px}
+  .avatar{width:52px;height:52px;border-radius:12px;object-fit:cover;background:var(--navy);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.1rem;color:var(--text-muted);flex-shrink:0;overflow:hidden;border:2px solid var(--card-border)}
+  .avatar img{width:100%;height:100%;object-fit:cover}
+  .card-identity{flex:1;min-width:0}
+  .founder-name{font-size:1.05rem;font-weight:700;color:#fff;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .founder-role{font-size:.72rem;color:var(--text-muted);margin-top:1px;text-transform:uppercase;letter-spacing:.04em}
+  .company-name{font-size:.88rem;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
+  .card-save{position:absolute;top:1.25rem;right:1.25rem;background:none;border:none;cursor:pointer;color:var(--text-muted);transition:all .2s;padding:4px}
+  .card-save:hover{color:var(--orange);transform:scale(1.15)}
+  .card-save.saved{color:var(--orange)}
+  .card-save svg{width:20px;height:20px}
+
+  .company-desc{font-size:.82rem;color:var(--text-muted);line-height:1.55;margin-bottom:14px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .highlight{background:rgba(240,120,32,.2);color:var(--orange);border-radius:2px;padding:0 2px}
+
+  .tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+  .tag{padding:4px 10px;border-radius:6px;font-size:.72rem;font-weight:600;letter-spacing:.02em;text-transform:uppercase}
+  .tag-ai{background:rgba(139,53,200,.15);color:#B87FE8;border:1px solid rgba(139,53,200,.25)}
+  .tag-saas{background:rgba(240,120,32,.12);color:#F8A055;border:1px solid rgba(240,120,32,.2)}
+  .tag-health{background:rgba(52,211,153,.12);color:#34D399;border:1px solid rgba(52,211,153,.2)}
+  .tag-cyber{background:rgba(232,41,74,.12);color:#F06888;border:1px solid rgba(232,41,74,.2)}
+  .tag-stage{background:rgba(45,64,99,.3);color:var(--text-muted);border:1px solid var(--card-border)}
+  .tag-stealth{background:rgba(139,53,200,.12);color:#B87FE8;border:1px solid rgba(139,53,200,.2);font-style:italic}
+  .tag-unverified{background:rgba(255,200,50,.1);color:#E8C840;border:1px solid rgba(255,200,50,.2);font-style:italic}
+
+  /* ── Metrics Grid ── */
+  .metrics{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-bottom:14px;background:rgba(10,10,10,.3);border-radius:10px;border:1px solid var(--card-border);overflow:hidden}
+  .metric{padding:10px 14px;display:flex;flex-direction:column;gap:2px}
+  .metric:nth-child(1){border-right:1px solid var(--card-border);border-bottom:1px solid var(--card-border)}
+  .metric:nth-child(2){border-bottom:1px solid var(--card-border)}
+  .metric:nth-child(3){border-right:1px solid var(--card-border)}
+  .metric-label{font-size:.65rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+  .metric-value{font-size:.9rem;color:var(--text);font-weight:600}
+  .metric-value.raised{background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700}
+
+  .card-footer{display:flex;justify-content:space-between;align-items:center;padding-top:12px;border-top:1px solid var(--card-border)}
+  .card-links{display:flex;gap:8px}
+  .card-link{display:flex;align-items:center;gap:4px;font-size:.76rem;color:var(--text-muted);text-decoration:none;padding:4px 10px;border-radius:6px;transition:all .15s;border:1px solid transparent}
+  .card-link:hover{color:var(--orange);background:rgba(240,120,32,.08);border-color:rgba(240,120,32,.15)}
+  .card-link svg{width:13px;height:13px}
+  .card-link.linkedin-link{color:#7EB1E8}
+  .card-link.linkedin-link:hover{color:#9AC4F0;background:rgba(126,177,232,.08);border-color:rgba(126,177,232,.15)}
+  .card-link.github-link{color:#A0A8B8}
+  .card-link.github-link:hover{color:#C8D0E0;background:rgba(160,168,184,.08);border-color:rgba(160,168,184,.15)}
+  .card-date{font-size:.72rem;color:var(--text-muted);opacity:.7}
+
+  .card-source{position:absolute;bottom:1.25rem;right:1.25rem;font-size:.65rem;color:var(--text-muted);opacity:.5;text-transform:uppercase;letter-spacing:.06em}
+
+  /* ── Empty & Loading ── */
+  .empty-state{grid-column:1/-1;text-align:center;padding:4rem 1rem}
+  .empty-state svg{width:48px;height:48px;color:var(--text-muted);opacity:.4;margin-bottom:1rem}
+  .empty-state h3{font-size:1.1rem;color:var(--text);margin-bottom:.5rem}
+  .empty-state p{font-size:.85rem;color:var(--text-muted)}
+
+  .loading-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(10,10,10,.8);backdrop-filter:blur(6px);z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem;opacity:0;pointer-events:none;transition:opacity .3s}
+  .loading-overlay.active{opacity:1;pointer-events:all}
+  .spinner{width:48px;height:48px;border:3px solid var(--card-border);border-top-color:var(--orange);border-radius:50%;animation:spin .8s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .loading-text{color:var(--text-muted);font-size:.9rem}
+  .loading-sources{display:flex;gap:1rem;margin-top:.5rem}
+  .source-indicator{font-size:.75rem;color:var(--text-muted);display:flex;align-items:center;gap:6px}
+  .source-indicator .check{color:#34D399;display:none}
+  .source-indicator.done .check{display:inline}
+  .source-indicator.done{color:var(--text)}
+  .source-indicator.error{color:var(--pink)}
+  .loading-detail{font-size:.72rem;color:var(--text-muted);opacity:.6;margin-top:.25rem}
+
+  /* ── Toast ── */
+  .toast{position:fixed;bottom:2rem;right:2rem;background:var(--card);border:1px solid var(--card-border);padding:12px 20px;border-radius:10px;font-size:.85rem;color:var(--text);z-index:300;transform:translateY(100px);opacity:0;transition:all .3s;box-shadow:0 8px 30px rgba(0,0,0,.3)}
+  .toast.show{transform:translateY(0);opacity:1}
+
+  /* ── Responsive ── */
+  @media(max-width:768px){
+    .header{padding:0 1rem}
+    .controls{padding:1rem}
+    .grid{grid-template-columns:1fr;padding:0 1rem 2rem}
+    .results-meta{padding:0 1rem .5rem}
+    .controls-top{flex-direction:column}
+    .search-box{min-width:100%}
+    .filter-row{overflow-x:auto;flex-wrap:nowrap;padding-bottom:4px}
+    .divider{display:none}
+  }
+</style>
+</head>
+<body>
+
+<!-- Loading Overlay -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="spinner"></div>
+  <div class="loading-text" id="loadingText">Sourcing founders…</div>
+  <div class="loading-detail" id="loadingDetail"></div>
+  <div class="loading-sources">
+    <span class="source-indicator" id="srcGithub">
+      <span class="check">&#10003;</span> GitHub
+    </span>
+    <span class="source-indicator" id="srcHackernews">
+      <span class="check">&#10003;</span> Hacker News
+    </span>
+    <span class="source-indicator" id="srcRss">
+      <span class="check">&#10003;</span> RSS Feeds
+    </span>
+    <span class="source-indicator" id="srcGoogle">
+      <span class="check">&#10003;</span> Google
+    </span>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Header -->
+<header class="header">
+  <div class="header-inner">
+    <div class="logo-area">
+      <img src="https://roocapital.com/wp-content/uploads/2025/10/roo-capital-primary-logo-inverse-rgb.svg" alt="Roo Capital" style="height:36px;width:auto" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div style="display:none;align-items:center;gap:14px"><div class="logo-mark">R</div><div class="logo-text">Roo <span>Capital</span></div></div>
+    </div>
+    <div class="header-meta">
+      <div class="live-dot"></div>
+      <div class="header-stat">Tracking <strong id="totalCount">0</strong> founders</div>
+      <div class="header-stat">Watchlist <strong id="watchlistCount">0</strong></div>
+    </div>
+  </div>
+</header>
+
+<!-- Controls -->
+<div class="controls">
+  <div class="controls-top">
+    <div class="search-box">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="searchInput" placeholder="Search by founder name, company, sector, stage, or keyword…">
+      <button class="search-clear" id="searchClear" onclick="clearSearch()">&times;</button>
+    </div>
+    <button class="btn btn-gradient" id="refreshBtn" onclick="refreshData()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+      Refresh Data
+    </button>
+    <select class="sort-select" id="sortSelect" onchange="currentPage=1;fetchFounders()">
+      <option value="recent">Most Recently Funded</option>
+      <option value="amount">Highest Amount Raised</option>
+      <option value="name">Alphabetical (A → Z)</option>
+      <option value="updated">Last Updated</option>
+    </select>
+  </div>
+  <div class="filter-row">
+    <span class="filter-label">Sector</span>
+    <button class="btn btn-outline btn-sm filter-btn active" data-filter="sector" data-value="all" onclick="toggleFilter(this)">All</button>
+    <button class="btn btn-outline btn-sm filter-btn" data-filter="sector" data-value="Vertical AI" onclick="toggleFilter(this)">Vertical AI</button>
+    <button class="btn btn-outline btn-sm filter-btn" data-filter="sector" data-value="SaaS" onclick="toggleFilter(this)">SaaS</button>
+    <button class="btn btn-outline btn-sm filter-btn" data-filter="sector" data-value="Healthcare Tech" onclick="toggleFilter(this)">Healthcare Tech</button>
+    <button class="btn btn-outline btn-sm filter-btn" data-filter="sector" data-value="Cybersecurity" onclick="toggleFilter(this)">Cybersecurity</button>
+    <div class="divider"></div>
+    <span class="filter-label">Stage</span>
+    <button class="btn btn-outline btn-sm filter-btn active" data-filter="stage" data-value="all" onclick="toggleFilter(this)">All</button>
+    <button class="btn btn-outline btn-sm filter-btn" data-filter="stage" data-value="Pre-seed" onclick="toggleFilter(this)">Pre-seed</button>
+    <button class="btn btn-outline btn-sm filter-btn" data-filter="stage" data-value="Seed" onclick="toggleFilter(this)">Seed</button>
+    <button class="btn btn-outline btn-sm filter-btn" data-filter="stage" data-value="Series A" onclick="toggleFilter(this)">Series A</button>
+  </div>
+</div>
+
+<!-- Results meta -->
+<div class="results-meta">
+  <div class="results-count">Showing <strong id="showingCount">0</strong> founders</div>
+  <div class="watchlist-toggle" id="watchlistToggle" onclick="toggleWatchlistView()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+    <span id="watchlistLabel">Show Watchlist</span>
+  </div>
+</div>
+
+<!-- Card Grid -->
+<div class="grid" id="cardGrid"></div>
+<div style="text-align:center;padding:0 2rem 3rem;max-width:1440px;margin:0 auto" id="loadMoreWrap">
+  <button class="btn btn-outline" id="loadMoreBtn" onclick="loadMore()" style="display:none;margin:0 auto">Load More Founders</button>
+  <div id="paginationInfo" style="font-size:.78rem;color:var(--text-muted);margin-top:.75rem"></div>
+</div>
+
+<script>
+// ─── State ───
+let founders = [];
+let totalFounders = 0;
+let watchlistCount = 0;
+let showWatchlistOnly = false;
+let activeFilters = { sector: 'all', stage: 'all' };
+const PAGE_SIZE = 24;
+let currentPage = 1;
+let refreshPollTimer = null;
+
+const SECTOR_MAP = {
+  'Vertical AI':      { cls: 'tag-ai',     label: 'Vertical AI' },
+  'SaaS':             { cls: 'tag-saas',    label: 'SaaS' },
+  'Healthcare Tech':  { cls: 'tag-health',  label: 'Healthcare Tech' },
+  'Cybersecurity':    { cls: 'tag-cyber',   label: 'Cybersecurity' },
+};
+
+// ─── API Calls ───
+async function fetchFounders() {
+  const search = document.getElementById('searchInput').value.trim();
+  const sort = document.getElementById('sortSelect').value;
+
+  const params = new URLSearchParams({
+    search,
+    sector: activeFilters.sector,
+    stage: activeFilters.stage,
+    sort,
+    limit: String(currentPage * PAGE_SIZE),
+    offset: '0',
+    watchlist: String(showWatchlistOnly),
+  });
+
+  try {
+    const resp = await fetch(`/api/founders?${params}`);
+    const data = await resp.json();
+    founders = data.founders;
+    totalFounders = data.total;
+    watchlistCount = data.watchlistCount;
+    renderCards();
+    updateHeader();
+  } catch (err) {
+    console.error('Failed to fetch founders:', err);
+  }
+}
+
+function updateHeader() {
+  document.getElementById('totalCount').textContent = totalFounders;
+  document.getElementById('watchlistCount').textContent = watchlistCount;
+}
+
+// ─── Highlight search matches ───
+function highlightText(text, query) {
+  if (!query) return esc(text);
+  const escaped = esc(text);
+  const terms = query.toLowerCase().split(/\s+/).filter(t => t.length > 1);
+  if (terms.length === 0) return escaped;
+  const regex = new RegExp('(' + terms.map(t => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|') + ')', 'gi');
+  return escaped.replace(regex, '<span class="highlight">$1</span>');
+}
+
+// ─── Render Cards ───
+function renderCards() {
+  const grid = document.getElementById('cardGrid');
+  const query = document.getElementById('searchInput').value.trim();
+
+  document.getElementById('showingCount').textContent = totalFounders;
+
+  // Pagination
+  const loadMoreBtn = document.getElementById('loadMoreBtn');
+  const pagInfo = document.getElementById('paginationInfo');
+  if (founders.length < totalFounders) {
+    loadMoreBtn.style.display = 'inline-flex';
+    pagInfo.textContent = `Showing ${founders.length} of ${totalFounders} founders`;
+  } else {
+    loadMoreBtn.style.display = 'none';
+    pagInfo.textContent = totalFounders > PAGE_SIZE ? `Showing all ${totalFounders} founders` : '';
+  }
+
+  if (founders.length === 0) {
+    grid.innerHTML = `
+      <div class="empty-state">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <h3>No founders found</h3>
+        <p>${showWatchlistOnly ? 'Your watchlist is empty. Save founders to see them here.' : 'Try adjusting your filters or search terms.'}</p>
+      </div>`;
+    return;
+  }
+
+  grid.innerHTML = founders.map(f => {
+    const sectorInfo = SECTOR_MAP[f.sector] || { cls: 'tag-ai', label: f.sector };
+    const isSaved = f.is_watchlisted;
+    const initials = (f.name || '').split(' ').map(w => w[0]).join('').slice(0, 2);
+    const avatarContent = f.avatar_url
+      ? `<img src="${esc(f.avatar_url)}" alt="${esc(f.name)}" onerror="this.parentElement.textContent='${initials}'">`
+      : initials;
+
+    const liUrl = f.linkedin_url || `https://www.linkedin.com/search/results/people/?keywords=${encodeURIComponent(f.name)}`;
+    const isUnverified = (f.confidence_score || 0) < 0.4;
+
+    return `
+    <div class="card ${f.is_stealth ? 'stealth-card' : ''}">
+      <div class="card-top">
+        <div class="avatar">${avatarContent}</div>
+        <div class="card-identity">
+          <div class="founder-name">${highlightText(f.name, query)}</div>
+          <div class="founder-role">${esc(f.role || 'Founder')}</div>
+          <div class="company-name">${highlightText(f.company || '', query)}</div>
+        </div>
+      </div>
+      <button class="card-save ${isSaved ? 'saved' : ''}" onclick="toggleWatchlist(${f.id})" title="${isSaved ? 'Remove from Watchlist' : 'Save to Watchlist'}">
+        <svg viewBox="0 0 24 24" fill="${isSaved ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+      </button>
+      <div class="company-desc">${highlightText(f.description || '', query)}</div>
+      <div class="tags">
+        <span class="tag ${sectorInfo.cls}">${sectorInfo.label}</span>
+        <span class="tag tag-stage">${esc(f.stage || '')}</span>
+        ${f.is_stealth ? '<span class="tag tag-stealth">Stealth</span>' : ''}
+        ${isUnverified ? '<span class="tag tag-unverified">Unverified</span>' : ''}
+      </div>
+      <div class="metrics">
+        <div class="metric">
+          <span class="metric-label">Total Raised</span>
+          <span class="metric-value raised">${esc(f.raised || '—')}</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Stage</span>
+          <span class="metric-value">${esc(f.stage || '—')}</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Location</span>
+          <span class="metric-value">${esc(f.location || '—')}</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Source</span>
+          <span class="metric-value">${esc(f.source || '—')}</span>
+        </div>
+      </div>
+      <div class="card-footer">
+        <div class="card-links">
+          <a href="${esc(liUrl)}" target="_blank" rel="noopener" class="card-link linkedin-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+            LinkedIn
+          </a>
+          ${f.github_url ? `<a href="${esc(f.github_url)}" target="_blank" rel="noopener" class="card-link github-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+            GitHub</a>` : ''}
+          ${f.website ? `<a href="${esc(f.website)}" target="_blank" rel="noopener" class="card-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            Website</a>` : ''}
+        </div>
+        <div class="card-date">${f.funded_date ? 'Funded ' + formatDate(f.funded_date) : ''}</div>
+      </div>
+      <div class="card-source">${esc(f.source || '')}</div>
+    </div>`;
+  }).join('');
+}
+
+// ─── Utilities ───
+function esc(str) {
+  const d = document.createElement('div');
+  d.textContent = str || '';
+  return d.innerHTML;
+}
+
+function formatDate(dateStr) {
+  if (!dateStr) return '';
+  const d = new Date(dateStr + 'T00:00:00');
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+function clearSearch() {
+  document.getElementById('searchInput').value = '';
+  currentPage = 1;
+  fetchFounders();
+}
+
+function loadMore() {
+  currentPage++;
+  fetchFounders();
+}
+
+// ─── Watchlist (server-side) ───
+async function toggleWatchlist(id) {
+  const founder = founders.find(f => f.id === id);
+  if (!founder) return;
+
+  try {
+    if (founder.is_watchlisted) {
+      await fetch(`/api/watchlist/${id}`, { method: 'DELETE' });
+      showToast('Removed from watchlist');
+    } else {
+      await fetch(`/api/watchlist/${id}`, { method: 'POST' });
+      showToast('Saved to watchlist');
+    }
+    await fetchFounders();
+  } catch (err) {
+    showToast('Failed to update watchlist');
+  }
+}
+
+function toggleWatchlistView() {
+  showWatchlistOnly = !showWatchlistOnly;
+  document.getElementById('watchlistLabel').textContent = showWatchlistOnly ? 'Show All' : 'Show Watchlist';
+  currentPage = 1;
+  fetchFounders();
+}
+
+// ─── Filters ───
+function toggleFilter(btn) {
+  const filterType = btn.dataset.filter;
+  const value = btn.dataset.value;
+  document.querySelectorAll(`.filter-btn[data-filter="${filterType}"]`).forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  activeFilters[filterType] = value;
+  currentPage = 1;
+  fetchFounders();
+}
+
+// ─── Search (debounced) ───
+let searchTimer;
+document.getElementById('searchInput').addEventListener('input', () => {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => { currentPage = 1; fetchFounders(); }, 300);
+});
+
+// ─── Refresh ───
+async function refreshData() {
+  const overlay = document.getElementById('loadingOverlay');
+  overlay.classList.add('active');
+  document.getElementById('loadingText').textContent = 'Sourcing founders…';
+  document.getElementById('loadingDetail').textContent = '';
+
+  ['srcGithub', 'srcHackernews', 'srcRss', 'srcGoogle'].forEach(id => {
+    const el = document.getElementById(id);
+    el.classList.remove('done', 'error');
+  });
+
+  try {
+    await fetch('/api/refresh', { method: 'POST' });
+
+    // Poll for status
+    refreshPollTimer = setInterval(async () => {
+      try {
+        const resp = await fetch('/api/refresh/status');
+        const data = await resp.json();
+        const status = data.status;
+
+        if (!status || !status.running) {
+          clearInterval(refreshPollTimer);
+          refreshPollTimer = null;
+
+          // Mark remaining sources
+          for (const [key, info] of Object.entries(status.sources || {})) {
+            const elId = 'src' + key.charAt(0).toUpperCase() + key.slice(1);
+            const el = document.getElementById(elId);
+            if (el) {
+              if (info.status === 'done') el.classList.add('done');
+              else if (info.status === 'error') el.classList.add('error');
+            }
+          }
+
+          document.getElementById('loadingText').textContent = `Found ${status.totalAdded} new founders`;
+          await new Promise(r => setTimeout(r, 800));
+          overlay.classList.remove('active');
+          await fetchFounders();
+          showToast(`Refresh complete — ${status.totalAdded} new founders added`);
+          return;
+        }
+
+        // Update source indicators
+        for (const [key, info] of Object.entries(status.sources || {})) {
+          const elId = 'src' + key.charAt(0).toUpperCase() + key.slice(1);
+          const el = document.getElementById(elId);
+          if (el) {
+            if (info.status === 'done') el.classList.add('done');
+            else if (info.status === 'error') el.classList.add('error');
+          }
+        }
+      } catch { /* ignore poll errors */ }
+    }, 1000);
+
+  } catch (err) {
+    overlay.classList.remove('active');
+    showToast('Failed to start refresh');
+  }
+}
+
+// ─── Init ───
+fetchFounders();
+</script>
+</body>
+</html>

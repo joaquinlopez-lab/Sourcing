@@ -1,0 +1,19 @@
+{
+  "name": "roo-capital-sourcing",
+  "version": "1.0.0",
+  "description": "Roo Capital Founder Sourcing — real-time NYC startup founder discovery",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "^12.6.2",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "node-cron": "^3.0.3",
+    "rss-parser": "^3.13.0",
+    "serverless-http": "^4.0.0"
+  }
+}
