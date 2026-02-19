@@ -27,6 +27,18 @@ const QUERIES = [
   // 5. Launch & press coverage — founders getting noticed without funding news
   'NYC startup founder launch Product Hunt 2025 2026',
   'New York startup founder TechCrunch profile interview 2025',
+
+  // 6. Stealth / ex-FAANG / pre-launch focused queries
+  'NYC founder stealth startup building 2025 2026',
+  'New York ex-Google founder new startup',
+  'ex-Meta ex-Apple ex-Amazon founder building NYC',
+  'NYC angel round pre-seed stealth AI startup founder',
+  'New York founder leaving big tech to start company',
+  'NYC startup emerges from stealth mode',
+  'New York founder solo founder building in stealth',
+  'NYC pre-launch startup founder seed funding',
+  'New York City founder technical cofounder stealth AI',
+  'NYC startup raised undisclosed round stealth',
 ];
 
 // ── Blocklists ──
@@ -94,9 +106,8 @@ export async function fetchExaFounders(onProgress) {
         body: JSON.stringify({
           query: QUERIES[i],
           type: 'auto',
-          num_results: 10,
-          category: 'news',
-          startPublishedDate: getThreeMonthsAgo(),
+          num_results: 15,
+          startPublishedDate: getSixMonthsAgo(),
           contents: { text: { max_characters: 500 } },
         }),
       });
@@ -122,9 +133,9 @@ export async function fetchExaFounders(onProgress) {
   return founders;
 }
 
-function getThreeMonthsAgo() {
+function getSixMonthsAgo() {
   const d = new Date();
-  d.setMonth(d.getMonth() - 3);
+  d.setMonth(d.getMonth() - 6);
   return d.toISOString();
 }
 
@@ -133,9 +144,6 @@ function parseFounderFromResult(result, seenNames) {
   const title = result.title || '';
   const url = result.url || '';
   const lower = `${title} ${text}`.toLowerCase();
-
-  // ── GATE 1: Must mention NYC / New York ──
-  if (!/new york|nyc|\bny\b/i.test(lower)) return null;
 
   // ── GATE 2: Skip listicle/aggregator URLs ──
   if (LISTICLE_URL_PATTERNS.some(re => re.test(url))) return null;
@@ -156,7 +164,7 @@ function parseFounderFromResult(result, seenNames) {
 
   // ── GATE 6: Clean description — reject if it's mostly HTML/nav junk ──
   const cleanDesc = cleanDescription(text);
-  if (!cleanDesc || cleanDesc.length < 20) return null;
+  if (!cleanDesc || cleanDesc.length < 10) return null;
 
   const raised = extractRaiseAmount(text + ' ' + title);
   const isStealth = /stealth/i.test(lower);
@@ -179,7 +187,7 @@ function parseFounderFromResult(result, seenNames) {
       ? result.publishedDate.slice(0, 10)
       : new Date().toISOString().slice(0, 10),
     is_stealth: isStealth,
-    confidence_score: 0.65,
+    confidence_score: isStealth ? 0.72 : 0.65,
   };
 }
 
@@ -194,6 +202,7 @@ function extractFounderName(result) {
     /(?:founder|ceo|co-founder)\s+([A-Z][a-z]+ [A-Z][a-z]+)/i,
     /([A-Z][a-z]+ [A-Z][a-z]+)(?:,?\s+(?:founder|ceo|co-founder))/i,
     /(?:founded by|launched by|started by)\s+([A-Z][a-z]+ [A-Z][a-z]+)/i,
+    /([A-Z][a-z]+\s[A-Z][a-z]+)(?:'s| is| was| has)/,
   ];
 
   for (const re of patterns) {
@@ -236,6 +245,19 @@ function extractCompanyName(title, text) {
       if (name.length < 2 || name.length > 30) continue;
       if (/^(The|A|An|In|On|At|By|For|To|Is|It|We|He|She)$/i.test(name)) continue;
       return name;
+    }
+  }
+
+  // Fallback: try to use the first capitalized word sequence from the title
+  const capSeqMatch = title.match(/([A-Z][A-Za-z0-9]+(?:\s[A-Z][A-Za-z0-9]+)*)/);
+  if (capSeqMatch) {
+    const candidate = capSeqMatch[1].trim();
+    if (
+      candidate.length >= 2 &&
+      candidate.length <= 30 &&
+      !/^(The|A|An|In|On|At|By|For|To|Is|It|We|He|She|New|York|NYC|City)$/i.test(candidate)
+    ) {
+      return candidate;
     }
   }
 

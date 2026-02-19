@@ -8,6 +8,32 @@ function getResend() {
   return new Resend(apiKey);
 }
 
+// ── Roo Capital outreach template examples (used to guide Claude's style) ──
+const OUTREACH_TEMPLATES = `
+INITIAL OUTREACH STYLE — Option A (specific product insight):
+"[First name] -
+Really interested in the concept behind [Company] and your approach to [specific problem]. [1-2 sentences showing you understand their space and have a genuine point of view on it]. Given your background at [prior company/role], we think you have a great foundation to be building here.
+
+My name is [Name] and I am a Principal leading the investment team at Roo Capital, an early-stage, AI-focused venture fund based out of NYC and Miami. We are investing out of our new second fund, have $200M in AUM, and have had the pleasure of backing many vertical AI companies in our six-year history. We invest at the early-stage and have an in-house executive search firm with a proprietary 30K+ person candidate pool that we activate for the benefit of the portfolio.
+
+Would love to learn more, regardless of fundraising, and explore ways our portfolio/network can become your customers. Happy to plan around your availability, so just let me know what works best for you over the coming weeks! And if you're in NYC, let's grab coffee!
+
+Best,
+[Name]"
+
+FOLLOW-UP 1 (2-4 days later):
+"Hey [Name] — following up on my note below. Let me know if there's any particular dates/times that work best. Happy to move anything around on my end to make it happen!
+Best, [Name]"
+
+FOLLOW-UP 2 (2-4 days later):
+"Hi [Name] — Happy Monday! Wanted to check in again before your calendar gets too crazy for the week ahead. Anything work to chat this week? Hope you had a great weekend!
+Best, [Name]"
+
+PUSHBACK RESPONSE (not raising for a while):
+"Hey [Name] — Totally understand you're heads down. That said, we're really excited about what you're building and would love to connect around how our executive search team (Roo Search) can help as you think through your next key hire, org structure, comp benchmarks, and end-to-end senior searches. Happy to kick the conversation out a few months — I'm a big believer in getting to know each other over time so when the time is right, we can move fast.
+Best, [Name]"
+`;
+
 // ── Draft outreach email via Claude ──
 export async function draftOutreachEmail(founder) {
   const apiKey = process.env.ANTHROPIC_API_KEY;
@@ -15,24 +41,29 @@ export async function draftOutreachEmail(founder) {
 
   const client = new Anthropic({ apiKey });
 
-  const prompt = `You are Joaquin Lopez May, a venture capital investor at Roo Capital, focused on NYC-based early-stage tech startups.
+  const prompt = `You are a Principal at Roo Capital, an early-stage AI-focused venture fund based in NYC and Miami with $200M AUM. You write warm, direct, non-salesy cold outreach emails to founders.
 
-Draft a short, genuine, non-salesy outreach email to ${founder.name}, who is the ${founder.role || 'Founder'} of ${founder.company}.
-${founder.description ? `Context about them: ${founder.description}` : ''}
-${founder.sector ? `They operate in: ${founder.sector}` : ''}
-${founder.raised ? `They have raised: ${founder.raised}` : ''}
-${founder.stage ? `Funding stage: ${founder.stage}` : ''}
+Here are Roo Capital's outreach email templates and style guide to follow closely:
+${OUTREACH_TEMPLATES}
+
+Now draft an INITIAL OUTREACH email to this founder:
+- Name: ${founder.name}
+- Role: ${founder.role || 'Founder'}
+- Company: ${founder.company}
+${founder.description ? `- About them: ${founder.description}` : ''}
+${founder.sector ? `- Sector: ${founder.sector}` : ''}
+${founder.raised ? `- Raised: ${founder.raised}` : ''}
+${founder.stage ? `- Stage: ${founder.stage}` : ''}
 
 Requirements:
-- Subject line on first line, prefixed with "Subject: "
-- Keep body under 120 words
-- Warm and direct, no hollow flattery
-- Mention something specific about their work if you can infer it
-- Express genuine interest in learning more / grabbing a quick call
+- First line: "Subject: [subject line]"
+- Follow the tone and structure of Option A above
+- Personalize the first paragraph specifically to their company/background
+- Keep body under 150 words total
 - Sign off as: Joaquin | Roo Capital
-- Plain text, no markdown
+- Plain text only, no markdown, no bullet points
 
-Return ONLY the email (subject + body), nothing else.`;
+Return ONLY the email (subject + body). Nothing else.`;
 
   const message = await client.messages.create({
     model: 'claude-sonnet-4-5',

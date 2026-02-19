@@ -68,6 +68,37 @@
   .watchlist-toggle:hover{color:var(--orange)}
   .watchlist-toggle svg{width:14px;height:14px}
 
+  /* ── Thesis Panel ── */
+  .thesis-toggle{position:fixed;left:0;top:50%;transform:translateY(-50%);z-index:200;background:var(--gradient);border:none;border-radius:0 10px 10px 0;padding:14px 8px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;color:#fff;font-size:.6rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;box-shadow:2px 0 16px rgba(240,125,50,.25);transition:all .2s}
+  .thesis-toggle:hover{padding-right:12px}
+  .thesis-toggle svg{width:16px;height:16px}
+  .thesis-panel{position:fixed;left:-380px;top:0;height:100vh;width:360px;background:#0f0f0f;border-right:1px solid var(--card-border);z-index:199;overflow-y:auto;transition:left .3s cubic-bezier(.4,0,.2,1);padding:24px 22px;box-shadow:4px 0 32px rgba(0,0,0,.5)}
+  .thesis-panel.open{left:0}
+  .thesis-panel::-webkit-scrollbar{width:4px}
+  .thesis-panel::-webkit-scrollbar-thumb{background:var(--card-border);border-radius:2px}
+  .thesis-close{position:absolute;top:16px;right:16px;background:none;border:none;color:var(--text-muted);cursor:pointer;padding:4px}
+  .thesis-close:hover{color:var(--text)}
+  .thesis-close svg{width:18px;height:18px}
+  .thesis-logo{display:flex;align-items:center;gap:10px;margin-bottom:20px}
+  .thesis-logo-mark{width:36px;height:36px;background:var(--gradient);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+  .thesis-title{font-size:15px;font-weight:700}
+  .thesis-sub{font-size:11px;color:var(--text-muted);margin-top:1px}
+  .thesis-section{margin-bottom:20px}
+  .thesis-section-label{font-size:10px;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+  .thesis-section-label::after{content:'';flex:1;height:1px;background:rgba(240,125,50,.2);display:block}
+  .thesis-body{font-size:.82rem;color:var(--text-muted);line-height:1.65}
+  .thesis-body strong{color:var(--text)}
+  .thesis-pill-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+  .thesis-pill{font-size:.7rem;padding:3px 10px;border-radius:20px;border:1px solid var(--card-border);color:var(--text-muted);background:rgba(255,255,255,.03)}
+  .thesis-pill.hot{border-color:rgba(240,125,50,.3);color:var(--orange);background:rgba(240,125,50,.07)}
+  .thesis-stat{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:.8rem}
+  .thesis-stat:last-child{border-bottom:none}
+  .thesis-stat-label{color:var(--text-muted)}
+  .thesis-stat-value{color:var(--text);font-weight:600}
+  .thesis-stat-value.orange{color:var(--orange)}
+  .thesis-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:198;opacity:0;pointer-events:none;transition:opacity .3s}
+  .thesis-backdrop.open{opacity:1;pointer-events:all}
+
   /* ── Card Grid ── */
   .grid{max-width:1440px;margin:0 auto;padding:0 2rem 3rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(400px,1fr));gap:20px}
 
@@ -460,6 +491,95 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
       Ask AI
     </button>
+  </div>
+</div>
+
+<!-- Thesis Panel Toggle -->
+<button class="thesis-toggle" onclick="toggleThesis()" title="Roo Capital Investment Thesis">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+  Thesis
+</button>
+
+<div class="thesis-backdrop" id="thesisBackdrop" onclick="toggleThesis()"></div>
+
+<div class="thesis-panel" id="thesisPanel">
+  <button class="thesis-close" onclick="toggleThesis()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </button>
+
+  <div class="thesis-logo">
+    <div class="thesis-logo-mark">🦘</div>
+    <div>
+      <div class="thesis-title">Roo Capital</div>
+      <div class="thesis-sub">Investment Thesis &amp; Search Criteria</div>
+    </div>
+  </div>
+
+  <div class="thesis-section">
+    <div class="thesis-section-label">Fund Overview</div>
+    <div class="thesis-body">
+      Early-stage, <strong>AI-focused venture fund</strong> based in NYC &amp; Miami. <strong>$200M AUM</strong>, investing out of Fund II. Six-year track record backing vertical AI companies. In-house executive search firm (Roo Search) with a <strong>30K+ candidate pool</strong>.
+    </div>
+    <div style="margin-top:12px">
+      <div class="thesis-stat"><span class="thesis-stat-label">Stage</span><span class="thesis-stat-value orange">Pre-seed → Series A</span></div>
+      <div class="thesis-stat"><span class="thesis-stat-label">Check Size</span><span class="thesis-stat-value">$500K – $5M</span></div>
+      <div class="thesis-stat"><span class="thesis-stat-label">Geography</span><span class="thesis-stat-value">NYC · Miami · Remote</span></div>
+      <div class="thesis-stat"><span class="thesis-stat-label">Lead / Follow</span><span class="thesis-stat-value">Both</span></div>
+    </div>
+  </div>
+
+  <div class="thesis-section">
+    <div class="thesis-section-label">Investment Thesis</div>
+    <div class="thesis-body">
+      We back <strong>technical founders</strong> building vertical AI applications with clear enterprise distribution. We prioritize founders with <strong>deep domain expertise</strong> — ex-FAANG, ex-operator, or industry insider — who have an unfair advantage in their market. We believe the next wave of AI value will be captured by vertical-specific applications, not horizontal platforms.
+    </div>
+  </div>
+
+  <div class="thesis-section">
+    <div class="thesis-section-label">Target Sectors</div>
+    <div class="thesis-pill-row">
+      <span class="thesis-pill hot">Vertical AI</span>
+      <span class="thesis-pill hot">Fintech</span>
+      <span class="thesis-pill hot">Healthcare Tech</span>
+      <span class="thesis-pill hot">Cybersecurity</span>
+      <span class="thesis-pill">SaaS</span>
+      <span class="thesis-pill">Climate Tech</span>
+      <span class="thesis-pill">EdTech</span>
+      <span class="thesis-pill">PropTech</span>
+    </div>
+  </div>
+
+  <div class="thesis-section">
+    <div class="thesis-section-label">Ideal Founder Profile</div>
+    <div class="thesis-body">
+      <div style="margin-bottom:6px">✦ <strong>Ex-FAANG or deep domain operator</strong> — built something before or worked in the belly of the beast</div>
+      <div style="margin-bottom:6px">✦ <strong>NYC-based or NY-connected</strong> — active in the ecosystem</div>
+      <div style="margin-bottom:6px">✦ <strong>Technical or technical co-founder</strong> — can ship fast, owns the product</div>
+      <div style="margin-bottom:6px">✦ <strong>Pre-seed to Seed</strong> — early enough that we can add real value</div>
+      <div>✦ <strong>Stealth or low-profile</strong> — we want to find them before everyone else does</div>
+    </div>
+  </div>
+
+  <div class="thesis-section">
+    <div class="thesis-section-label">Search Criteria</div>
+    <div class="thesis-body">
+      <div style="margin-bottom:6px">⬡ Raising or recently raised <strong>$500K – $10M</strong></div>
+      <div style="margin-bottom:6px">⬡ <strong>NYC metro area</strong> — Manhattan, Brooklyn, or remote NYC-affiliated</div>
+      <div style="margin-bottom:6px">⬡ Company age <strong>&lt; 3 years</strong></div>
+      <div style="margin-bottom:6px">⬡ <strong>Enterprise or prosumer</strong> distribution — not pure consumer</div>
+      <div>⬡ <strong>AI-native</strong> or heavily AI-augmented product</div>
+    </div>
+  </div>
+
+  <div class="thesis-section">
+    <div class="thesis-section-label">Outreach Cadence</div>
+    <div class="thesis-body">
+      <div class="thesis-stat"><span class="thesis-stat-label">Initial email</span><span class="thesis-stat-value orange">Day 1</span></div>
+      <div class="thesis-stat"><span class="thesis-stat-label">Follow-up 1</span><span class="thesis-stat-value">+2–4 days</span></div>
+      <div class="thesis-stat"><span class="thesis-stat-label">Follow-up 2</span><span class="thesis-stat-value">+2–4 days</span></div>
+      <div class="thesis-stat"><span class="thesis-stat-label">Final follow-up</span><span class="thesis-stat-value">+1 week</span></div>
+      <div class="thesis-stat"><span class="thesis-stat-label">Re-engage</span><span class="thesis-stat-value">60–90 days</span></div>
+    </div>
   </div>
 </div>
 
@@ -1037,9 +1157,23 @@ function drawerAskAI() {
   input.focus();
 }
 
+// ─── Thesis Panel ───
+function toggleThesis() {
+  const panel = document.getElementById('thesisPanel');
+  const backdrop = document.getElementById('thesisBackdrop');
+  const open = panel.classList.toggle('open');
+  backdrop.classList.toggle('open', open);
+  document.body.style.overflow = open ? 'hidden' : '';
+}
+
 // Close on Escape
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') closeDrawer();
+  if (e.key === 'Escape') {
+    closeDrawer();
+    // Also close thesis panel if open
+    const panel = document.getElementById('thesisPanel');
+    if (panel.classList.contains('open')) toggleThesis();
+  }
 });
 </script>
 
@@ -1117,6 +1251,52 @@ function autoResizeInput() {
 
 document.getElementById('chatInput').addEventListener('input', autoResizeInput);
 
+function renderMarkdown(text) {
+  // Escape HTML first
+  const e = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  let html = e(text);
+
+  // Code blocks (```...```)
+  html = html.replace(/```[\w]*\n?([\s\S]*?)```/g, (_,c) =>
+    `<pre style="background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.08);border-radius:7px;padding:10px 14px;overflow-x:auto;font-size:.78rem;margin:6px 0"><code>${c.trim()}</code></pre>`);
+
+  // Inline code
+  html = html.replace(/`([^`]+)`/g, '<code style="background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.08);border-radius:4px;padding:1px 6px;font-size:.82em">$1</code>');
+
+  // Headers
+  html = html.replace(/^### (.+)$/gm, '<div style="font-size:.82rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin:10px 0 4px">$1</div>');
+  html = html.replace(/^## (.+)$/gm, '<div style="font-size:.9rem;font-weight:700;color:var(--orange);margin:10px 0 4px">$1</div>');
+  html = html.replace(/^# (.+)$/gm, '<div style="font-size:1rem;font-weight:700;color:var(--text);margin:10px 0 5px">$1</div>');
+
+  // Bold + italic
+  html = html.replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>');
+  html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+
+  // Bullet lists — group consecutive lines starting with - or *
+  html = html.replace(/((?:^[•\-\*] .+\n?)+)/gm, match => {
+    const items = match.trim().split('\n').map(l =>
+      `<li style="margin:3px 0">${l.replace(/^[•\-\*] /,'')}</li>`).join('');
+    return `<ul style="margin:6px 0;padding-left:18px;list-style:disc">${items}</ul>`;
+  });
+
+  // Numbered lists
+  html = html.replace(/((?:^\d+\. .+\n?)+)/gm, match => {
+    const items = match.trim().split('\n').map(l =>
+      `<li style="margin:3px 0">${l.replace(/^\d+\. /,'')}</li>`).join('');
+    return `<ol style="margin:6px 0;padding-left:18px">${items}</ol>`;
+  });
+
+  // Horizontal rule
+  html = html.replace(/^---$/gm, '<hr style="border:none;border-top:1px solid rgba(255,255,255,.08);margin:10px 0">');
+
+  // Line breaks (double newline = paragraph gap, single = <br>)
+  html = html.replace(/\n\n/g, '<div style="height:6px"></div>');
+  html = html.replace(/\n/g, '<br>');
+
+  return html;
+}
+
 function appendMessage(role, content) {
   const container = document.getElementById('chatMessages');
   // Remove welcome on first message
@@ -1125,7 +1305,11 @@ function appendMessage(role, content) {
 
   const div = document.createElement('div');
   div.className = `chat-msg ${role}`;
-  div.textContent = content;
+  if (role === 'assistant') {
+    div.innerHTML = renderMarkdown(content);
+  } else {
+    div.textContent = content;
+  }
   container.appendChild(div);
   container.scrollTop = container.scrollHeight;
   return div;
