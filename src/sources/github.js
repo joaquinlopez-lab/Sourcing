@@ -12,13 +12,14 @@ const QUERIES = [
   'location:"New York" CTO startup in:bio',
 ];
 
-// Roles that disqualify someone as an early-stage founder
+// Roles/bios that disqualify someone as an early-stage founder
 const DISQUALIFY_PATTERNS = [
-  /\b(professor|prof\b|faculty|adjunct|lecturer|postdoc)\b/i,
+  /\b(professor|prof\b|faculty|adjunct|lecturer|postdoc|principal investigator|\bPI\b)\b/i,
   /\b(adviser|advisor|consultant|coach|mentor)\b/i,
-  /\b(student|intern|junior|associate)\b/i,
+  /\b(student|intern|junior|associate prof)\b/i,
   /\b(software engineer|swe|sde|staff engineer|senior engineer)\b/i,
   /\b(freelance|contractor|hired|looking for)\b/i,
+  /\b(always hiring|remote jobs|linking companies|recruiting|talent)\b/i,
 ];
 
 // Well-known established companies — not early-stage startups
@@ -118,6 +119,18 @@ export async function fetchGitHubFounders(onProgress) {
 
         // Skip companies that are just the same as GitHub username
         if (companyRaw.toLowerCase() === user.login.toLowerCase()) continue;
+
+        // Skip placeholder company names
+        if (/^stealth$/i.test(companyRaw)) continue;
+        if (/^stealth\s*(startup|mode|ai)?$/i.test(companyRaw)) continue;
+
+        // Skip if company contains the founder's own name (vanity company)
+        const nameParts = name.trim().toLowerCase().split(' ');
+        if (nameParts.some(p => p.length > 3 && companyRaw.toLowerCase().includes(p) &&
+            /solutions|consulting|group|labs|llc|inc/i.test(companyRaw))) continue;
+
+        // Skip if company is a university/school
+        if (/university|college|school|institute|rutgers|nyu|columbia|mit|stanford/i.test(companyRaw)) continue;
 
         const isStealth = bioLower.includes('stealth');
 

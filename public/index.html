@@ -256,8 +256,25 @@
   .drawer-link.github{color:#A0A8B8;border-color:rgba(160,168,184,.2)}
   .drawer-link.github:hover{border-color:#A0A8B8;background:rgba(160,168,184,.06)}
 
-  .drawer-footer{padding:16px 24px;border-top:1px solid var(--card-border);display:flex;gap:10px;flex-shrink:0}
-  .drawer-footer .btn{flex:1;justify-content:center}
+  .drawer-footer{padding:16px 24px;border-top:1px solid var(--card-border);display:flex;gap:10px;flex-shrink:0;flex-wrap:wrap}
+  .drawer-footer .btn{flex:1;justify-content:center;min-width:120px}
+
+  /* ── Notes & Pipeline ── */
+  .drawer-notes{width:100%;background:rgba(10,10,10,.4);border:1px solid var(--card-border);border-radius:10px;color:var(--text);padding:10px 14px;font-size:.84rem;font-family:inherit;resize:vertical;min-height:80px;outline:none;line-height:1.5;transition:border .2s}
+  .drawer-notes:focus{border-color:var(--orange)}
+  .drawer-notes::placeholder{color:var(--text-muted)}
+  .drawer-notes-actions{display:flex;gap:8px;margin-top:8px;align-items:center}
+  .drawer-save-note{background:none;border:1px solid var(--card-border);color:var(--text-muted);padding:5px 14px;border-radius:7px;font-size:.78rem;cursor:pointer;transition:all .15s}
+  .drawer-save-note:hover{border-color:var(--orange);color:var(--orange)}
+  .drawer-save-note.saved{border-color:#34D399;color:#34D399}
+  .deal-stage-select{flex:1;background:var(--card);border:1px solid var(--card-border);color:var(--text);padding:5px 10px;border-radius:7px;font-size:.78rem;outline:none;cursor:pointer}
+  .deal-stage-select:focus{border-color:var(--orange)}
+  .deal-stage-badge{display:inline-block;padding:3px 10px;border-radius:5px;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+  .ds-watching{background:rgba(136,146,164,.15);color:var(--text-muted)}
+  .ds-reached{background:rgba(240,120,32,.15);color:var(--orange)}
+  .ds-conversation{background:rgba(59,130,246,.15);color:#60A5FA}
+  .ds-passed{background:rgba(232,41,74,.15);color:#F06888}
+  .ds-invested{background:rgba(52,211,153,.15);color:#34D399}
 
   /* ── Responsive ── */
   @media(max-width:768px){
@@ -335,6 +352,10 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
       Export CSV
     </button>
+    <a href="/admin.html" class="btn btn-outline" title="Duplicate detection &amp; admin tools" style="text-decoration:none">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a6 6 0 0 1 12 0v2"/></svg>
+      Admin
+    </a>
     <select class="sort-select" id="sortSelect" onchange="currentPage=1;fetchFounders()">
       <option value="recent">Most Recently Funded</option>
       <option value="amount">Highest Amount Raised</option>
@@ -405,11 +426,35 @@
       <div class="drawer-section-label">Links</div>
       <div class="drawer-links" id="drawerLinks"></div>
     </div>
+    <div class="drawer-section">
+      <div class="drawer-section-label">Pipeline Stage</div>
+      <div class="drawer-notes-actions" style="margin-top:0">
+        <select class="deal-stage-select" id="drawerDealStage" onchange="saveDealStage()">
+          <option value="Watching">Watching</option>
+          <option value="Reached Out">Reached Out</option>
+          <option value="In Conversation">In Conversation</option>
+          <option value="Passed">Passed</option>
+          <option value="Invested">Invested</option>
+        </select>
+      </div>
+    </div>
+    <div class="drawer-section">
+      <div class="drawer-section-label">Notes</div>
+      <textarea class="drawer-notes" id="drawerNotes" placeholder="Add private notes about this founder…"></textarea>
+      <div class="drawer-notes-actions">
+        <button class="drawer-save-note" id="drawerSaveNote" onclick="saveNote()">Save Note</button>
+        <span id="drawerNoteSaved" style="font-size:.72rem;color:#34D399;opacity:0;transition:opacity .3s">Saved ✓</span>
+      </div>
+    </div>
   </div>
   <div class="drawer-footer">
     <button class="btn btn-outline" id="drawerWatchlistBtn" onclick="drawerToggleWatchlist()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
       <span id="drawerWatchlistLabel">Save to Watchlist</span>
+    </button>
+    <button class="btn btn-outline" onclick="drawerDraftOutreach()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      Draft Email
     </button>
     <button class="btn btn-gradient" onclick="drawerAskAI()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
@@ -564,6 +609,7 @@ function renderCards() {
         ${f.is_stealth ? '<span class="tag tag-stealth">Stealth</span>' : ''}
         ${isUnverified ? '<span class="tag tag-unverified">Unverified</span>' : ''}
         ${isNew ? '<span class="tag tag-new">NEW</span>' : ''}
+        ${f.deal_stage && f.deal_stage !== 'Watching' ? `<span class="deal-stage-badge ${dealStageCls(f.deal_stage)}">${esc(f.deal_stage)}</span>` : ''}
       </div>
       <div class="metrics">
         <div class="metric">
@@ -604,6 +650,17 @@ function renderCards() {
 }
 
 // ─── Utilities ───
+function dealStageCls(stage) {
+  const map = {
+    'Watching': 'ds-watching',
+    'Reached Out': 'ds-reached',
+    'In Conversation': 'ds-conversation',
+    'Passed': 'ds-passed',
+    'Invested': 'ds-invested',
+  };
+  return map[stage] || 'ds-watching';
+}
+
 function esc(str) {
   const d = document.createElement('div');
   d.textContent = str || '';
@@ -854,6 +911,12 @@ function openDrawer(id) {
     </a>`;
   document.getElementById('drawerLinks').innerHTML = linksHtml;
 
+  // Notes & Pipeline Stage
+  document.getElementById('drawerNotes').value = f.notes || '';
+  const dealStageEl = document.getElementById('drawerDealStage');
+  dealStageEl.value = f.deal_stage || 'Watching';
+  document.getElementById('drawerNoteSaved').style.opacity = '0';
+
   // Watchlist button
   updateDrawerWatchlistBtn(f.is_watchlisted);
 
@@ -861,6 +924,72 @@ function openDrawer(id) {
   document.getElementById('drawerBackdrop').classList.add('open');
   document.getElementById('founderDrawer').classList.add('open');
   document.body.style.overflow = 'hidden';
+}
+
+async function saveNote() {
+  if (!drawerFounderId) return;
+  const notes = document.getElementById('drawerNotes').value;
+  try {
+    const res = await fetch(`/api/founders/${drawerFounderId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ notes }),
+    });
+    if (!res.ok) throw new Error('Save failed');
+    // Update local state
+    const f = founders.find(f => f.id === drawerFounderId);
+    if (f) f.notes = notes;
+    // Flash "Saved ✓"
+    const saved = document.getElementById('drawerNoteSaved');
+    saved.style.opacity = '1';
+    setTimeout(() => { saved.style.opacity = '0'; }, 2000);
+    // Pulse the save button green
+    const btn = document.getElementById('drawerSaveNote');
+    btn.classList.add('saved');
+    setTimeout(() => btn.classList.remove('saved'), 2000);
+  } catch {
+    showToast('Failed to save note');
+  }
+}
+
+async function saveDealStage() {
+  if (!drawerFounderId) return;
+  const deal_stage = document.getElementById('drawerDealStage').value;
+  try {
+    const res = await fetch(`/api/founders/${drawerFounderId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ deal_stage }),
+    });
+    if (!res.ok) throw new Error('Save failed');
+    // Update local state
+    const f = founders.find(f => f.id === drawerFounderId);
+    if (f) f.deal_stage = deal_stage;
+    showToast(`Stage → ${deal_stage}`);
+    // Re-render the card (so badge updates)
+    renderFounders();
+  } catch {
+    showToast('Failed to save stage');
+  }
+}
+
+async function drawerDraftOutreach() {
+  if (!drawerFounderId) return;
+  const f = founders.find(f => f.id === drawerFounderId);
+  if (!f) return;
+
+  closeDrawer();
+  if (!chatOpen) toggleChat();
+
+  const prompt = `Draft a brief, warm, investor outreach email to ${f.name}, ${f.role || 'Founder'} at ${f.company}. ` +
+    `They are building in ${f.sector || 'tech'} and have raised ${f.raised || 'an undisclosed amount'}. ` +
+    `Keep it under 150 words, genuine, non-salesy. Sign off as Joaquin from Roo Capital.`;
+
+  const input = document.getElementById('chatInput');
+  input.value = prompt;
+  input.dispatchEvent(new Event('input'));
+  // Auto-send
+  sendChatMessage();
 }
 
 function closeDrawer() {

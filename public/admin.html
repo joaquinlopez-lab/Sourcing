@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Roo Capital — Admin</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#0a0a0a;--card:#141414;--card-border:rgba(255,255,255,.08);
+      --text:#e0e0e0;--text-muted:#888;--orange:#F07D32;--red:#E8293A;
+      --green:#34D399;--blue:#60A5FA;--gradient:linear-gradient(135deg,#F07D32,#E8293A);
+    }
+    body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh}
+
+    /* ─── Header ─── */
+    .header{background:#111;border-bottom:1px solid var(--card-border);padding:16px 28px;display:flex;align-items:center;gap:16px}
+    .header-logo{width:36px;height:36px;background:var(--gradient);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px}
+    .header-title{font-size:18px;font-weight:700}
+    .header-sub{font-size:12px;color:var(--text-muted);margin-top:1px}
+    .header-back{margin-left:auto;color:var(--orange);text-decoration:none;font-size:13px;display:flex;align-items:center;gap:6px}
+    .header-back:hover{color:#ffab76}
+    .header-back svg{width:14px;height:14px}
+
+    /* ─── Layout ─── */
+    .main{max-width:1100px;margin:0 auto;padding:32px 24px}
+    .page-title{font-size:22px;font-weight:700;margin-bottom:4px}
+    .page-sub{color:var(--text-muted);font-size:13px;margin-bottom:28px}
+
+    /* ─── Stats bar ─── */
+    .stats-bar{display:flex;gap:16px;margin-bottom:28px;flex-wrap:wrap}
+    .stat-chip{background:var(--card);border:1px solid var(--card-border);border-radius:10px;padding:12px 20px}
+    .stat-chip .num{font-size:24px;font-weight:800;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .stat-chip .lbl{font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-top:2px}
+
+    /* ─── Controls ─── */
+    .controls{display:flex;gap:12px;margin-bottom:24px;align-items:center}
+    .btn{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;border:none}
+    .btn-primary{background:var(--gradient);color:#fff}
+    .btn-primary:hover{opacity:.88}
+    .btn-outline{background:none;border:1px solid var(--card-border);color:var(--text-muted)}
+    .btn-outline:hover{border-color:var(--orange);color:var(--orange)}
+    .btn-danger{background:none;border:1px solid rgba(232,41,74,.4);color:var(--red)}
+    .btn-danger:hover{background:rgba(232,41,74,.1)}
+    .btn svg{width:15px;height:15px}
+    .btn:disabled{opacity:.4;cursor:not-allowed}
+
+    /* ─── Pair cards ─── */
+    .pairs-list{display:flex;flex-direction:column;gap:16px}
+    .pair-card{background:var(--card);border:1px solid var(--card-border);border-radius:14px;overflow:hidden}
+    .pair-header{display:flex;align-items:center;padding:14px 20px;background:#0f0f0f;border-bottom:1px solid var(--card-border);gap:12px}
+    .pair-score{font-size:12px;font-weight:700;color:var(--orange);background:rgba(240,125,50,.12);border:1px solid rgba(240,125,50,.2);border-radius:20px;padding:3px 10px}
+    .pair-label{font-size:12px;color:var(--text-muted)}
+    .pair-actions{margin-left:auto;display:flex;gap:8px}
+    .pair-body{display:grid;grid-template-columns:1fr auto 1fr;gap:0}
+    .pair-founder{padding:20px 24px}
+    .pair-divider{display:flex;align-items:center;justify-content:center;padding:20px 0;color:var(--text-muted);font-size:22px}
+    .founder-name-lg{font-size:16px;font-weight:700;margin-bottom:4px}
+    .founder-company{font-size:13px;color:var(--orange);margin-bottom:8px}
+    .founder-detail{font-size:12px;color:var(--text-muted);margin-bottom:4px;display:flex;gap:6px;align-items:center}
+    .founder-detail svg{width:12px;height:12px;flex-shrink:0;opacity:.6}
+    .founder-desc{font-size:12px;color:var(--text-muted);line-height:1.5;margin-top:8px;border-top:1px solid var(--card-border);padding-top:8px}
+    .pair-keep-hint{font-size:11px;color:var(--green);opacity:0;transition:opacity .2s}
+    .pair-keep-hint.show{opacity:1}
+    .keep-btn{font-size:11px;padding:5px 12px;border-radius:6px;background:rgba(52,211,153,.12);border:1px solid rgba(52,211,153,.25);color:var(--green);cursor:pointer;margin-top:10px;transition:all .15s}
+    .keep-btn:hover{background:rgba(52,211,153,.2)}
+    .keep-btn.selected{background:rgba(52,211,153,.25);border-color:var(--green)}
+
+    /* ─── Empty state ─── */
+    .empty{text-align:center;padding:60px 20px;color:var(--text-muted)}
+    .empty-icon{font-size:48px;margin-bottom:12px}
+    .empty h3{font-size:16px;color:var(--text);margin-bottom:6px}
+
+    /* ─── Loading ─── */
+    .spinner{display:inline-block;width:18px;height:18px;border:2px solid rgba(240,125,50,.2);border-top-color:var(--orange);border-radius:50%;animation:spin .6s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    /* ─── Toast ─── */
+    .toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);background:#1e1e1e;border:1px solid var(--card-border);color:var(--text);padding:10px 22px;border-radius:10px;font-size:13px;transition:transform .25s;z-index:999;pointer-events:none}
+    .toast.show{transform:translateX(-50%) translateY(0)}
+
+    /* ─── Section ─── */
+    .section-title{font-size:13px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+    .section-title span{background:var(--card-border);height:1px;flex:1;display:block}
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-logo">🦘</div>
+  <div>
+    <div class="header-title">Roo Capital Admin</div>
+    <div class="header-sub">Duplicate Detection &amp; Merge</div>
+  </div>
+  <a href="/" class="header-back">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+    Back to App
+  </a>
+</div>
+
+<div class="main">
+  <div class="page-title">Duplicate Founders</div>
+  <div class="page-sub">Review suspected duplicates detected by name similarity. Keep one record and merge the other into it.</div>
+
+  <div class="stats-bar" id="statsBar">
+    <div class="stat-chip"><div class="num" id="statTotal">—</div><div class="lbl">Pairs Found</div></div>
+    <div class="stat-chip"><div class="num" id="statMerged">0</div><div class="lbl">Merged This Session</div></div>
+  </div>
+
+  <div class="controls">
+    <button class="btn btn-primary" onclick="loadDuplicates()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+      Refresh
+    </button>
+    <button class="btn btn-outline" onclick="skipAll()" id="skipAllBtn">Skip All</button>
+    <span id="loadingSpinner" style="display:none"><span class="spinner"></span></span>
+  </div>
+
+  <div class="pairs-list" id="pairsList"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let pairs = [];
+let mergedCount = 0;
+// Track which ID to keep per pair: { pairIndex: keepId }
+let keepChoices = {};
+
+async function loadDuplicates() {
+  const spinner = document.getElementById('loadingSpinner');
+  spinner.style.display = '';
+  try {
+    const res = await fetch('/api/duplicates');
+    const data = await res.json();
+    pairs = data.pairs || [];
+    keepChoices = {};
+    document.getElementById('statTotal').textContent = data.count;
+    renderPairs();
+  } catch (err) {
+    showToast('Failed to load duplicates');
+  } finally {
+    spinner.style.display = 'none';
+  }
+}
+
+function renderPairs() {
+  const list = document.getElementById('pairsList');
+  if (pairs.length === 0) {
+    list.innerHTML = `<div class="empty">
+      <div class="empty-icon">✅</div>
+      <h3>No duplicates found</h3>
+      <p>Your database looks clean. Run a Refresh to check again.</p>
+    </div>`;
+    return;
+  }
+
+  list.innerHTML = pairs.map((pair, i) => {
+    const a = pair.a, b = pair.b;
+    const score = pair.score || pair.similarity || '—';
+    const scorePct = typeof score === 'number' ? Math.round(score * 100) + '%' : score;
+    const chosenKeep = keepChoices[i];
+
+    return `<div class="pair-card" id="pair-${i}">
+      <div class="pair-header">
+        <span class="pair-score">~${scorePct} match</span>
+        <span class="pair-label">Suspected duplicate pair #${i + 1}</span>
+        <div class="pair-actions">
+          <button class="btn btn-danger" onclick="mergePair(${i})" ${!chosenKeep ? 'disabled' : ''} id="mergeBtn-${i}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 7h8M8 12h5M8 17h3M3 3h18v18H3z"/></svg>
+            Merge
+          </button>
+          <button class="btn btn-outline" onclick="skipPair(${i})">Skip</button>
+        </div>
+      </div>
+      <div class="pair-body">
+        ${founderSide(a, i, 'a')}
+        <div class="pair-divider">⟷</div>
+        ${founderSide(b, i, 'b')}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function founderSide(f, pairIdx, side) {
+  const liUrl = f.linkedin_url || `https://www.linkedin.com/search/results/people/?keywords=${encodeURIComponent(f.name)}`;
+  return `<div class="pair-founder">
+    <div class="founder-name-lg">${esc(f.name)}</div>
+    <div class="founder-company">${esc(f.company || '—')}</div>
+    <div class="founder-detail">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      ${esc(f.role || 'Founder')} · ${esc(f.stage || '—')} · ${esc(f.source || '—')}
+    </div>
+    <div class="founder-detail">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      ${esc(f.raised || '—')}
+    </div>
+    <div class="founder-detail">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      ${f.funded_date || '—'}
+    </div>
+    ${f.description ? `<div class="founder-desc">${esc(f.description.slice(0, 100))}${f.description.length > 100 ? '…' : ''}</div>` : ''}
+    <div style="margin-top:10px;display:flex;gap:8px;align-items:center">
+      <button class="keep-btn ${keepChoices[pairIdx] === f.id ? 'selected' : ''}" id="keep-${pairIdx}-${side}" onclick="selectKeep(${pairIdx}, ${f.id})">
+        ${keepChoices[pairIdx] === f.id ? '✓ Keep this record' : 'Keep this record'}
+      </button>
+      <a href="${esc(liUrl)}" target="_blank" style="font-size:11px;color:#888;text-decoration:none;hover:color:var(--orange)">LinkedIn ↗</a>
+    </div>
+    <div class="pair-keep-hint ${keepChoices[pairIdx] === f.id ? 'show' : ''}" id="hint-${pairIdx}-${side}">
+      The other record's data will be merged into this one
+    </div>
+  </div>`;
+}
+
+function selectKeep(pairIdx, keepId) {
+  keepChoices[pairIdx] = keepId;
+  // Enable merge button
+  document.getElementById(`mergeBtn-${pairIdx}`).removeAttribute('disabled');
+  renderPairs();
+}
+
+async function mergePair(pairIdx) {
+  const pair = pairs[pairIdx];
+  if (!pair) return;
+  const keepId = keepChoices[pairIdx];
+  if (!keepId) { showToast('Select which record to keep first'); return; }
+
+  const a = pair[0], b = pair[1];
+  const deleteId = a.id === keepId ? b.id : a.id;
+
+  const keepName = a.id === keepId ? a.name : b.name;
+  const deleteName = a.id === keepId ? b.name : a.name;
+
+  try {
+    const res = await fetch('/api/duplicates/merge', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ keepId, deleteId }),
+    });
+    if (!res.ok) throw new Error('Merge failed');
+
+    // Remove from list
+    pairs.splice(pairIdx, 1);
+    delete keepChoices[pairIdx];
+    // Rebuild keepChoices indices
+    const newChoices = {};
+    Object.entries(keepChoices).forEach(([k, v]) => {
+      const newIdx = parseInt(k) > pairIdx ? parseInt(k) - 1 : parseInt(k);
+      newChoices[newIdx] = v;
+    });
+    keepChoices = newChoices;
+
+    mergedCount++;
+    document.getElementById('statMerged').textContent = mergedCount;
+    document.getElementById('statTotal').textContent = pairs.length;
+    showToast(`Merged: kept ${keepName}, removed ${deleteName}`);
+    renderPairs();
+  } catch (err) {
+    showToast('Merge failed: ' + err.message);
+  }
+}
+
+function skipPair(pairIdx) {
+  pairs.splice(pairIdx, 1);
+  delete keepChoices[pairIdx];
+  const newChoices = {};
+  Object.entries(keepChoices).forEach(([k, v]) => {
+    const newIdx = parseInt(k) > pairIdx ? parseInt(k) - 1 : parseInt(k);
+    newChoices[newIdx] = v;
+  });
+  keepChoices = newChoices;
+  document.getElementById('statTotal').textContent = pairs.length;
+  renderPairs();
+}
+
+function skipAll() {
+  pairs = [];
+  keepChoices = {};
+  renderPairs();
+  showToast('All pairs skipped');
+}
+
+function esc(str) {
+  const d = document.createElement('div');
+  d.textContent = str || '';
+  return d.innerHTML;
+}
+
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// Load on page open
+loadDuplicates();
+</script>
+
+</body>
+</html>

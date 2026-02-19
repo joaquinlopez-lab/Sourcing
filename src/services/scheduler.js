@@ -1,11 +1,13 @@
 import cron from 'node-cron';
 import { runAllSources } from '../sources/index.js';
+import { sendDigest } from './email.js';
 
-let scheduledTask = null;
+let refreshTask = null;
+let digestTask = null;
 
 export function startScheduler() {
-  // Run daily at 6:00 AM ET (11:00 UTC)
-  scheduledTask = cron.schedule('0 6 * * *', async () => {
+  // Run daily at 6:00 AM ET — data refresh
+  refreshTask = cron.schedule('0 6 * * *', async () => {
     console.log('[Scheduler] Starting daily data refresh…');
     try {
       const result = await runAllSources((source, msg) => {
@@ -15,16 +17,22 @@ export function startScheduler() {
     } catch (err) {
       console.error('[Scheduler] Refresh failed:', err.message);
     }
-  }, {
-    timezone: 'America/New_York',
-  });
+  }, { timezone: 'America/New_York' });
 
-  console.log('[Scheduler] Daily refresh scheduled for 6:00 AM ET');
+  // Run daily at 8:00 AM ET — email digest
+  digestTask = cron.schedule('0 8 * * *', async () => {
+    console.log('[Scheduler] Sending daily digest…');
+    try {
+      await sendDigest();
+    } catch (err) {
+      console.error('[Scheduler] Digest failed:', err.message);
+    }
+  }, { timezone: 'America/New_York' });
+
+  console.log('[Scheduler] Daily refresh @ 6AM ET, digest @ 8AM ET');
 }
 
 export function stopScheduler() {
-  if (scheduledTask) {
-    scheduledTask.stop();
-    scheduledTask = null;
-  }
+  if (refreshTask) { refreshTask.stop(); refreshTask = null; }
+  if (digestTask)  { digestTask.stop();  digestTask = null;  }
 }

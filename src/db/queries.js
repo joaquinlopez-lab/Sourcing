@@ -15,6 +15,96 @@ export function getFounderCount() {
   return db.prepare('SELECT COUNT(*) as count FROM founders').get().count;
 }
 
+export function getFounderById(id) {
+  return db.prepare('SELECT * FROM founders WHERE id = :id').get({ id });
+}
+
+export function patchFounder(id, { notes, deal_stage }) {
+  const fields = [];
+  const params = { id };
+  if (notes !== undefined) { fields.push('notes = :notes'); params.notes = notes; }
+  if (deal_stage !== undefined) { fields.push('deal_stage = :deal_stage'); params.deal_stage = deal_stage; }
+  if (fields.length === 0) return false;
+  fields.push("updated_at = datetime('now')");
+  db.prepare(`UPDATE founders SET ${fields.join(', ')} WHERE id = :id`).run(params);
+  return true;
+}
+
+// Returns pairs of founders that look like duplicates (fuzzy name + same sector)
+export function getDuplicateCandidates() {
+  const founders = db.prepare('SELECT id, name, role, company, sector, stage, raised, source, funded_date, description, linkedin_url FROM founders ORDER BY name').all();
+  const candidates = [];
+  for (let i = 0; i < founders.length; i++) {
+    for (let j = i + 1; j < founders.length; j++) {
+      const a = founders[i], b = founders[j];
+      if (nameSimilarity(a.name, b.name) > 0.75) {
+        candidates.push({ a, b, score: nameSimilarity(a.name, b.name) });
+        if (candidates.length >= 50) return candidates; // cap at 50 pairs
+      }
+    }
+  }
+  return candidates;
+}
+
+function nameSimilarity(a, b) {
+  a = a.toLowerCase().replace(/[^a-z]/g, '');
+  b = b.toLowerCase().replace(/[^a-z]/g, '');
+  if (a === b) return 1;
+  const bigrams = s => new Set([...Array(s.length - 1)].map((_, i) => s.slice(i, i + 2)));
+  const ba = bigrams(a), bb = bigrams(b);
+  let inter = 0;
+  for (const bg of ba) if (bb.has(bg)) inter++;
+  return inter / (ba.size + bb.size - inter);
+}
+
+export function mergeFounders(keepId, deleteId) {
+  // Copy non-null fields from deleteId to keepId where keepId has nulls
+  db.prepare(`
+    UPDATE founders SET
+      description = COALESCE(description, (SELECT description FROM founders WHERE id = :del)),
+      linkedin_url = COALESCE(linkedin_url, (SELECT linkedin_url FROM founders WHERE id = :del)),
+      website      = COALESCE(website,      (SELECT website      FROM founders WHERE id = :del)),
+      github_url   = COALESCE(github_url,   (SELECT github_url   FROM founders WHERE id = :del)),
+      avatar_url   = COALESCE(avatar_url,   (SELECT avatar_url   FROM founders WHERE id = :del)),
+      notes        = CASE WHEN notes = '' OR notes IS NULL
+                     THEN (SELECT notes FROM founders WHERE id = :del)
+                     ELSE notes END,
+      raised_amount = CASE WHEN raised_amount < (SELECT raised_amount FROM founders WHERE id = :del)
+                      THEN (SELECT raised_amount FROM founders WHERE id = :del)
+                      ELSE raised_amount END,
+      updated_at = datetime('now')
+    WHERE id = :keep
+  `).run({ keep: keepId, del: deleteId });
+  // Move watchlist if needed
+  db.prepare(`INSERT OR IGNORE INTO watchlist (founder_id) SELECT :keep WHERE EXISTS (SELECT 1 FROM watchlist WHERE founder_id = :del)`).run({ keep: keepId, del: deleteId });
+  db.prepare(`DELETE FROM watchlist WHERE founder_id = :del`).run({ del: deleteId });
+  db.prepare(`DELETE FROM founders WHERE id = :del`).run({ del: deleteId });
+  return true;
+}
+
+// For daily digest
+export function getRecentFounders(days = 7, limit = 5) {
+  return db.prepare(`
+    SELECT * FROM founders
+    WHERE created_at >= datetime('now', '-' || :days || ' days')
+    ORDER BY created_at DESC LIMIT :limit
+  `).all({ days, limit });
+}
+
+export function getTopRaisedFounders(limit = 3) {
+  return db.prepare(`
+    SELECT * FROM founders WHERE raised_amount > 0
+    ORDER BY raised_amount DESC LIMIT :limit
+  `).all({ limit });
+}
+
+export function getStealthFounders(limit = 3) {
+  return db.prepare(`
+    SELECT * FROM founders WHERE is_stealth = 1
+    ORDER BY created_at DESC LIMIT :limit
+  `).all({ limit });
+}
+
 export function searchFounders({ search, sector, stage, source, sort, limit = 100, offset = 0, watchlistOnly = false }) {
   const conditions = [];
   const params = {};

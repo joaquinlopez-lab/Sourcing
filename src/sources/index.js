@@ -62,6 +62,8 @@ function validateFounder(founder) {
   if (!company || company === 'Unknown') return 'no company';
   if (company.startsWith('http')) return `company is URL: "${company}"`;
   if (/^\w+ Labs$/i.test(company) && company.split(' ')[0].length < 4) return `fake lab name: "${company}"`;
+  if (/^stealth(\s*(startup|mode|ai))?$/i.test(company)) return `placeholder company: "${company}"`;
+  if (/university|college|professor|rutgers|nyu|columbia/i.test(company)) return `academic institution: "${company}"`;
 
   // 6. Description can't be mostly HTML/navigation junk
   const desc = (founder.description || '');

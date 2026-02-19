@@ -21,6 +21,8 @@ export function initSchema() {
       funded_date TEXT,
       is_stealth INTEGER DEFAULT 0,
       confidence_score REAL DEFAULT 0.3,
+      notes TEXT DEFAULT '',
+      deal_stage TEXT DEFAULT 'Watching',
       created_at TEXT DEFAULT (datetime('now')),
       updated_at TEXT DEFAULT (datetime('now'))
     )
@@ -47,6 +49,10 @@ export function initSchema() {
       status TEXT DEFAULT 'running'
     )
   `);
+
+  // ── Migrations for existing databases ──
+  try { db.exec(`ALTER TABLE founders ADD COLUMN notes TEXT DEFAULT ''`); } catch {}
+  try { db.exec(`ALTER TABLE founders ADD COLUMN deal_stage TEXT DEFAULT 'Watching'`); } catch {}
 
   // Indexes for common queries
   db.exec(`CREATE INDEX IF NOT EXISTS idx_founders_sector ON founders(sector)`);

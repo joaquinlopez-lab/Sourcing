@@ -8,10 +8,15 @@ import { startScheduler } from './src/services/scheduler.js';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const PORT = process.env.PORT || 3000;
 
-// Serve frontend (local dev only — Netlify serves static files via CDN)
+// Serve frontend static files
 app.use(express.static(join(__dirname, 'public')));
-app.get('*', (_req, res) => {
-  res.sendFile(join(__dirname, 'public', 'index.html'));
+// SPA fallback — but don't override .html files that exist
+app.get('*', (req, res) => {
+  if (req.path.endsWith('.html')) {
+    res.status(404).send('Not found');
+  } else {
+    res.sendFile(join(__dirname, 'public', 'index.html'));
+  }
 });
 
 // ── Start server ──

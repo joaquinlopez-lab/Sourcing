@@ -1,0 +1,164 @@
+import nodemailer from 'nodemailer';
+import Anthropic from '@anthropic-ai/sdk';
+import { getRecentFounders, getTopRaisedFounders, getStealthFounders } from '../db/queries.js';
+
+// ── Lazy transporter — only created when needed ──
+let _transporter = null;
+
+function getTransporter() {
+  if (_transporter) return _transporter;
+
+  const host = process.env.SMTP_HOST;
+  const user = process.env.SMTP_USER;
+  const pass = process.env.SMTP_PASS;
+
+  if (!host || !user || !pass) return null;
+
+  _transporter = nodemailer.createTransport({
+    host,
+    port: parseInt(process.env.SMTP_PORT || '587'),
+    secure: process.env.SMTP_PORT === '465',
+    auth: { user, pass },
+  });
+
+  return _transporter;
+}
+
+// ── Draft outreach email via Claude ──
+export async function draftOutreachEmail(founder) {
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) throw new Error('ANTHROPIC_API_KEY not set');
+
+  const client = new Anthropic({ apiKey });
+
+  const prompt = `You are Joaquin Lopez May, a venture capital investor at Roo Capital, focused on NYC-based early-stage tech startups.
+
+Draft a short, genuine, non-salesy outreach email to ${founder.name}, who is the ${founder.role || 'Founder'} of ${founder.company}.
+${founder.description ? `Context about them: ${founder.description}` : ''}
+${founder.sector ? `They operate in: ${founder.sector}` : ''}
+${founder.raised ? `They have raised: ${founder.raised}` : ''}
+${founder.stage ? `Funding stage: ${founder.stage}` : ''}
+
+Requirements:
+- Subject line on first line, prefixed with "Subject: "
+- Keep body under 120 words
+- Warm and direct, no hollow flattery
+- Mention something specific about their work if you can infer it
+- Express genuine interest in learning more / grabbing a quick call
+- Sign off as: Joaquin | Roo Capital
+- Plain text, no markdown
+
+Return ONLY the email (subject + body), nothing else.`;
+
+  const message = await client.messages.create({
+    model: 'claude-sonnet-4-5',
+    max_tokens: 400,
+    messages: [{ role: 'user', content: prompt }],
+  });
+
+  return message.content[0].text.trim();
+}
+
+// ── Build the daily digest HTML ──
+function buildDigestHtml(recent, topRaised, stealth) {
+  const founderRow = (f) => `
+    <tr>
+      <td style="padding:8px 12px;border-bottom:1px solid #2a2a2a">
+        <strong style="color:#f0f0f0">${f.name}</strong><br>
+        <span style="color:#999;font-size:12px">${f.role || 'Founder'} @ ${f.company}</span>
+      </td>
+      <td style="padding:8px 12px;border-bottom:1px solid #2a2a2a;color:#F59E0B;font-size:12px">${f.sector || '—'}</td>
+      <td style="padding:8px 12px;border-bottom:1px solid #2a2a2a;color:#34D399;font-size:12px">${f.raised || '—'}</td>
+      <td style="padding:8px 12px;border-bottom:1px solid #2a2a2a;font-size:11px">
+        <a href="https://www.linkedin.com/search/results/people/?keywords=${encodeURIComponent(f.name)}" style="color:#F07D32">LinkedIn</a>
+      </td>
+    </tr>`;
+
+  const section = (title, rows) => rows.length === 0 ? '' : `
+    <h3 style="color:#F07D32;font-size:14px;margin:24px 0 8px;text-transform:uppercase;letter-spacing:1px">${title}</h3>
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#1a1a1a;border-radius:8px;overflow:hidden;border:1px solid #2a2a2a">
+      <thead>
+        <tr style="background:#0f0f0f">
+          <th style="padding:8px 12px;text-align:left;color:#666;font-size:11px;font-weight:600">FOUNDER</th>
+          <th style="padding:8px 12px;text-align:left;color:#666;font-size:11px;font-weight:600">SECTOR</th>
+          <th style="padding:8px 12px;text-align:left;color:#666;font-size:11px;font-weight:600">RAISED</th>
+          <th style="padding:8px 12px;text-align:left;color:#666;font-size:11px;font-weight:600">LINKS</th>
+        </tr>
+      </thead>
+      <tbody>${rows.map(founderRow).join('')}</tbody>
+    </table>`;
+
+  const today = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+  return `<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><title>Roo Capital Daily Digest</title></head>
+<body style="background:#0a0a0a;color:#e0e0e0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;margin:0;padding:20px">
+  <div style="max-width:640px;margin:0 auto">
+    <div style="background:linear-gradient(135deg,#F07D32,#E8293A);padding:24px 28px;border-radius:12px 12px 0 0">
+      <h1 style="margin:0;font-size:20px;color:#fff;font-weight:700">🦘 Roo Capital Daily Digest</h1>
+      <p style="margin:4px 0 0;color:rgba(255,255,255,.8);font-size:13px">${today}</p>
+    </div>
+    <div style="background:#111;padding:24px 28px;border-radius:0 0 12px 12px;border:1px solid #2a2a2a;border-top:none">
+      ${section('🆕 New This Week', recent)}
+      ${section('💰 Top Raises', topRaised)}
+      ${section('🥷 Stealth Founders', stealth)}
+      ${recent.length === 0 && topRaised.length === 0 && stealth.length === 0
+        ? '<p style="color:#666;text-align:center;padding:20px">No new founders to report today.</p>'
+        : ''}
+      <p style="margin-top:28px;font-size:11px;color:#444;text-align:center">
+        Roo Capital Sourcing &nbsp;|&nbsp;
+        <a href="http://localhost:${process.env.PORT || 3000}" style="color:#F07D32">Open App</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>`;
+}
+
+// ── Send the daily digest ──
+export async function sendDigest() {
+  const to = process.env.DIGEST_EMAIL_TO;
+  if (!to) {
+    console.log('[Email] DIGEST_EMAIL_TO not set — skipping digest');
+    return;
+  }
+
+  const transport = getTransporter();
+  if (!transport) {
+    console.log('[Email] SMTP not configured — skipping digest');
+    return;
+  }
+
+  const recent = getRecentFounders(7, 5);
+  const topRaised = getTopRaisedFounders(3);
+  const stealth = getStealthFounders(3);
+
+  const html = buildDigestHtml(recent, topRaised, stealth);
+  const totalFounders = recent.length + topRaised.length + stealth.length;
+
+  try {
+    await transport.sendMail({
+      from: `"Roo Capital Sourcing" <${process.env.SMTP_USER}>`,
+      to,
+      subject: `Roo Capital Daily Digest — ${new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`,
+      html,
+    });
+    console.log(`[Email] Digest sent to ${to} (${totalFounders} founders featured)`);
+  } catch (err) {
+    console.error('[Email] Failed to send digest:', err.message);
+  }
+}
+
+// ── Send an outreach email ──
+export async function sendOutreach({ to, subject, body, from }) {
+  const transport = getTransporter();
+  if (!transport) throw new Error('SMTP not configured. Add SMTP_HOST, SMTP_USER, SMTP_PASS to .env');
+
+  await transport.sendMail({
+    from: from || `"Joaquin | Roo Capital" <${process.env.SMTP_USER}>`,
+    to,
+    subject,
+    text: body,
+  });
+}
