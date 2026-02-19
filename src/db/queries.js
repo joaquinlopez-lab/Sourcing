@@ -15,17 +15,17 @@ export function getFounderCount() {
   return db.prepare('SELECT COUNT(*) as count FROM founders').get().count;
 }
 
-export function searchFounders({ search, sector, stage, sort, limit = 100, offset = 0, watchlistOnly = false }) {
+export function searchFounders({ search, sector, stage, source, sort, limit = 100, offset = 0, watchlistOnly = false }) {
   const conditions = [];
   const params = {};
 
   if (search) {
     conditions.push(`(
-      name LIKE '%' || :search || '%' OR
-      company LIKE '%' || :search || '%' OR
-      description LIKE '%' || :search || '%' OR
-      sector LIKE '%' || :search || '%' OR
-      role LIKE '%' || :search || '%'
+      LOWER(name) LIKE '%' || LOWER(:search) || '%' OR
+      LOWER(company) LIKE '%' || LOWER(:search) || '%' OR
+      LOWER(description) LIKE '%' || LOWER(:search) || '%' OR
+      LOWER(sector) LIKE '%' || LOWER(:search) || '%' OR
+      LOWER(role) LIKE '%' || LOWER(:search) || '%'
     )`);
     params.search = search;
   }
@@ -37,13 +37,17 @@ export function searchFounders({ search, sector, stage, sort, limit = 100, offse
     conditions.push('stage = :stage');
     params.stage = stage;
   }
-
-  let joinClause = '';
-  if (watchlistOnly) {
-    joinClause = 'INNER JOIN watchlist w ON w.founder_id = founders.id';
+  if (source && source !== 'all') {
+    conditions.push('source = :source');
+    params.source = source;
   }
 
   const where = conditions.length > 0 ? 'WHERE ' + conditions.join(' AND ') : '';
+
+  // Single watchlist join: INNER when filtering by watchlist, LEFT otherwise
+  const joinClause = watchlistOnly
+    ? 'INNER JOIN watchlist w ON w.founder_id = founders.id'
+    : 'LEFT JOIN watchlist w ON w.founder_id = founders.id';
 
   let orderBy;
   switch (sort) {
@@ -59,9 +63,8 @@ export function searchFounders({ search, sector, stage, sort, limit = 100, offse
 
   const sql = `
     SELECT founders.*,
-           CASE WHEN w2.founder_id IS NOT NULL THEN 1 ELSE 0 END as is_watchlisted
+           CASE WHEN w.founder_id IS NOT NULL THEN 1 ELSE 0 END as is_watchlisted
     FROM founders
-    LEFT JOIN watchlist w2 ON w2.founder_id = founders.id
     ${joinClause}
     ${where}
     ORDER BY ${orderBy}

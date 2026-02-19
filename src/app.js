@@ -6,6 +6,7 @@ import { readFileSync, existsSync } from 'node:fs';
 import { initSchema } from './db/schema.js';
 import { upsertFounder, getFounderCount } from './db/queries.js';
 import apiRoutes from './routes/api.js';
+import chatRoutes from './routes/chat.js';
 
 // ── Initialize database (runs once per process / cold start) ──
 let initialized = false;
@@ -50,6 +51,7 @@ app.use(express.json());
 
 // API routes
 app.use('/api', apiRoutes);
+app.use('/api', chatRoutes);
 
 // API 404 handler
 app.use('/api', (_req, res) => {

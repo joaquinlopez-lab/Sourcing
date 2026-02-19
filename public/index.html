@@ -99,9 +99,27 @@
   .tag-saas{background:rgba(240,120,32,.12);color:#F8A055;border:1px solid rgba(240,120,32,.2)}
   .tag-health{background:rgba(52,211,153,.12);color:#34D399;border:1px solid rgba(52,211,153,.2)}
   .tag-cyber{background:rgba(232,41,74,.12);color:#F06888;border:1px solid rgba(232,41,74,.2)}
+  .tag-fintech{background:rgba(59,130,246,.12);color:#60A5FA;border:1px solid rgba(59,130,246,.2)}
   .tag-stage{background:rgba(45,64,99,.3);color:var(--text-muted);border:1px solid var(--card-border)}
   .tag-stealth{background:rgba(139,53,200,.12);color:#B87FE8;border:1px solid rgba(139,53,200,.2);font-style:italic}
   .tag-unverified{background:rgba(255,200,50,.1);color:#E8C840;border:1px solid rgba(255,200,50,.2);font-style:italic}
+  .tag-new{background:rgba(52,211,153,.12);color:#34D399;border:1px solid rgba(52,211,153,.25);font-weight:700;letter-spacing:.04em}
+  .tag-climate{background:rgba(52,211,153,.1);color:#6EE7B7;border:1px solid rgba(52,211,153,.2)}
+  .tag-edtech{background:rgba(251,191,36,.1);color:#FCD34D;border:1px solid rgba(251,191,36,.2)}
+  .tag-proptech{background:rgba(99,102,241,.1);color:#A5B4FC;border:1px solid rgba(99,102,241,.2)}
+
+  /* ── Confidence dot ── */
+  .confidence-dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:5px;flex-shrink:0;vertical-align:middle}
+  .conf-high{background:#34D399;box-shadow:0 0 5px rgba(52,211,153,.5)}
+  .conf-mid{background:#F59E0B;box-shadow:0 0 5px rgba(245,158,11,.4)}
+  .conf-low{background:#F06888;box-shadow:0 0 5px rgba(240,104,136,.4)}
+
+  /* ── Stealth pulse ring ── */
+  .card.stealth-card{border-color:rgba(139,53,200,.35)}
+  .card.stealth-card::after{content:'';position:absolute;inset:-1px;border-radius:16px;border:1px solid rgba(139,53,200,.35);animation:stealth-pulse 2.5s ease-in-out infinite;pointer-events:none}
+  @keyframes stealth-pulse{0%,100%{opacity:.4;transform:scale(1)}50%{opacity:.9;transform:scale(1.002)}}
+  .stealth-lock{display:inline-flex;align-items:center;gap:4px;font-size:.7rem;font-weight:700;color:#B87FE8;text-transform:uppercase;letter-spacing:.06em;margin-left:auto}
+  .stealth-lock svg{width:11px;height:11px}
 
   /* ── Metrics Grid ── */
   .metrics{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-bottom:14px;background:rgba(10,10,10,.3);border-radius:10px;border:1px solid var(--card-border);overflow:hidden}
@@ -149,8 +167,101 @@
   .toast{position:fixed;bottom:2rem;right:2rem;background:var(--card);border:1px solid var(--card-border);padding:12px 20px;border-radius:10px;font-size:.85rem;color:var(--text);z-index:300;transform:translateY(100px);opacity:0;transition:all .3s;box-shadow:0 8px 30px rgba(0,0,0,.3)}
   .toast.show{transform:translateY(0);opacity:1}
 
+  /* ── Chat Widget ── */
+  .chat-toggle{position:fixed;bottom:1.5rem;right:1.5rem;z-index:150;width:56px;height:56px;border-radius:50%;background:var(--gradient);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 24px rgba(232,41,74,.35);transition:all .3s}
+  .chat-toggle:hover{transform:scale(1.08);box-shadow:0 6px 32px rgba(232,41,74,.45)}
+  .chat-toggle svg{width:26px;height:26px;color:#fff;transition:transform .3s}
+  .chat-toggle.open svg{transform:rotate(90deg)}
+
+  .chat-panel{position:fixed;bottom:5.5rem;right:1.5rem;z-index:150;width:420px;height:540px;background:#111827;border:1px solid var(--card-border);border-radius:16px;display:flex;flex-direction:column;box-shadow:0 12px 48px rgba(0,0,0,.5);transform:translateY(20px) scale(.95);opacity:0;pointer-events:none;transition:all .25s ease}
+  .chat-panel.open{transform:translateY(0) scale(1);opacity:1;pointer-events:all}
+
+  .chat-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--card-border);flex-shrink:0}
+  .chat-header-left{display:flex;align-items:center;gap:10px}
+  .chat-header-icon{width:32px;height:32px;border-radius:8px;background:var(--gradient);display:flex;align-items:center;justify-content:center}
+  .chat-header-icon svg{width:18px;height:18px;color:#fff}
+  .chat-header-title{font-size:.9rem;font-weight:700;color:#fff}
+  .chat-header-sub{font-size:.68rem;color:var(--text-muted)}
+  .chat-close{background:none;border:none;color:var(--text-muted);cursor:pointer;padding:4px;border-radius:6px;transition:all .15s}
+  .chat-close:hover{color:var(--text);background:rgba(255,255,255,.06)}
+  .chat-close svg{width:18px;height:18px}
+
+  .chat-messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px}
+  .chat-messages::-webkit-scrollbar{width:4px}
+  .chat-messages::-webkit-scrollbar-thumb{background:var(--navy);border-radius:2px}
+
+  .chat-msg{max-width:88%;padding:10px 14px;border-radius:12px;font-size:.84rem;line-height:1.55;word-wrap:break-word;white-space:pre-wrap}
+  .chat-msg.user{align-self:flex-end;background:linear-gradient(135deg,rgba(240,120,32,.2),rgba(232,41,74,.15));color:var(--text);border:1px solid rgba(240,120,32,.2);border-bottom-right-radius:4px}
+  .chat-msg.assistant{align-self:flex-start;background:rgba(45,64,99,.25);color:var(--text);border:1px solid rgba(45,64,99,.4);border-bottom-left-radius:4px}
+  .chat-msg.assistant .typing-cursor{display:inline-block;width:2px;height:14px;background:var(--orange);margin-left:2px;animation:blink 1s step-end infinite;vertical-align:text-bottom}
+  @keyframes blink{50%{opacity:0}}
+  .chat-msg.error{color:#F06888;font-size:.8rem;font-style:italic}
+
+  .chat-welcome{text-align:center;padding:2rem 1rem;color:var(--text-muted);font-size:.82rem;line-height:1.6}
+  .chat-welcome strong{color:var(--text);display:block;font-size:.95rem;margin-bottom:6px}
+  .chat-suggestions{display:flex;flex-direction:column;gap:6px;margin-top:12px}
+  .chat-suggestion{padding:8px 12px;background:rgba(45,64,99,.2);border:1px solid var(--card-border);border-radius:8px;cursor:pointer;font-size:.78rem;color:var(--text-muted);text-align:left;transition:all .15s}
+  .chat-suggestion:hover{border-color:var(--orange);color:var(--text);background:rgba(240,120,32,.06)}
+
+  .chat-input-area{padding:12px;border-top:1px solid var(--card-border);display:flex;gap:8px;align-items:flex-end;flex-shrink:0}
+  .chat-input{flex:1;background:rgba(45,64,99,.2);border:1px solid var(--card-border);border-radius:10px;color:var(--text);padding:10px 14px;font-size:.84rem;font-family:inherit;resize:none;outline:none;max-height:100px;min-height:40px;line-height:1.4;transition:border .2s}
+  .chat-input:focus{border-color:var(--orange)}
+  .chat-input::placeholder{color:var(--text-muted)}
+  .chat-send{width:38px;height:38px;border-radius:10px;background:var(--gradient);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
+  .chat-send:hover:not(:disabled){transform:scale(1.05);box-shadow:0 2px 12px rgba(232,41,74,.3)}
+  .chat-send:disabled{opacity:.4;cursor:not-allowed}
+  .chat-send svg{width:18px;height:18px;color:#fff}
+
+  /* ── Slide-out Panel ── */
+  .drawer-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);z-index:400;opacity:0;pointer-events:none;transition:opacity .25s}
+  .drawer-backdrop.open{opacity:1;pointer-events:all}
+
+  .drawer{position:fixed;top:0;right:0;bottom:0;width:480px;max-width:100vw;background:#111827;border-left:1px solid var(--card-border);z-index:401;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);overflow:hidden}
+  .drawer.open{transform:translateX(0)}
+
+  .drawer-header{padding:20px 24px 16px;border-bottom:1px solid var(--card-border);display:flex;align-items:flex-start;justify-content:space-between;flex-shrink:0}
+  .drawer-avatar{width:64px;height:64px;border-radius:14px;background:var(--navy);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.4rem;color:var(--text-muted);flex-shrink:0;overflow:hidden;border:2px solid var(--card-border)}
+  .drawer-avatar img{width:100%;height:100%;object-fit:cover}
+  .drawer-identity{flex:1;min-width:0;padding:0 14px}
+  .drawer-name{font-size:1.2rem;font-weight:700;color:#fff;line-height:1.3}
+  .drawer-role{font-size:.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-top:2px}
+  .drawer-company{font-size:.95rem;color:var(--text-muted);margin-top:4px}
+  .drawer-close{background:none;border:none;color:var(--text-muted);cursor:pointer;padding:6px;border-radius:8px;transition:all .15s;flex-shrink:0}
+  .drawer-close:hover{color:var(--text);background:rgba(255,255,255,.06)}
+  .drawer-close svg{width:20px;height:20px}
+
+  .drawer-body{flex:1;overflow-y:auto;padding:20px 24px}
+  .drawer-body::-webkit-scrollbar{width:4px}
+  .drawer-body::-webkit-scrollbar-thumb{background:var(--navy);border-radius:2px}
+
+  .drawer-section{margin-bottom:22px}
+  .drawer-section-label{font-size:.65rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
+  .drawer-desc{font-size:.88rem;color:var(--text-muted);line-height:1.65}
+
+  .drawer-meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .drawer-meta-item{background:rgba(10,10,10,.4);border:1px solid var(--card-border);border-radius:10px;padding:10px 14px}
+  .drawer-meta-label{font-size:.62rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;font-weight:600;margin-bottom:3px}
+  .drawer-meta-value{font-size:.9rem;color:var(--text);font-weight:600}
+  .drawer-meta-value.raised{background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+
+  .drawer-conf-bar{height:4px;border-radius:2px;background:var(--card-border);margin-top:6px;overflow:hidden}
+  .drawer-conf-fill{height:100%;border-radius:2px;transition:width .4s ease}
+
+  .drawer-links{display:flex;flex-direction:column;gap:8px}
+  .drawer-link{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;border:1px solid var(--card-border);text-decoration:none;color:var(--text-muted);font-size:.84rem;transition:all .15s}
+  .drawer-link:hover{border-color:var(--orange);color:var(--text);background:rgba(240,120,32,.06)}
+  .drawer-link svg{width:16px;height:16px;flex-shrink:0}
+  .drawer-link.linkedin{color:#7EB1E8;border-color:rgba(126,177,232,.2)}
+  .drawer-link.linkedin:hover{border-color:#7EB1E8;background:rgba(126,177,232,.06)}
+  .drawer-link.github{color:#A0A8B8;border-color:rgba(160,168,184,.2)}
+  .drawer-link.github:hover{border-color:#A0A8B8;background:rgba(160,168,184,.06)}
+
+  .drawer-footer{padding:16px 24px;border-top:1px solid var(--card-border);display:flex;gap:10px;flex-shrink:0}
+  .drawer-footer .btn{flex:1;justify-content:center}
+
   /* ── Responsive ── */
   @media(max-width:768px){
+  .drawer{width:100vw}
     .header{padding:0 1rem}
     .controls{padding:1rem}
     .grid{grid-template-columns:1fr;padding:0 1rem 2rem}
@@ -159,6 +270,8 @@
     .search-box{min-width:100%}
     .filter-row{overflow-x:auto;flex-wrap:nowrap;padding-bottom:4px}
     .divider{display:none}
+    .chat-panel{width:calc(100vw - 1.5rem);right:.75rem;bottom:5rem;height:60vh}
+    .chat-toggle{bottom:1rem;right:1rem}
   }
 </style>
 </head>
@@ -181,6 +294,9 @@
     </span>
     <span class="source-indicator" id="srcGoogle">
       <span class="check">&#10003;</span> Google
+    </span>
+    <span class="source-indicator" id="srcExa">
+      <span class="check">&#10003;</span> Exa
     </span>
   </div>
 </div>
@@ -215,6 +331,10 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
       Refresh Data
     </button>
+    <button class="btn btn-outline" onclick="exportCSV()" title="Export current view to CSV">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Export CSV
+    </button>
     <select class="sort-select" id="sortSelect" onchange="currentPage=1;fetchFounders()">
       <option value="recent">Most Recently Funded</option>
       <option value="amount">Highest Amount Raised</option>
@@ -229,6 +349,10 @@
     <button class="btn btn-outline btn-sm filter-btn" data-filter="sector" data-value="SaaS" onclick="toggleFilter(this)">SaaS</button>
     <button class="btn btn-outline btn-sm filter-btn" data-filter="sector" data-value="Healthcare Tech" onclick="toggleFilter(this)">Healthcare Tech</button>
     <button class="btn btn-outline btn-sm filter-btn" data-filter="sector" data-value="Cybersecurity" onclick="toggleFilter(this)">Cybersecurity</button>
+    <button class="btn btn-outline btn-sm filter-btn" data-filter="sector" data-value="Fintech" onclick="toggleFilter(this)">Fintech</button>
+    <button class="btn btn-outline btn-sm filter-btn" data-filter="sector" data-value="Climate Tech" onclick="toggleFilter(this)">Climate Tech</button>
+    <button class="btn btn-outline btn-sm filter-btn" data-filter="sector" data-value="EdTech" onclick="toggleFilter(this)">EdTech</button>
+    <button class="btn btn-outline btn-sm filter-btn" data-filter="sector" data-value="PropTech" onclick="toggleFilter(this)">PropTech</button>
     <div class="divider"></div>
     <span class="filter-label">Stage</span>
     <button class="btn btn-outline btn-sm filter-btn active" data-filter="stage" data-value="all" onclick="toggleFilter(this)">All</button>
@@ -247,6 +371,53 @@
   </div>
 </div>
 
+<!-- Founder Detail Drawer -->
+<div class="drawer-backdrop" id="drawerBackdrop" onclick="closeDrawer()"></div>
+<div class="drawer" id="founderDrawer">
+  <div class="drawer-header">
+    <div class="drawer-avatar" id="drawerAvatar"></div>
+    <div class="drawer-identity">
+      <div class="drawer-name" id="drawerName"></div>
+      <div class="drawer-role" id="drawerRole"></div>
+      <div class="drawer-company" id="drawerCompany"></div>
+    </div>
+    <button class="drawer-close" onclick="closeDrawer()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="drawer-body">
+    <div class="drawer-section" id="drawerTagsSection">
+      <div id="drawerTags" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+    </div>
+    <div class="drawer-section" id="drawerDescSection">
+      <div class="drawer-section-label">About</div>
+      <div class="drawer-desc" id="drawerDesc"></div>
+    </div>
+    <div class="drawer-section">
+      <div class="drawer-section-label">Deal Info</div>
+      <div class="drawer-meta-grid" id="drawerMeta"></div>
+    </div>
+    <div class="drawer-section">
+      <div class="drawer-section-label" id="drawerConfLabel"></div>
+      <div class="drawer-conf-bar"><div class="drawer-conf-fill" id="drawerConfFill"></div></div>
+    </div>
+    <div class="drawer-section" id="drawerLinksSection">
+      <div class="drawer-section-label">Links</div>
+      <div class="drawer-links" id="drawerLinks"></div>
+    </div>
+  </div>
+  <div class="drawer-footer">
+    <button class="btn btn-outline" id="drawerWatchlistBtn" onclick="drawerToggleWatchlist()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+      <span id="drawerWatchlistLabel">Save to Watchlist</span>
+    </button>
+    <button class="btn btn-gradient" onclick="drawerAskAI()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      Ask AI
+    </button>
+  </div>
+</div>
+
 <!-- Card Grid -->
 <div class="grid" id="cardGrid"></div>
 <div style="text-align:center;padding:0 2rem 3rem;max-width:1440px;margin:0 auto" id="loadMoreWrap">
@@ -260,16 +431,26 @@ let founders = [];
 let totalFounders = 0;
 let watchlistCount = 0;
 let showWatchlistOnly = false;
-let activeFilters = { sector: 'all', stage: 'all' };
+let activeFilters = { sector: 'all', stage: 'all', source: 'all' };
 const PAGE_SIZE = 24;
 let currentPage = 1;
 let refreshPollTimer = null;
 
+// Track when this session started for "new" badge
+const SESSION_START = Date.now();
+const LAST_VISIT_KEY = 'roo_last_visit';
+const lastVisit = localStorage.getItem(LAST_VISIT_KEY);
+localStorage.setItem(LAST_VISIT_KEY, new Date().toISOString());
+
 const SECTOR_MAP = {
-  'Vertical AI':      { cls: 'tag-ai',     label: 'Vertical AI' },
-  'SaaS':             { cls: 'tag-saas',    label: 'SaaS' },
-  'Healthcare Tech':  { cls: 'tag-health',  label: 'Healthcare Tech' },
-  'Cybersecurity':    { cls: 'tag-cyber',   label: 'Cybersecurity' },
+  'Vertical AI':      { cls: 'tag-ai',      label: 'Vertical AI' },
+  'SaaS':             { cls: 'tag-saas',     label: 'SaaS' },
+  'Healthcare Tech':  { cls: 'tag-health',   label: 'Healthcare Tech' },
+  'Cybersecurity':    { cls: 'tag-cyber',    label: 'Cybersecurity' },
+  'Fintech':          { cls: 'tag-fintech',  label: 'Fintech' },
+  'Climate Tech':     { cls: 'tag-climate',  label: 'Climate Tech' },
+  'EdTech':           { cls: 'tag-edtech',   label: 'EdTech' },
+  'PropTech':         { cls: 'tag-proptech', label: 'PropTech' },
 };
 
 // ─── API Calls ───
@@ -281,6 +462,7 @@ async function fetchFounders() {
     search,
     sector: activeFilters.sector,
     stage: activeFilters.stage,
+    source: activeFilters.source,
     sort,
     limit: String(currentPage * PAGE_SIZE),
     offset: '0',
@@ -353,18 +535,26 @@ function renderCards() {
 
     const liUrl = f.linkedin_url || `https://www.linkedin.com/search/results/people/?keywords=${encodeURIComponent(f.name)}`;
     const isUnverified = (f.confidence_score || 0) < 0.4;
+    const conf = f.confidence_score || 0;
+    const confCls = conf >= 0.8 ? 'conf-high' : conf >= 0.5 ? 'conf-mid' : 'conf-low';
+    const confLabel = conf >= 0.8 ? 'High confidence' : conf >= 0.5 ? 'Medium confidence' : 'Low confidence';
+    const isNew = lastVisit && f.updated_at && new Date(f.updated_at) > new Date(lastVisit);
 
     return `
-    <div class="card ${f.is_stealth ? 'stealth-card' : ''}">
+    <div class="card ${f.is_stealth ? 'stealth-card' : ''}" onclick="openDrawer(${f.id})" style="cursor:pointer">
       <div class="card-top">
         <div class="avatar">${avatarContent}</div>
         <div class="card-identity">
-          <div class="founder-name">${highlightText(f.name, query)}</div>
+          <div class="founder-name" style="display:flex;align-items:center;gap:6px">
+            <span class="confidence-dot ${confCls}" title="${confLabel}"></span>
+            <span>${highlightText(f.name, query)}</span>
+            ${f.is_stealth ? `<span class="stealth-lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>STEALTH</span>` : ''}
+          </div>
           <div class="founder-role">${esc(f.role || 'Founder')}</div>
           <div class="company-name">${highlightText(f.company || '', query)}</div>
         </div>
       </div>
-      <button class="card-save ${isSaved ? 'saved' : ''}" onclick="toggleWatchlist(${f.id})" title="${isSaved ? 'Remove from Watchlist' : 'Save to Watchlist'}">
+      <button class="card-save ${isSaved ? 'saved' : ''}" onclick="event.stopPropagation();toggleWatchlist(${f.id})" title="${isSaved ? 'Remove from Watchlist' : 'Save to Watchlist'}">
         <svg viewBox="0 0 24 24" fill="${isSaved ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
       </button>
       <div class="company-desc">${highlightText(f.description || '', query)}</div>
@@ -373,6 +563,7 @@ function renderCards() {
         <span class="tag tag-stage">${esc(f.stage || '')}</span>
         ${f.is_stealth ? '<span class="tag tag-stealth">Stealth</span>' : ''}
         ${isUnverified ? '<span class="tag tag-unverified">Unverified</span>' : ''}
+        ${isNew ? '<span class="tag tag-new">NEW</span>' : ''}
       </div>
       <div class="metrics">
         <div class="metric">
@@ -438,6 +629,22 @@ function clearSearch() {
   fetchFounders();
 }
 
+function exportCSV() {
+  if (founders.length === 0) { showToast('No founders to export'); return; }
+  const cols = ['name','role','company','sector','stage','raised','location','source','funded_date','website','linkedin_url','github_url','confidence_score','is_stealth'];
+  const header = cols.join(',');
+  const rows = founders.map(f => cols.map(c => {
+    const v = f[c] == null ? '' : String(f[c]);
+    return '"' + v.replace(/"/g, '""') + '"';
+  }).join(','));
+  const blob = new Blob([header + '\n' + rows.join('\n')], { type: 'text/csv' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `roo-founders-${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  showToast(`Exported ${founders.length} founders`);
+}
+
 function loadMore() {
   currentPage++;
   fetchFounders();
@@ -494,7 +701,7 @@ async function refreshData() {
   document.getElementById('loadingText').textContent = 'Sourcing founders…';
   document.getElementById('loadingDetail').textContent = '';
 
-  ['srcGithub', 'srcHackernews', 'srcRss', 'srcGoogle'].forEach(id => {
+  ['srcGithub', 'srcHackernews', 'srcRss', 'srcGoogle', 'srcExa'].forEach(id => {
     const el = document.getElementById(id);
     el.classList.remove('done', 'error');
   });
@@ -551,6 +758,308 @@ async function refreshData() {
 
 // ─── Init ───
 fetchFounders();
+
+// ─── Founder Drawer ───
+let drawerFounderId = null;
+
+function openDrawer(id) {
+  const f = founders.find(f => f.id === id);
+  if (!f) return;
+  drawerFounderId = id;
+
+  // Avatar
+  const avatarEl = document.getElementById('drawerAvatar');
+  const initials = (f.name || '').split(' ').map(w => w[0]).join('').slice(0, 2);
+  avatarEl.innerHTML = f.avatar_url
+    ? `<img src="${esc(f.avatar_url)}" alt="${esc(f.name)}" onerror="this.parentElement.textContent='${initials}'">`
+    : initials;
+
+  // Identity
+  document.getElementById('drawerName').textContent = f.name || '';
+  document.getElementById('drawerRole').textContent = f.role || 'Founder';
+  document.getElementById('drawerCompany').textContent = f.company || '';
+
+  // Tags
+  const sectorInfo = SECTOR_MAP[f.sector] || { cls: 'tag-ai', label: f.sector };
+  const tagsHtml = [
+    `<span class="tag ${sectorInfo.cls}">${sectorInfo.label}</span>`,
+    `<span class="tag tag-stage">${esc(f.stage || '')}</span>`,
+    f.is_stealth ? '<span class="tag tag-stealth">Stealth</span>' : '',
+  ].filter(Boolean).join('');
+  document.getElementById('drawerTags').innerHTML = tagsHtml;
+
+  // Description
+  const descEl = document.getElementById('drawerDesc');
+  const descSection = document.getElementById('drawerDescSection');
+  if (f.description) {
+    descEl.textContent = f.description;
+    descSection.style.display = '';
+  } else {
+    descSection.style.display = 'none';
+  }
+
+  // Deal info grid
+  const conf = f.confidence_score || 0;
+  document.getElementById('drawerMeta').innerHTML = `
+    <div class="drawer-meta-item">
+      <div class="drawer-meta-label">Total Raised</div>
+      <div class="drawer-meta-value raised">${esc(f.raised || '—')}</div>
+    </div>
+    <div class="drawer-meta-item">
+      <div class="drawer-meta-label">Stage</div>
+      <div class="drawer-meta-value">${esc(f.stage || '—')}</div>
+    </div>
+    <div class="drawer-meta-item">
+      <div class="drawer-meta-label">Location</div>
+      <div class="drawer-meta-value">${esc(f.location || '—')}</div>
+    </div>
+    <div class="drawer-meta-item">
+      <div class="drawer-meta-label">Funded</div>
+      <div class="drawer-meta-value">${f.funded_date ? formatDate(f.funded_date) : '—'}</div>
+    </div>
+    <div class="drawer-meta-item">
+      <div class="drawer-meta-label">Source</div>
+      <div class="drawer-meta-value">${esc(f.source || '—')}</div>
+    </div>
+    <div class="drawer-meta-item">
+      <div class="drawer-meta-label">Updated</div>
+      <div class="drawer-meta-value">${f.updated_at ? formatDate(f.updated_at.slice(0,10)) : '—'}</div>
+    </div>
+  `;
+
+  // Confidence bar
+  const confPct = Math.round(conf * 100);
+  const confColor = conf >= 0.8 ? '#34D399' : conf >= 0.5 ? '#F59E0B' : '#F06888';
+  document.getElementById('drawerConfLabel').textContent = `Signal Confidence — ${confPct}%`;
+  const fill = document.getElementById('drawerConfFill');
+  fill.style.width = confPct + '%';
+  fill.style.background = confColor;
+
+  // Links
+  const liUrl = f.linkedin_url || `https://www.linkedin.com/search/results/people/?keywords=${encodeURIComponent(f.name)}`;
+  let linksHtml = `
+    <a href="${esc(liUrl)}" target="_blank" rel="noopener" class="drawer-link linkedin" onclick="event.stopPropagation()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+      LinkedIn Profile
+    </a>`;
+  if (f.github_url) linksHtml += `
+    <a href="${esc(f.github_url)}" target="_blank" rel="noopener" class="drawer-link github" onclick="event.stopPropagation()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+      GitHub
+    </a>`;
+  if (f.website) linksHtml += `
+    <a href="${esc(f.website)}" target="_blank" rel="noopener" class="drawer-link" onclick="event.stopPropagation()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+      Website
+    </a>`;
+  document.getElementById('drawerLinks').innerHTML = linksHtml;
+
+  // Watchlist button
+  updateDrawerWatchlistBtn(f.is_watchlisted);
+
+  // Open
+  document.getElementById('drawerBackdrop').classList.add('open');
+  document.getElementById('founderDrawer').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeDrawer() {
+  document.getElementById('drawerBackdrop').classList.remove('open');
+  document.getElementById('founderDrawer').classList.remove('open');
+  document.body.style.overflow = '';
+  drawerFounderId = null;
+}
+
+function updateDrawerWatchlistBtn(isSaved) {
+  const btn = document.getElementById('drawerWatchlistBtn');
+  const label = document.getElementById('drawerWatchlistLabel');
+  const icon = btn.querySelector('svg');
+  icon.setAttribute('fill', isSaved ? 'currentColor' : 'none');
+  label.textContent = isSaved ? 'Remove from Watchlist' : 'Save to Watchlist';
+  btn.classList.toggle('btn-outline', !isSaved);
+}
+
+async function drawerToggleWatchlist() {
+  if (!drawerFounderId) return;
+  const founder = founders.find(f => f.id === drawerFounderId);
+  if (!founder) return;
+  if (founder.is_watchlisted) {
+    await fetch(`/api/watchlist/${drawerFounderId}`, { method: 'DELETE' });
+    showToast('Removed from watchlist');
+  } else {
+    await fetch(`/api/watchlist/${drawerFounderId}`, { method: 'POST' });
+    showToast('Saved to watchlist');
+  }
+  await fetchFounders();
+  // Re-sync button state
+  const updated = founders.find(f => f.id === drawerFounderId);
+  if (updated) updateDrawerWatchlistBtn(updated.is_watchlisted);
+}
+
+function drawerAskAI() {
+  const f = founders.find(f => f.id === drawerFounderId);
+  if (!f) return;
+  closeDrawer();
+  // Open chat and pre-fill
+  if (!chatOpen) toggleChat();
+  const input = document.getElementById('chatInput');
+  input.value = `Tell me about ${f.name} at ${f.company}`;
+  input.dispatchEvent(new Event('input'));
+  input.focus();
+}
+
+// Close on Escape
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeDrawer();
+});
+</script>
+
+<!-- Chat Widget -->
+<button class="chat-toggle" id="chatToggle" onclick="toggleChat()" title="Chat with Roo Capital AI">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+</button>
+
+<div class="chat-panel" id="chatPanel">
+  <div class="chat-header">
+    <div class="chat-header-left">
+      <div class="chat-header-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      </div>
+      <div>
+        <div class="chat-header-title">Roo Capital AI</div>
+        <div class="chat-header-sub">VC Analyst Assistant</div>
+      </div>
+    </div>
+    <button class="chat-close" onclick="toggleChat()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+
+  <div class="chat-messages" id="chatMessages">
+    <div class="chat-welcome">
+      <strong>Roo Capital AI Analyst</strong>
+      Ask me about founders, sectors, deal evaluation, or outreach strategy.
+      <div class="chat-suggestions">
+        <button class="chat-suggestion" onclick="sendSuggestion(this)">Which Vertical AI founders raised the most?</button>
+        <button class="chat-suggestion" onclick="sendSuggestion(this)">Compare cybersecurity startups in the pipeline</button>
+        <button class="chat-suggestion" onclick="sendSuggestion(this)">Draft an outreach email to Chieh Huang at Pelgo</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="chat-input-area">
+    <textarea class="chat-input" id="chatInput" placeholder="Ask about founders, sectors, deals…" rows="1" onkeydown="handleChatKey(event)"></textarea>
+    <button class="chat-send" id="chatSend" onclick="sendChatMessage()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    </button>
+  </div>
+</div>
+
+<script>
+// ─── Chat State ───
+let chatOpen = false;
+let chatHistory = [];
+let chatStreaming = false;
+
+function toggleChat() {
+  chatOpen = !chatOpen;
+  document.getElementById('chatPanel').classList.toggle('open', chatOpen);
+  document.getElementById('chatToggle').classList.toggle('open', chatOpen);
+  if (chatOpen) document.getElementById('chatInput').focus();
+}
+
+function sendSuggestion(btn) {
+  document.getElementById('chatInput').value = btn.textContent;
+  sendChatMessage();
+}
+
+function handleChatKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendChatMessage();
+  }
+}
+
+function autoResizeInput() {
+  const input = document.getElementById('chatInput');
+  input.style.height = 'auto';
+  input.style.height = Math.min(input.scrollHeight, 100) + 'px';
+}
+
+document.getElementById('chatInput').addEventListener('input', autoResizeInput);
+
+function appendMessage(role, content) {
+  const container = document.getElementById('chatMessages');
+  // Remove welcome on first message
+  const welcome = container.querySelector('.chat-welcome');
+  if (welcome) welcome.remove();
+
+  const div = document.createElement('div');
+  div.className = `chat-msg ${role}`;
+  div.textContent = content;
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+  return div;
+}
+
+async function sendChatMessage() {
+  if (chatStreaming) return;
+  const input = document.getElementById('chatInput');
+  const message = input.value.trim();
+  if (!message) return;
+
+  input.value = '';
+  input.style.height = 'auto';
+
+  // Add user message
+  appendMessage('user', message);
+  chatHistory.push({ role: 'user', content: message });
+
+  // Create assistant message placeholder
+  const container = document.getElementById('chatMessages');
+  const assistantDiv = document.createElement('div');
+  assistantDiv.className = 'chat-msg assistant';
+  assistantDiv.innerHTML = '<span class="typing-cursor"></span>';
+  container.appendChild(assistantDiv);
+  container.scrollTop = container.scrollHeight;
+
+  // Disable input
+  chatStreaming = true;
+  document.getElementById('chatSend').disabled = true;
+
+  let fullResponse = '';
+
+  try {
+    const resp = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message, history: chatHistory.slice(-20) }),
+    });
+
+    if (!resp.ok) {
+      const err = await resp.json().catch(() => ({ error: 'Chat unavailable' }));
+      assistantDiv.textContent = err.error || 'Something went wrong';
+      assistantDiv.classList.add('error');
+      chatStreaming = false;
+      document.getElementById('chatSend').disabled = false;
+      return;
+    }
+
+    const data = await resp.json();
+    fullResponse = data.reply || '';
+
+    assistantDiv.textContent = fullResponse || 'No response received.';
+    chatHistory.push({ role: 'assistant', content: fullResponse });
+
+  } catch (err) {
+    assistantDiv.textContent = 'Failed to connect. Check that ANTHROPIC_API_KEY is set in .env and restart the server.';
+    assistantDiv.classList.add('error');
+  }
+
+  chatStreaming = false;
+  document.getElementById('chatSend').disabled = false;
+  container.scrollTop = container.scrollHeight;
+}
 </script>
 </body>
 </html>

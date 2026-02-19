@@ -12,24 +12,44 @@ const QUERIES = [
   'location:"New York" CTO startup in:bio',
 ];
 
+// Roles that disqualify someone as an early-stage founder
+const DISQUALIFY_PATTERNS = [
+  /\b(professor|prof\b|faculty|adjunct|lecturer|postdoc)\b/i,
+  /\b(adviser|advisor|consultant|coach|mentor)\b/i,
+  /\b(student|intern|junior|associate)\b/i,
+  /\b(software engineer|swe|sde|staff engineer|senior engineer)\b/i,
+  /\b(freelance|contractor|hired|looking for)\b/i,
+];
+
+// Well-known established companies — not early-stage startups
+const ESTABLISHED_COMPANIES = new Set([
+  'google', 'meta', 'facebook', 'amazon', 'apple', 'microsoft', 'rivian',
+  'stripe', 'openai', 'anthropic', 'uber', 'lyft', 'airbnb', 'netflix',
+  'lightning ai', 'trail of bits', 'palantir', 'databricks', 'snowflake',
+]);
+
+// A real person name: "First Last" with proper capitalization, 2-4 words
+const REAL_NAME_RE = /^[A-Z][a-z]{1,20} [A-Z][a-z]{1,20}(\s[A-Z][a-z]{1,20}){0,2}$/;
+
 function classifySector(bio) {
   const lower = (bio || '').toLowerCase();
   if (/\b(ai|machine learning|ml|deep learning|llm|gpt|neural|nlp|computer vision)\b/.test(lower)) return 'Vertical AI';
+  if (/\b(fintech|financial|banking|payments|lending)\b/.test(lower)) return 'Fintech';
   if (/\b(cyber|security|infosec|encryption|zero.?trust|soc|threat|pentest)\b/.test(lower)) return 'Cybersecurity';
   if (/\b(health|medical|bio|pharma|clinical|patient|doctor|genomic|hospital)\b/.test(lower)) return 'Healthcare Tech';
-  if (/\b(saas|platform|api|dev.?tool|cloud|infra|b2b)\b/.test(lower)) return 'SaaS';
-  return 'SaaS'; // default
+  if (/\b(climate|cleantech|energy|sustainability|carbon)\b/.test(lower)) return 'Climate Tech';
+  return 'SaaS';
 }
 
 function detectRole(bio) {
   const lower = (bio || '').toLowerCase();
   const isStealth = lower.includes('stealth');
-  if (isStealth) return 'Founder (Stealth)';
   if (lower.includes('co-founder') && lower.includes('ceo')) return 'Co-Founder & CEO';
   if (lower.includes('co-founder') && lower.includes('cto')) return 'Co-Founder & CTO';
   if (lower.includes('co-founder')) return 'Co-Founder';
   if (lower.includes('ceo')) return 'Founder & CEO';
-  if (lower.includes('cto')) return 'Founder & CTO';
+  if (isStealth && (lower.includes('founder') || lower.includes('ceo'))) return 'Founder (Stealth)';
+  if (lower.includes('founder')) return 'Founder';
   return 'Founder';
 }
 
@@ -69,24 +89,44 @@ export async function fetchGitHubFounders(onProgress) {
         try {
           const pr = await fetch(`https://api.github.com/users/${user.login}`, { headers });
           if (pr.ok) profile = await pr.json();
-        } catch { /* skip */ }
+        } catch { continue; }
 
-        const bio = (profile.bio || '').toLowerCase();
-        const isStealth = bio.includes('stealth');
-        const isFounder = bio.includes('founder') || bio.includes('ceo') ||
-                          bio.includes('co-founder') || bio.includes('cto') || isStealth;
+        const bio = profile.bio || '';
+        const bioLower = bio.toLowerCase();
 
+        // ── GATE 1: Must have a REAL name (not username) ──
+        const name = profile.name;
+        if (!name || !REAL_NAME_RE.test(name.trim())) continue;
+
+        // ── GATE 2: Must explicitly be a founder/CEO/co-founder ──
+        // "stealth" alone is NOT enough — many employees say "stealth startup"
+        const isFounder = bioLower.includes('founder') || bioLower.includes('ceo');
         if (!isFounder) continue;
 
-        const companyRaw = profile.company || '';
-        const companyClean = companyRaw.replace(/^@/, '').trim();
+        // ── GATE 3: Disqualify professors, advisers, engineers, etc. ──
+        const disqualified = DISQUALIFY_PATTERNS.some(re => re.test(bio));
+        if (disqualified) continue;
+
+        // ── GATE 4: Must have a real company name ──
+        const companyRaw = (profile.company || '').replace(/^@/, '').trim();
+
+        // Skip if no company at all
+        if (!companyRaw) continue;
+
+        // Skip established companies
+        if (ESTABLISHED_COMPANIES.has(companyRaw.toLowerCase())) continue;
+
+        // Skip companies that are just the same as GitHub username
+        if (companyRaw.toLowerCase() === user.login.toLowerCase()) continue;
+
+        const isStealth = bioLower.includes('stealth');
 
         founders.push({
-          name: profile.name || user.login,
-          role: detectRole(profile.bio),
-          company: companyClean || (isStealth ? 'Stealth Startup' : `${user.login} Labs`),
-          description: profile.bio || `Technical founder with ${profile.public_repos || 0} open-source projects and ${profile.followers || 0} followers`,
-          sector: classifySector(profile.bio),
+          name: name.trim(),
+          role: detectRole(bio),
+          company: companyRaw,
+          description: bio.slice(0, 200),
+          sector: classifySector(bio),
           stage: isStealth ? 'Pre-seed' : 'Seed',
           raised: '',
           location: profile.location || 'New York, NY',
@@ -97,7 +137,7 @@ export async function fetchGitHubFounders(onProgress) {
           source: 'github',
           funded_date: new Date().toISOString().slice(0, 10),
           is_stealth: isStealth,
-          confidence_score: 0.5,
+          confidence_score: 0.55,
         });
       }
     } catch (err) {
