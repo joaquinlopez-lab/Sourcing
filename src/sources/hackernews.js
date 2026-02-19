@@ -3,10 +3,12 @@ import { createLimiter } from '../utils/rate-limiter.js';
 const throttle = createLimiter('hackernews', { maxRequests: 15, windowMs: 60_000 });
 
 const QUERIES = [
-  'Show HN NYC startup funding',
-  'Show HN New York startup launch',
-  'Show HN NYC founder seed',
-  'Show HN AI startup New York raised',
+  'Show HN NYC startup',
+  'Show HN New York startup',
+  'Show HN AI startup NYC',
+  'Show HN fintech New York',
+  'Show HN founder NYC launch',
+  'Show HN YC New York',
 ];
 
 // Only accept posts from the last 12 months
@@ -100,9 +102,8 @@ export async function fetchHNFounders(onProgress) {
         // ── GATE 3: Skip junk titles ──
         if (JUNK_TITLE_PATTERNS.some(re => re.test(title))) continue;
 
-        // ── GATE 4: Must mention NYC/New York somewhere ──
+        // ── GATE 4: NYC mention preferred but not required if query already targets NYC ──
         const fullText = `${title} ${hit.story_text || ''}`;
-        if (!/new york|nyc|\bny\b/i.test(fullText)) continue;
 
         // ── GATE 5: Must extract a real company name ──
         const company = extractCompany(title);

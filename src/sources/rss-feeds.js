@@ -3,8 +3,10 @@ import RssParser from 'rss-parser';
 const parser = new RssParser();
 
 const FEEDS = [
-  { name: 'TechCrunch', url: 'https://techcrunch.com/feed/' },
-  { name: 'VentureBeat', url: 'https://venturebeat.com/feed/' },
+  { name: 'AlleyWatch',     url: 'https://www.alleywatch.com/feed/' },
+  { name: 'TechCrunch NYC', url: 'https://techcrunch.com/tag/new-york/feed/' },
+  { name: 'Crunchbase News',url: 'https://news.crunchbase.com/feed/' },
+  { name: 'BuiltInNYC',     url: 'https://builtin.com/rss.xml' },
 ];
 
 function isNYCRelated(text) {
@@ -23,6 +25,23 @@ function classifySector(text) {
   if (/\b(cyber|security|infosec|encryption|zero.?trust|threat)\b/.test(lower)) return 'Cybersecurity';
   if (/\b(health|medical|bio|pharma|clinical|patient|doctor|genomic)\b/.test(lower)) return 'Healthcare Tech';
   return 'SaaS';
+}
+
+// Extract real founder name from article text
+const FOUNDER_NAME_PATTERNS = [
+  /(?:founder|co-founder|ceo|cto)[,:]?\s+([A-Z][a-z]{1,20} [A-Z][a-z]{1,20})/i,
+  /([A-Z][a-z]{1,20} [A-Z][a-z]{1,20}),?\s+(?:founder|co-founder|ceo|cto)\b/i,
+  /(?:founded by|launched by|started by|created by)\s+([A-Z][a-z]{1,20} [A-Z][a-z]{1,20})/i,
+  /([A-Z][a-z]{1,20} [A-Z][a-z]{1,20})(?:'s| has| is building| raised| launched)/i,
+];
+const REAL_NAME_RE = /^[A-Z][a-z]{1,20} [A-Z][a-z]{1,20}(\s[A-Z][a-z]{1,20}){0,2}$/;
+
+function extractFounderName(text) {
+  for (const re of FOUNDER_NAME_PATTERNS) {
+    const m = text.match(re);
+    if (m && REAL_NAME_RE.test(m[1].trim())) return m[1].trim();
+  }
+  return null;
 }
 
 function extractCompanyFromTitle(title) {
@@ -77,10 +96,14 @@ export async function fetchRSSFounders(onProgress) {
         const company = extractCompanyFromTitle(title);
         if (!company) continue;
 
+        // Must extract a real founder name — skip if we can't
+        const founderName = extractFounderName(content);
+        if (!founderName) continue;
+
         const isStealth = content.toLowerCase().includes('stealth');
 
         founders.push({
-          name: `${company} Team`,
+          name: founderName,
           role: 'Founder',
           company,
           description: item.contentSnippet ? item.contentSnippet.slice(0, 200) : title,
