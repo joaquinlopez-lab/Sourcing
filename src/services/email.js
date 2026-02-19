@@ -1,27 +1,11 @@
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 import Anthropic from '@anthropic-ai/sdk';
 import { getRecentFounders, getTopRaisedFounders, getStealthFounders } from '../db/queries.js';
 
-// ── Lazy transporter — only created when needed ──
-let _transporter = null;
-
-function getTransporter() {
-  if (_transporter) return _transporter;
-
-  const host = process.env.SMTP_HOST;
-  const user = process.env.SMTP_USER;
-  const pass = process.env.SMTP_PASS;
-
-  if (!host || !user || !pass) return null;
-
-  _transporter = nodemailer.createTransport({
-    host,
-    port: parseInt(process.env.SMTP_PORT || '587'),
-    secure: process.env.SMTP_PORT === '465',
-    auth: { user, pass },
-  });
-
-  return _transporter;
+function getResend() {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) return null;
+  return new Resend(apiKey);
 }
 
 // ── Draft outreach email via Claude ──
@@ -96,7 +80,7 @@ function buildDigestHtml(recent, topRaised, stealth) {
 <body style="background:#0a0a0a;color:#e0e0e0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;margin:0;padding:20px">
   <div style="max-width:640px;margin:0 auto">
     <div style="background:linear-gradient(135deg,#F07D32,#E8293A);padding:24px 28px;border-radius:12px 12px 0 0">
-      <h1 style="margin:0;font-size:20px;color:#fff;font-weight:700">🦘 Roo Capital Daily Digest</h1>
+      <h1 style="margin:0;font-size:20px;color:#fff;font-weight:700">🦘 Roo Capital Weekly Digest</h1>
       <p style="margin:4px 0 0;color:rgba(255,255,255,.8);font-size:13px">${today}</p>
     </div>
     <div style="background:#111;padding:24px 28px;border-radius:0 0 12px 12px;border:1px solid #2a2a2a;border-top:none">
@@ -107,8 +91,7 @@ function buildDigestHtml(recent, topRaised, stealth) {
         ? '<p style="color:#666;text-align:center;padding:20px">No new founders to report today.</p>'
         : ''}
       <p style="margin-top:28px;font-size:11px;color:#444;text-align:center">
-        Roo Capital Sourcing &nbsp;|&nbsp;
-        <a href="http://localhost:${process.env.PORT || 3000}" style="color:#F07D32">Open App</a>
+        Roo Capital Sourcing &nbsp;|&nbsp; Daily Digest
       </p>
     </div>
   </div>
@@ -124,41 +107,43 @@ export async function sendDigest() {
     return;
   }
 
-  const transport = getTransporter();
-  if (!transport) {
-    console.log('[Email] SMTP not configured — skipping digest');
+  const resend = getResend();
+  if (!resend) {
+    console.log('[Email] RESEND_API_KEY not set — skipping digest');
     return;
   }
 
   const recent = getRecentFounders(7, 5);
   const topRaised = getTopRaisedFounders(3);
   const stealth = getStealthFounders(3);
-
   const html = buildDigestHtml(recent, topRaised, stealth);
-  const totalFounders = recent.length + topRaised.length + stealth.length;
+
+  const from = process.env.DIGEST_EMAIL_FROM || 'onboarding@resend.dev';
+  const subject = `Roo Capital Weekly Digest — ${new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
 
   try {
-    await transport.sendMail({
-      from: `"Roo Capital Sourcing" <${process.env.SMTP_USER}>`,
-      to,
-      subject: `Roo Capital Daily Digest — ${new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`,
-      html,
-    });
-    console.log(`[Email] Digest sent to ${to} (${totalFounders} founders featured)`);
+    const result = await resend.emails.send({ from, to, subject, html });
+    console.log(`[Email] Digest sent to ${to} — id: ${result.data?.id}`);
+    return result;
   } catch (err) {
     console.error('[Email] Failed to send digest:', err.message);
+    throw err;
   }
 }
 
 // ── Send an outreach email ──
-export async function sendOutreach({ to, subject, body, from }) {
-  const transport = getTransporter();
-  if (!transport) throw new Error('SMTP not configured. Add SMTP_HOST, SMTP_USER, SMTP_PASS to .env');
+export async function sendOutreach({ to, subject, body }) {
+  const resend = getResend();
+  if (!resend) throw new Error('RESEND_API_KEY not set in .env');
 
-  await transport.sendMail({
-    from: from || `"Joaquin | Roo Capital" <${process.env.SMTP_USER}>`,
+  const from = process.env.DIGEST_EMAIL_FROM || 'onboarding@resend.dev';
+
+  const result = await resend.emails.send({
+    from,
     to,
     subject,
     text: body,
   });
+
+  return result;
 }

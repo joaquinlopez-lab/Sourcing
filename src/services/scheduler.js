@@ -19,9 +19,9 @@ export function startScheduler() {
     }
   }, { timezone: 'America/New_York' });
 
-  // Run daily at 8:00 AM ET — email digest
-  digestTask = cron.schedule('0 8 * * *', async () => {
-    console.log('[Scheduler] Sending daily digest…');
+  // Run every Monday at 8:00 AM ET — email digest
+  digestTask = cron.schedule('0 8 * * 1', async () => {
+    console.log('[Scheduler] Sending weekly digest…');
     try {
       await sendDigest();
     } catch (err) {
@@ -29,7 +29,7 @@ export function startScheduler() {
     }
   }, { timezone: 'America/New_York' });
 
-  console.log('[Scheduler] Daily refresh @ 6AM ET, digest @ 8AM ET');
+  console.log('[Scheduler] Daily refresh @ 6AM ET, weekly digest @ Mon 8AM ET');
 }
 
 export function stopScheduler() {
