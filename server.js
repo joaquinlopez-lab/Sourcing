@@ -1,6 +1,7 @@
-import express from 'express';
+import './src/env.js'; // MUST be first — loads .env and overrides empty system vars
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import express from 'express';
 
 import app from './src/app.js';
 import { startScheduler } from './src/services/scheduler.js';
@@ -21,6 +22,6 @@ app.get('*', (req, res) => {
 
 // ── Start server ──
 app.listen(PORT, () => {
-  console.log(`Roo Capital Sourcing running at http://localhost:${PORT}`);
+  console.log(`GovWell Prospect Sourcing running at http://localhost:${PORT}`);
   startScheduler();
 });

@@ -1,45 +1,38 @@
 import db from './connection.js';
 
-// ── Parse raised string to numeric amount ──
-function parseRaisedAmount(str) {
-  if (!str) return 0;
-  const clean = str.replace(/[$,]/g, '');
-  if (clean.endsWith('M')) return parseFloat(clean) * 1_000_000;
-  if (clean.endsWith('K')) return parseFloat(clean) * 1_000;
-  return parseFloat(clean) || 0;
+// ── Officials ──
+
+export function getOfficialCount() {
+  return db.prepare('SELECT COUNT(*) as count FROM officials').get().count;
 }
 
-// ── Founders ──
-
-export function getFounderCount() {
-  return db.prepare('SELECT COUNT(*) as count FROM founders').get().count;
+export function getOfficialById(id) {
+  return db.prepare('SELECT * FROM officials WHERE id = :id').get({ id });
 }
 
-export function getFounderById(id) {
-  return db.prepare('SELECT * FROM founders WHERE id = :id').get({ id });
-}
-
-export function patchFounder(id, { notes, deal_stage }) {
+export function patchOfficial(id, { notes, deal_stage }) {
   const fields = [];
   const params = { id };
   if (notes !== undefined) { fields.push('notes = :notes'); params.notes = notes; }
   if (deal_stage !== undefined) { fields.push('deal_stage = :deal_stage'); params.deal_stage = deal_stage; }
   if (fields.length === 0) return false;
   fields.push("updated_at = datetime('now')");
-  db.prepare(`UPDATE founders SET ${fields.join(', ')} WHERE id = :id`).run(params);
+  db.prepare(`UPDATE officials SET ${fields.join(', ')} WHERE id = :id`).run(params);
   return true;
 }
 
-// Returns pairs of founders that look like duplicates (fuzzy name + same sector)
+// Returns pairs of officials that look like duplicates (fuzzy name match)
 export function getDuplicateCandidates() {
-  const founders = db.prepare('SELECT id, name, role, company, sector, stage, raised, source, funded_date, description, linkedin_url FROM founders ORDER BY name').all();
+  const officials = db.prepare(
+    'SELECT id, name, title, department, municipality, state, department_type, government_level, source, description, linkedin_url FROM officials ORDER BY name'
+  ).all();
   const candidates = [];
-  for (let i = 0; i < founders.length; i++) {
-    for (let j = i + 1; j < founders.length; j++) {
-      const a = founders[i], b = founders[j];
+  for (let i = 0; i < officials.length; i++) {
+    for (let j = i + 1; j < officials.length; j++) {
+      const a = officials[i], b = officials[j];
       if (nameSimilarity(a.name, b.name) > 0.75) {
         candidates.push({ a, b, score: nameSimilarity(a.name, b.name) });
-        if (candidates.length >= 50) return candidates; // cap at 50 pairs
+        if (candidates.length >= 50) return candidates;
       }
     }
   }
@@ -57,75 +50,70 @@ function nameSimilarity(a, b) {
   return inter / (ba.size + bb.size - inter);
 }
 
-export function mergeFounders(keepId, deleteId) {
-  // Copy non-null fields from deleteId to keepId where keepId has nulls
+export function mergeOfficials(keepId, deleteId) {
   db.prepare(`
-    UPDATE founders SET
-      description = COALESCE(description, (SELECT description FROM founders WHERE id = :del)),
-      linkedin_url = COALESCE(linkedin_url, (SELECT linkedin_url FROM founders WHERE id = :del)),
-      website      = COALESCE(website,      (SELECT website      FROM founders WHERE id = :del)),
-      github_url   = COALESCE(github_url,   (SELECT github_url   FROM founders WHERE id = :del)),
-      avatar_url   = COALESCE(avatar_url,   (SELECT avatar_url   FROM founders WHERE id = :del)),
+    UPDATE officials SET
+      description  = COALESCE(NULLIF(description, ''), (SELECT description FROM officials WHERE id = :del)),
+      linkedin_url = COALESCE(linkedin_url, (SELECT linkedin_url FROM officials WHERE id = :del)),
+      website      = COALESCE(website,      (SELECT website      FROM officials WHERE id = :del)),
+      email        = COALESCE(email,        (SELECT email        FROM officials WHERE id = :del)),
+      phone        = COALESCE(phone,        (SELECT phone        FROM officials WHERE id = :del)),
       notes        = CASE WHEN notes = '' OR notes IS NULL
-                     THEN (SELECT notes FROM founders WHERE id = :del)
+                     THEN (SELECT notes FROM officials WHERE id = :del)
                      ELSE notes END,
-      raised_amount = CASE WHEN raised_amount < (SELECT raised_amount FROM founders WHERE id = :del)
-                      THEN (SELECT raised_amount FROM founders WHERE id = :del)
-                      ELSE raised_amount END,
+      population   = CASE WHEN population < (SELECT population FROM officials WHERE id = :del)
+                     THEN (SELECT population FROM officials WHERE id = :del)
+                     ELSE population END,
       updated_at = datetime('now')
     WHERE id = :keep
   `).run({ keep: keepId, del: deleteId });
-  // Move watchlist if needed
-  db.prepare(`INSERT OR IGNORE INTO watchlist (founder_id) SELECT :keep WHERE EXISTS (SELECT 1 FROM watchlist WHERE founder_id = :del)`).run({ keep: keepId, del: deleteId });
-  db.prepare(`DELETE FROM watchlist WHERE founder_id = :del`).run({ del: deleteId });
-  db.prepare(`DELETE FROM founders WHERE id = :del`).run({ del: deleteId });
+  db.prepare(`INSERT OR IGNORE INTO watchlist (official_id) SELECT :keep WHERE EXISTS (SELECT 1 FROM watchlist WHERE official_id = :del)`).run({ keep: keepId, del: deleteId });
+  db.prepare(`DELETE FROM watchlist WHERE official_id = :del`).run({ del: deleteId });
+  db.prepare(`DELETE FROM officials WHERE id = :del`).run({ del: deleteId });
   return true;
 }
 
-// For daily digest
-export function getRecentFounders(days = 7, limit = 5) {
+// For digest emails
+export function getRecentOfficials(days = 7, limit = 10) {
   return db.prepare(`
-    SELECT * FROM founders
+    SELECT * FROM officials
     WHERE created_at >= datetime('now', '-' || :days || ' days')
     ORDER BY created_at DESC LIMIT :limit
   `).all({ days, limit });
 }
 
-export function getTopRaisedFounders(limit = 3) {
+export function getHighPopulationOfficials(limit = 5) {
   return db.prepare(`
-    SELECT * FROM founders WHERE raised_amount > 0
-    ORDER BY raised_amount DESC LIMIT :limit
+    SELECT * FROM officials WHERE population > 0
+    ORDER BY population DESC LIMIT :limit
   `).all({ limit });
 }
 
-export function getStealthFounders(limit = 3) {
-  return db.prepare(`
-    SELECT * FROM founders WHERE is_stealth = 1
-    ORDER BY created_at DESC LIMIT :limit
-  `).all({ limit });
-}
-
-export function searchFounders({ search, sector, stage, source, sort, limit = 100, offset = 0, watchlistOnly = false }) {
+export function searchOfficials({ search, department_type, government_level, state, source, sort, limit = 100, offset = 0, watchlistOnly = false }) {
   const conditions = [];
   const params = {};
 
   if (search) {
     conditions.push(`(
       LOWER(name) LIKE '%' || LOWER(:search) || '%' OR
-      LOWER(company) LIKE '%' || LOWER(:search) || '%' OR
-      LOWER(description) LIKE '%' || LOWER(:search) || '%' OR
-      LOWER(sector) LIKE '%' || LOWER(:search) || '%' OR
-      LOWER(role) LIKE '%' || LOWER(:search) || '%'
+      LOWER(municipality) LIKE '%' || LOWER(:search) || '%' OR
+      LOWER(department) LIKE '%' || LOWER(:search) || '%' OR
+      LOWER(title) LIKE '%' || LOWER(:search) || '%' OR
+      LOWER(description) LIKE '%' || LOWER(:search) || '%'
     )`);
     params.search = search;
   }
-  if (sector && sector !== 'all') {
-    conditions.push('sector = :sector');
-    params.sector = sector;
+  if (department_type && department_type !== 'all') {
+    conditions.push('department_type = :department_type');
+    params.department_type = department_type;
   }
-  if (stage && stage !== 'all') {
-    conditions.push('stage = :stage');
-    params.stage = stage;
+  if (government_level && government_level !== 'all') {
+    conditions.push('government_level = :government_level');
+    params.government_level = government_level;
+  }
+  if (state && state !== 'all') {
+    conditions.push('state = :state');
+    params.state = state;
   }
   if (source && source !== 'all') {
     conditions.push('source = :source');
@@ -134,27 +122,26 @@ export function searchFounders({ search, sector, stage, source, sort, limit = 10
 
   const where = conditions.length > 0 ? 'WHERE ' + conditions.join(' AND ') : '';
 
-  // Single watchlist join: INNER when filtering by watchlist, LEFT otherwise
   const joinClause = watchlistOnly
-    ? 'INNER JOIN watchlist w ON w.founder_id = founders.id'
-    : 'LEFT JOIN watchlist w ON w.founder_id = founders.id';
+    ? 'INNER JOIN watchlist w ON w.official_id = officials.id'
+    : 'LEFT JOIN watchlist w ON w.official_id = officials.id';
 
   let orderBy;
   switch (sort) {
-    case 'amount':  orderBy = 'raised_amount DESC'; break;
-    case 'name':    orderBy = 'name ASC'; break;
-    case 'updated': orderBy = 'updated_at DESC'; break;
+    case 'population': orderBy = 'population DESC'; break;
+    case 'name':       orderBy = 'name ASC'; break;
+    case 'updated':    orderBy = 'updated_at DESC'; break;
     case 'recent':
-    default:        orderBy = 'funded_date DESC'; break;
+    default:           orderBy = 'discovered_date DESC, created_at DESC'; break;
   }
 
-  const countSql = `SELECT COUNT(*) as total FROM founders ${joinClause} ${where}`;
+  const countSql = `SELECT COUNT(*) as total FROM officials ${joinClause} ${where}`;
   const { total } = db.prepare(countSql).get(params);
 
   const sql = `
-    SELECT founders.*,
-           CASE WHEN w.founder_id IS NOT NULL THEN 1 ELSE 0 END as is_watchlisted
-    FROM founders
+    SELECT officials.*,
+           CASE WHEN w.official_id IS NOT NULL THEN 1 ELSE 0 END as is_watchlisted
+    FROM officials
     ${joinClause}
     ${where}
     ORDER BY ${orderBy}
@@ -164,121 +151,124 @@ export function searchFounders({ search, sector, stage, source, sort, limit = 10
   params.offset = offset;
 
   const rows = db.prepare(sql).all(params);
-  return { total, founders: rows };
+  return { total, officials: rows };
 }
 
-export function upsertFounder(founder) {
-  const raisedAmount = parseRaisedAmount(founder.raised);
-
-  // Check for existing by name + company (dedup key)
+export function upsertOfficial(official) {
+  // Check for existing by name + municipality + department_type (dedup key)
   const existing = db.prepare(
-    'SELECT id, confidence_score, source FROM founders WHERE name = :name AND company = :company'
-  ).get({ name: founder.name, company: founder.company });
+    'SELECT id, confidence_score, source FROM officials WHERE name = :name AND municipality = :municipality AND department_type = :department_type'
+  ).get({ name: official.name, municipality: official.municipality || '', department_type: official.department_type || '' });
 
   if (existing) {
-    // Update confidence if seen from another source
     let newConfidence = existing.confidence_score;
-    if (founder.source !== existing.source) {
+    if (official.source !== existing.source) {
       newConfidence = Math.min(0.95, existing.confidence_score + 0.2);
     }
     db.prepare(`
-      UPDATE founders SET
-        role = COALESCE(:role, role),
-        description = COALESCE(:description, description),
-        sector = COALESCE(:sector, sector),
-        stage = COALESCE(:stage, stage),
-        raised = COALESCE(:raised, raised),
-        raised_amount = CASE WHEN :raised_amount > raised_amount THEN :raised_amount ELSE raised_amount END,
+      UPDATE officials SET
+        title = COALESCE(NULLIF(:title, ''), title),
+        department = COALESCE(NULLIF(:department, ''), department),
+        county = COALESCE(NULLIF(:county, ''), county),
+        government_level = COALESCE(NULLIF(:government_level, ''), government_level),
+        position_type = COALESCE(NULLIF(:position_type, ''), position_type),
+        population = CASE WHEN :population > population THEN :population ELSE population END,
+        description = COALESCE(NULLIF(:description, ''), description),
+        email = COALESCE(:email, email),
+        phone = COALESCE(:phone, phone),
         linkedin_url = COALESCE(:linkedin_url, linkedin_url),
         website = COALESCE(:website, website),
-        github_url = COALESCE(:github_url, github_url),
-        avatar_url = COALESCE(:avatar_url, avatar_url),
-        funded_date = COALESCE(:funded_date, funded_date),
-        is_stealth = :is_stealth,
+        source_url = COALESCE(:source_url, source_url),
         confidence_score = :confidence_score,
         updated_at = datetime('now')
       WHERE id = :id
     `).run({
       id: existing.id,
-      role: founder.role || null,
-      description: founder.description || null,
-      sector: founder.sector || null,
-      stage: founder.stage || null,
-      raised: founder.raised || null,
-      raised_amount: raisedAmount,
-      linkedin_url: founder.linkedin_url || null,
-      website: founder.website || null,
-      github_url: founder.github_url || null,
-      avatar_url: founder.avatar_url || null,
-      funded_date: founder.funded_date || null,
-      is_stealth: founder.is_stealth ? 1 : 0,
+      title: official.title || '',
+      department: official.department || '',
+      county: official.county || '',
+      government_level: official.government_level || '',
+      position_type: official.position_type || '',
+      population: official.population || 0,
+      description: official.description || '',
+      email: official.email || null,
+      phone: official.phone || null,
+      linkedin_url: official.linkedin_url || null,
+      website: official.website || null,
+      source_url: official.source_url || null,
       confidence_score: newConfidence,
     });
     return { action: 'updated', id: existing.id };
   }
 
   const result = db.prepare(`
-    INSERT INTO founders (name, role, company, description, sector, stage, raised, raised_amount,
-      location, linkedin_url, website, github_url, avatar_url, source, funded_date, is_stealth, confidence_score)
-    VALUES (:name, :role, :company, :description, :sector, :stage, :raised, :raised_amount,
-      :location, :linkedin_url, :website, :github_url, :avatar_url, :source, :funded_date, :is_stealth, :confidence_score)
+    INSERT INTO officials (name, title, department, municipality, state, county,
+      government_level, department_type, position_type, population, description,
+      email, phone, linkedin_url, website, source, source_url, confidence_score, discovered_date)
+    VALUES (:name, :title, :department, :municipality, :state, :county,
+      :government_level, :department_type, :position_type, :population, :description,
+      :email, :phone, :linkedin_url, :website, :source, :source_url, :confidence_score, :discovered_date)
   `).run({
-    name: founder.name,
-    role: founder.role || 'Founder',
-    company: founder.company || '',
-    description: founder.description || '',
-    sector: founder.sector || '',
-    stage: founder.stage || '',
-    raised: founder.raised || '',
-    raised_amount: raisedAmount,
-    location: founder.location || 'New York, NY',
-    linkedin_url: founder.linkedin_url || null,
-    website: founder.website || null,
-    github_url: founder.github_url || null,
-    avatar_url: founder.avatar_url || null,
-    source: founder.source || 'unknown',
-    funded_date: founder.funded_date || null,
-    is_stealth: founder.is_stealth ? 1 : 0,
-    confidence_score: founder.confidence_score || 0.5,
+    name: official.name,
+    title: official.title || '',
+    department: official.department || '',
+    municipality: official.municipality || '',
+    state: official.state || '',
+    county: official.county || '',
+    government_level: official.government_level || 'City',
+    department_type: official.department_type || '',
+    position_type: official.position_type || '',
+    population: official.population || 0,
+    description: official.description || '',
+    email: official.email || null,
+    phone: official.phone || null,
+    linkedin_url: official.linkedin_url || null,
+    website: official.website || null,
+    source: official.source || 'exa',
+    source_url: official.source_url || null,
+    confidence_score: official.confidence_score || 0.5,
+    discovered_date: official.discovered_date || new Date().toISOString().slice(0, 10),
   });
   return { action: 'inserted', id: result.lastInsertRowid };
 }
 
 export function getStats() {
-  const bySector = db.prepare(
-    'SELECT sector, COUNT(*) as count FROM founders GROUP BY sector ORDER BY count DESC'
+  const byDepartment = db.prepare(
+    "SELECT department_type, COUNT(*) as count FROM officials WHERE department_type != '' GROUP BY department_type ORDER BY count DESC"
   ).all();
-  const byStage = db.prepare(
-    'SELECT stage, COUNT(*) as count FROM founders GROUP BY stage ORDER BY count DESC'
+  const byLevel = db.prepare(
+    'SELECT government_level, COUNT(*) as count FROM officials GROUP BY government_level ORDER BY count DESC'
+  ).all();
+  const byState = db.prepare(
+    "SELECT state, COUNT(*) as count FROM officials WHERE state != '' GROUP BY state ORDER BY count DESC LIMIT 20"
   ).all();
   const bySource = db.prepare(
-    'SELECT source, COUNT(*) as count FROM founders GROUP BY source ORDER BY count DESC'
+    'SELECT source, COUNT(*) as count FROM officials GROUP BY source ORDER BY count DESC'
   ).all();
-  const total = getFounderCount();
-  const stealthCount = db.prepare('SELECT COUNT(*) as count FROM founders WHERE is_stealth = 1').get().count;
+  const total = getOfficialCount();
   const watchlistCount = db.prepare('SELECT COUNT(*) as count FROM watchlist').get().count;
 
-  return { total, stealthCount, watchlistCount, bySector, byStage, bySource };
+  return { total, watchlistCount, byDepartment, byLevel, byState, bySource };
 }
 
 // ── Watchlist ──
 
-export function addToWatchlist(founderId) {
+export function addToWatchlist(officialId) {
   try {
-    db.prepare('INSERT OR IGNORE INTO watchlist (founder_id) VALUES (:id)').run({ id: founderId });
+    db.prepare('INSERT OR IGNORE INTO watchlist (official_id) VALUES (:id)').run({ id: officialId });
     return true;
   } catch {
     return false;
   }
 }
 
-export function removeFromWatchlist(founderId) {
-  db.prepare('DELETE FROM watchlist WHERE founder_id = :id').run({ id: founderId });
+export function removeFromWatchlist(officialId) {
+  db.prepare('DELETE FROM watchlist WHERE official_id = :id').run({ id: officialId });
   return true;
 }
 
 export function getWatchlistIds() {
-  return db.prepare('SELECT founder_id FROM watchlist').all().map(r => r.founder_id);
+  return db.prepare('SELECT official_id FROM watchlist').all().map(r => r.official_id);
 }
 
 export function getWatchlistCount() {

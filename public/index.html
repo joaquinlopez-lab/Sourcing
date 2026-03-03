@@ -3,42 +3,36 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Roo Capital — Founder Sourcing</title>
+<title>GovWell Prospect Sourcing</title>
 <style>
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
   :root{
-    --bg:#0A0A0A;--navy:#2D4063;--card:#1A2535;
-    --orange:#F07820;--pink:#E8294A;--purple:#8B35C8;
-    --text:#E8EAF0;--text-muted:#8892A4;--card-border:#2A3A52;
-    --gradient:linear-gradient(135deg,#F07820,#E8294A,#8B35C8);
-    --gradient-h:linear-gradient(135deg,#F8923F,#F04466,#A050E0);
+    --bg:#0B1A2E;--navy:#2D4063;--card:#132240;
+    --accent:#3B82F6;
+    --text:#E8EAF0;--text-muted:#8892A4;--card-border:#1E3358;
   }
   html{font-size:15px;scroll-behavior:smooth}
   body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,-apple-system,sans-serif;min-height:100vh;overflow-x:hidden}
-
   ::-webkit-scrollbar{width:6px}
   ::-webkit-scrollbar-track{background:var(--bg)}
   ::-webkit-scrollbar-thumb{background:var(--navy);border-radius:3px}
 
-  /* ── Header ── */
-  .header{position:sticky;top:0;z-index:100;background:rgba(10,10,10,.88);backdrop-filter:blur(20px);border-bottom:1px solid var(--card-border);padding:0 2rem}
+  .header{position:sticky;top:0;z-index:100;background:rgba(11,26,46,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--card-border);padding:0 2rem}
   .header-inner{max-width:1440px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:64px}
   .logo-area{display:flex;align-items:center;gap:14px}
-  .logo-mark{width:38px;height:38px;border-radius:10px;background:var(--gradient);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;color:#fff;letter-spacing:-1px}
+  .logo-mark{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#1E40AF,#3B82F6);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;color:#fff;letter-spacing:-.5px}
   .logo-text{font-size:1.25rem;font-weight:700;color:#fff;letter-spacing:-.02em}
-  .logo-text span{background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
   .header-meta{display:flex;align-items:center;gap:1.5rem}
   .live-dot{width:8px;height:8px;border-radius:50%;background:#34D399;box-shadow:0 0 8px #34D399;animation:pulse-dot 2s infinite}
   @keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:.4}}
   .header-stat{font-size:.8rem;color:var(--text-muted)}
   .header-stat strong{color:var(--text);font-weight:600}
 
-  /* ── Controls ── */
   .controls{max-width:1440px;margin:0 auto;padding:1.5rem 2rem}
   .controls-top{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:1rem}
   .search-box{flex:1;min-width:260px;position:relative}
   .search-box input{width:100%;padding:10px 16px 10px 42px;background:var(--card);border:1px solid var(--card-border);border-radius:10px;color:var(--text);font-size:.9rem;outline:none;transition:border .2s}
-  .search-box input:focus{border-color:var(--orange)}
+  .search-box input:focus{border-color:rgba(59,130,246,.5)}
   .search-box input::placeholder{color:var(--text-muted)}
   .search-box svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--text-muted);width:16px;height:16px}
   .search-clear{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:1.1rem;display:none;padding:2px 6px;border-radius:4px}
@@ -46,144 +40,93 @@
   .search-box input:not(:placeholder-shown) ~ .search-clear{display:block}
 
   .btn{padding:10px 20px;border-radius:10px;border:none;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:8px}
-  .btn-gradient{background:var(--gradient);color:#fff;box-shadow:0 4px 20px rgba(232,41,74,.25)}
-  .btn-gradient:hover{background:var(--gradient-h);box-shadow:0 4px 28px rgba(232,41,74,.35);transform:translateY(-1px)}
+  .btn-gradient{background:linear-gradient(135deg,#1E40AF,#3B82F6);color:#fff;box-shadow:0 4px 16px rgba(0,0,0,.2)}
+  .btn-gradient:hover{box-shadow:0 4px 24px rgba(59,130,246,.3);transform:translateY(-1px)}
   .btn-outline{background:transparent;color:var(--text-muted);border:1px solid var(--card-border)}
   .btn-outline:hover{border-color:var(--text);color:var(--text)}
-  .btn-outline.active{border-color:var(--orange);color:var(--orange);background:rgba(240,120,32,.08)}
+  .btn-outline.active{border-color:var(--accent);color:#fff;background:rgba(59,130,246,.12)}
   .btn-sm{padding:6px 14px;font-size:.78rem;border-radius:8px}
   .btn svg{width:15px;height:15px}
 
   .filter-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
   .filter-label{font-size:.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-right:4px;font-weight:600}
   .divider{width:1px;height:24px;background:var(--card-border);margin:0 8px}
-
   .sort-select{background:var(--card);border:1px solid var(--card-border);color:var(--text);padding:6px 12px;border-radius:8px;font-size:.8rem;outline:none;cursor:pointer}
-  .sort-select:focus{border-color:var(--orange)}
-
   .results-meta{display:flex;justify-content:space-between;align-items:center;padding:0 2rem .5rem;max-width:1440px;margin:0 auto}
   .results-count{font-size:.82rem;color:var(--text-muted)}
   .results-count strong{color:var(--text)}
   .watchlist-toggle{font-size:.82rem;color:var(--text-muted);cursor:pointer;display:flex;align-items:center;gap:6px}
-  .watchlist-toggle:hover{color:var(--orange)}
+  .watchlist-toggle:hover{color:#fff}
   .watchlist-toggle svg{width:14px;height:14px}
 
-  /* ── Thesis Panel ── */
-  .thesis-toggle{position:fixed;left:0;top:50%;transform:translateY(-50%);z-index:200;background:var(--gradient);border:none;border-radius:0 10px 10px 0;padding:14px 8px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;color:#fff;font-size:.6rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;box-shadow:2px 0 16px rgba(240,125,50,.25);transition:all .2s}
-  .thesis-toggle:hover{padding-right:12px}
-  .thesis-toggle svg{width:16px;height:16px}
-  .thesis-panel{position:fixed;left:-380px;top:0;height:100vh;width:360px;background:#0f0f0f;border-right:1px solid var(--card-border);z-index:199;overflow-y:auto;transition:left .3s cubic-bezier(.4,0,.2,1);padding:24px 22px;box-shadow:4px 0 32px rgba(0,0,0,.5)}
-  .thesis-panel.open{left:0}
-  .thesis-panel::-webkit-scrollbar{width:4px}
-  .thesis-panel::-webkit-scrollbar-thumb{background:var(--card-border);border-radius:2px}
-  .thesis-close{position:absolute;top:16px;right:16px;background:none;border:none;color:var(--text-muted);cursor:pointer;padding:4px}
-  .thesis-close:hover{color:var(--text)}
-  .thesis-close svg{width:18px;height:18px}
-  .thesis-logo{display:flex;align-items:center;gap:10px;margin-bottom:20px}
-  .thesis-logo-mark{width:36px;height:36px;background:var(--gradient);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
-  .thesis-title{font-size:15px;font-weight:700}
-  .thesis-sub{font-size:11px;color:var(--text-muted);margin-top:1px}
-  .thesis-section{margin-bottom:20px}
-  .thesis-section-label{font-size:10px;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px;display:flex;align-items:center;gap:6px}
-  .thesis-section-label::after{content:'';flex:1;height:1px;background:rgba(240,125,50,.2);display:block}
-  .thesis-body{font-size:.82rem;color:var(--text-muted);line-height:1.65}
-  .thesis-body strong{color:var(--text)}
-  .thesis-pill-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
-  .thesis-pill{font-size:.7rem;padding:3px 10px;border-radius:20px;border:1px solid var(--card-border);color:var(--text-muted);background:rgba(255,255,255,.03)}
-  .thesis-pill.hot{border-color:rgba(240,125,50,.3);color:var(--orange);background:rgba(240,125,50,.07)}
-  .thesis-stat{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:.8rem}
-  .thesis-stat:last-child{border-bottom:none}
-  .thesis-stat-label{color:var(--text-muted)}
-  .thesis-stat-value{color:var(--text);font-weight:600}
-  .thesis-stat-value.orange{color:var(--orange)}
-  .thesis-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:198;opacity:0;pointer-events:none;transition:opacity .3s}
-  .thesis-backdrop.open{opacity:1;pointer-events:all}
+  .header-tabs{display:flex;gap:4px;background:rgba(255,255,255,.06);border-radius:10px;padding:3px;border:1px solid var(--card-border)}
+  .header-tab{background:none;border:none;color:var(--text-muted);font-size:.82rem;font-weight:600;padding:6px 16px;border-radius:8px;cursor:pointer;transition:all .15s;white-space:nowrap}
+  .header-tab:hover{color:var(--text)}
+  .header-tab.active{background:rgba(59,130,246,.2);color:#fff}
 
-  /* ── Card Grid ── */
+  .view-toggle{display:flex;background:var(--card);border:1px solid var(--card-border);border-radius:10px;overflow:hidden;flex-shrink:0}
+  .view-btn{background:none;border:none;color:var(--text-muted);cursor:pointer;padding:9px 13px;display:flex;align-items:center;justify-content:center;transition:all .15s;position:relative}
+  .view-btn:hover{color:var(--text)}
+  .view-btn.active{background:rgba(59,130,246,.15);color:#fff}
+  .view-btn svg{width:16px;height:16px}
+  .view-btn + .view-btn::before{content:'';position:absolute;left:0;top:25%;height:50%;width:1px;background:var(--card-border)}
+
+  /* Cards */
   .grid{max-width:1440px;margin:0 auto;padding:0 2rem 3rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(400px,1fr));gap:20px}
-
-  .card{background:var(--card);border:1px solid var(--card-border);border-radius:16px;padding:1.5rem;position:relative;transition:all .3s ease;overflow:hidden}
-  .card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gradient);opacity:0;transition:opacity .3s}
-  .card:hover{transform:translateY(-3px);border-color:#3A4A62;box-shadow:0 8px 40px rgba(240,120,32,.06),0 4px 20px rgba(232,41,74,.04),0 2px 10px rgba(139,53,200,.04)}
+  .card{background:var(--card);border:1px solid var(--card-border);border-radius:16px;padding:1.5rem;position:relative;transition:all .3s ease;overflow:hidden;cursor:pointer}
+  .card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--accent);opacity:0;transition:opacity .3s}
+  .card:hover{transform:translateY(-3px);border-color:#2A4A70;box-shadow:0 8px 40px rgba(0,0,0,.2)}
   .card:hover::before{opacity:1}
-  .card.stealth-card{border-color:rgba(139,53,200,.3)}
-  .card.stealth-card:hover{border-color:rgba(139,53,200,.5);box-shadow:0 8px 40px rgba(139,53,200,.1),0 4px 20px rgba(232,41,74,.04)}
-
   .card-top{display:flex;gap:14px;margin-bottom:12px}
-  .avatar{width:52px;height:52px;border-radius:12px;object-fit:cover;background:var(--navy);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.1rem;color:var(--text-muted);flex-shrink:0;overflow:hidden;border:2px solid var(--card-border)}
-  .avatar img{width:100%;height:100%;object-fit:cover}
+  .avatar{width:52px;height:52px;border-radius:12px;background:var(--navy);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.1rem;color:var(--text-muted);flex-shrink:0;border:2px solid var(--card-border)}
   .card-identity{flex:1;min-width:0}
-  .founder-name{font-size:1.05rem;font-weight:700;color:#fff;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .founder-role{font-size:.72rem;color:var(--text-muted);margin-top:1px;text-transform:uppercase;letter-spacing:.04em}
-  .company-name{font-size:.88rem;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
+  .official-name{font-size:1.05rem;font-weight:700;color:#fff;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:6px}
+  .official-title-line{font-size:.75rem;color:var(--text-muted);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .official-municipality{font-size:.88rem;color:var(--accent);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px;font-weight:600}
   .card-save{position:absolute;top:1.25rem;right:1.25rem;background:none;border:none;cursor:pointer;color:var(--text-muted);transition:all .2s;padding:4px}
-  .card-save:hover{color:var(--orange);transform:scale(1.15)}
-  .card-save.saved{color:var(--orange)}
+  .card-save:hover{color:#fff;transform:scale(1.15)}
+  .card-save.saved{color:#fff}
   .card-save svg{width:20px;height:20px}
-
-  .company-desc{font-size:.82rem;color:var(--text-muted);line-height:1.55;margin-bottom:14px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-  .highlight{background:rgba(240,120,32,.2);color:var(--orange);border-radius:2px;padding:0 2px}
+  .card-desc{font-size:.82rem;color:var(--text-muted);line-height:1.55;margin-bottom:14px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .highlight{background:rgba(59,130,246,.2);color:#fff;border-radius:2px;padding:0 2px}
 
   .tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
   .tag{padding:4px 10px;border-radius:6px;font-size:.72rem;font-weight:600;letter-spacing:.02em;text-transform:uppercase}
-  .tag-ai{background:rgba(139,53,200,.15);color:#B87FE8;border:1px solid rgba(139,53,200,.25)}
-  .tag-saas{background:rgba(240,120,32,.12);color:#F8A055;border:1px solid rgba(240,120,32,.2)}
-  .tag-health{background:rgba(52,211,153,.12);color:#34D399;border:1px solid rgba(52,211,153,.2)}
-  .tag-cyber{background:rgba(232,41,74,.12);color:#F06888;border:1px solid rgba(232,41,74,.2)}
-  .tag-fintech{background:rgba(59,130,246,.12);color:#60A5FA;border:1px solid rgba(59,130,246,.2)}
-  .tag-stage{background:rgba(45,64,99,.3);color:var(--text-muted);border:1px solid var(--card-border)}
-  .tag-stealth{background:rgba(139,53,200,.12);color:#B87FE8;border:1px solid rgba(139,53,200,.2);font-style:italic}
-  .tag-unverified{background:rgba(255,200,50,.1);color:#E8C840;border:1px solid rgba(255,200,50,.2);font-style:italic}
-  .tag-new{background:rgba(52,211,153,.12);color:#34D399;border:1px solid rgba(52,211,153,.25);font-weight:700;letter-spacing:.04em}
-  .tag-climate{background:rgba(52,211,153,.1);color:#6EE7B7;border:1px solid rgba(52,211,153,.2)}
-  .tag-edtech{background:rgba(251,191,36,.1);color:#FCD34D;border:1px solid rgba(251,191,36,.2)}
-  .tag-proptech{background:rgba(99,102,241,.1);color:#A5B4FC;border:1px solid rgba(99,102,241,.2)}
+  .tag-dept{background:rgba(59,130,246,.1);color:rgba(147,197,253,.9);border:1px solid rgba(59,130,246,.2)}
+  .tag-level{background:rgba(255,255,255,.04);color:var(--text-muted);border:1px solid var(--card-border)}
+  .tag-new{background:rgba(52,211,153,.12);color:#34D399;border:1px solid rgba(52,211,153,.2);font-weight:700}
+  .tag-stage{background:rgba(255,255,255,.05);color:var(--text-muted);border:1px solid rgba(255,255,255,.08)}
 
-  /* ── Confidence dot ── */
   .confidence-dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:5px;flex-shrink:0;vertical-align:middle}
   .conf-high{background:#34D399;box-shadow:0 0 5px rgba(52,211,153,.5)}
   .conf-mid{background:#F59E0B;box-shadow:0 0 5px rgba(245,158,11,.4)}
   .conf-low{background:#F06888;box-shadow:0 0 5px rgba(240,104,136,.4)}
 
-  /* ── Stealth pulse ring ── */
-  .card.stealth-card{border-color:rgba(139,53,200,.35)}
-  .card.stealth-card::after{content:'';position:absolute;inset:-1px;border-radius:16px;border:1px solid rgba(139,53,200,.35);animation:stealth-pulse 2.5s ease-in-out infinite;pointer-events:none}
-  @keyframes stealth-pulse{0%,100%{opacity:.4;transform:scale(1)}50%{opacity:.9;transform:scale(1.002)}}
-  .stealth-lock{display:inline-flex;align-items:center;gap:4px;font-size:.7rem;font-weight:700;color:#B87FE8;text-transform:uppercase;letter-spacing:.06em;margin-left:auto}
-  .stealth-lock svg{width:11px;height:11px}
-
-  /* ── Metrics Grid ── */
-  .metrics{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-bottom:14px;background:rgba(10,10,10,.3);border-radius:10px;border:1px solid var(--card-border);overflow:hidden}
+  .metrics{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-bottom:14px;background:rgba(5,12,24,.3);border-radius:10px;border:1px solid var(--card-border);overflow:hidden}
   .metric{padding:10px 14px;display:flex;flex-direction:column;gap:2px}
   .metric:nth-child(1){border-right:1px solid var(--card-border);border-bottom:1px solid var(--card-border)}
   .metric:nth-child(2){border-bottom:1px solid var(--card-border)}
   .metric:nth-child(3){border-right:1px solid var(--card-border)}
   .metric-label{font-size:.65rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;font-weight:600}
   .metric-value{font-size:.9rem;color:var(--text);font-weight:600}
-  .metric-value.raised{background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700}
+  .metric-value.pop{color:var(--accent);font-weight:700}
 
   .card-footer{display:flex;justify-content:space-between;align-items:center;padding-top:12px;border-top:1px solid var(--card-border)}
   .card-links{display:flex;gap:8px}
   .card-link{display:flex;align-items:center;gap:4px;font-size:.76rem;color:var(--text-muted);text-decoration:none;padding:4px 10px;border-radius:6px;transition:all .15s;border:1px solid transparent}
-  .card-link:hover{color:var(--orange);background:rgba(240,120,32,.08);border-color:rgba(240,120,32,.15)}
+  .card-link:hover{color:#fff;background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.15)}
   .card-link svg{width:13px;height:13px}
-  .card-link.linkedin-link{color:#7EB1E8}
-  .card-link.linkedin-link:hover{color:#9AC4F0;background:rgba(126,177,232,.08);border-color:rgba(126,177,232,.15)}
-  .card-link.github-link{color:#A0A8B8}
-  .card-link.github-link:hover{color:#C8D0E0;background:rgba(160,168,184,.08);border-color:rgba(160,168,184,.15)}
   .card-date{font-size:.72rem;color:var(--text-muted);opacity:.7}
-
   .card-source{position:absolute;bottom:1.25rem;right:1.25rem;font-size:.65rem;color:var(--text-muted);opacity:.5;text-transform:uppercase;letter-spacing:.06em}
 
-  /* ── Empty & Loading ── */
   .empty-state{grid-column:1/-1;text-align:center;padding:4rem 1rem}
   .empty-state svg{width:48px;height:48px;color:var(--text-muted);opacity:.4;margin-bottom:1rem}
   .empty-state h3{font-size:1.1rem;color:var(--text);margin-bottom:.5rem}
   .empty-state p{font-size:.85rem;color:var(--text-muted)}
 
-  .loading-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(10,10,10,.8);backdrop-filter:blur(6px);z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem;opacity:0;pointer-events:none;transition:opacity .3s}
+  .loading-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(11,26,46,.85);backdrop-filter:blur(6px);z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem;opacity:0;pointer-events:none;transition:opacity .3s}
   .loading-overlay.active{opacity:1;pointer-events:all}
-  .spinner{width:48px;height:48px;border:3px solid var(--card-border);border-top-color:var(--orange);border-radius:50%;animation:spin .8s linear infinite}
+  .spinner{width:48px;height:48px;border:3px solid var(--card-border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
   @keyframes spin{to{transform:rotate(360deg)}}
   .loading-text{color:var(--text-muted);font-size:.9rem}
   .loading-sources{display:flex;gap:1rem;margin-top:.5rem}
@@ -191,125 +134,138 @@
   .source-indicator .check{color:#34D399;display:none}
   .source-indicator.done .check{display:inline}
   .source-indicator.done{color:var(--text)}
-  .source-indicator.error{color:var(--pink)}
-  .loading-detail{font-size:.72rem;color:var(--text-muted);opacity:.6;margin-top:.25rem}
 
-  /* ── Toast ── */
   .toast{position:fixed;bottom:2rem;right:2rem;background:var(--card);border:1px solid var(--card-border);padding:12px 20px;border-radius:10px;font-size:.85rem;color:var(--text);z-index:300;transform:translateY(100px);opacity:0;transition:all .3s;box-shadow:0 8px 30px rgba(0,0,0,.3)}
   .toast.show{transform:translateY(0);opacity:1}
 
-  /* ── Chat Widget ── */
-  .chat-toggle{position:fixed;bottom:1.5rem;right:1.5rem;z-index:150;width:56px;height:56px;border-radius:50%;background:var(--gradient);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 24px rgba(232,41,74,.35);transition:all .3s}
-  .chat-toggle:hover{transform:scale(1.08);box-shadow:0 6px 32px rgba(232,41,74,.45)}
+  /* Drawer */
+  .drawer-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);z-index:400;opacity:0;pointer-events:none;transition:opacity .25s}
+  .drawer-backdrop.open{opacity:1;pointer-events:all}
+  .drawer{position:fixed;top:0;right:0;bottom:0;width:480px;max-width:100vw;background:#0D1F3C;border-left:1px solid var(--card-border);z-index:401;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .3s cubic-bezier(.4,0,.2,1)}
+  .drawer.open{transform:translateX(0)}
+  .drawer-header{padding:20px 24px 16px;border-bottom:1px solid var(--card-border);display:flex;align-items:flex-start;justify-content:space-between;flex-shrink:0}
+  .drawer-avatar{width:64px;height:64px;border-radius:14px;background:var(--navy);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.4rem;color:var(--text-muted);flex-shrink:0;border:2px solid var(--card-border)}
+  .drawer-identity{flex:1;min-width:0;padding:0 14px}
+  .drawer-name{font-size:1.2rem;font-weight:700;color:#fff;line-height:1.3}
+  .drawer-role{font-size:.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-top:2px}
+  .drawer-company{font-size:.95rem;color:var(--accent);margin-top:4px;font-weight:600}
+  .drawer-close{background:none;border:none;color:var(--text-muted);cursor:pointer;padding:6px;border-radius:8px;transition:all .15s;flex-shrink:0}
+  .drawer-close:hover{color:var(--text);background:rgba(255,255,255,.06)}
+  .drawer-close svg{width:20px;height:20px}
+  .drawer-body{flex:1;overflow-y:auto;padding:20px 24px}
+  .drawer-body::-webkit-scrollbar{width:4px}
+  .drawer-body::-webkit-scrollbar-thumb{background:var(--navy);border-radius:2px}
+  .drawer-section{margin-bottom:22px}
+  .drawer-section-label{font-size:.65rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
+  .drawer-desc{font-size:.88rem;color:var(--text-muted);line-height:1.65}
+  .drawer-meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .drawer-meta-item{background:rgba(5,12,24,.4);border:1px solid var(--card-border);border-radius:10px;padding:10px 14px}
+  .drawer-meta-label{font-size:.62rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;font-weight:600;margin-bottom:3px}
+  .drawer-meta-value{font-size:.9rem;color:var(--text);font-weight:600}
+  .drawer-meta-value.pop{color:var(--accent)}
+  .drawer-conf-bar{height:4px;border-radius:2px;background:var(--card-border);margin-top:6px;overflow:hidden}
+  .drawer-conf-fill{height:100%;border-radius:2px;transition:width .4s ease}
+  .drawer-links{display:flex;flex-direction:column;gap:8px}
+  .drawer-link{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;border:1px solid var(--card-border);text-decoration:none;color:var(--text-muted);font-size:.84rem;transition:all .15s}
+  .drawer-link:hover{border-color:rgba(59,130,246,.4);color:#fff;background:rgba(59,130,246,.08)}
+  .drawer-link svg{width:16px;height:16px;flex-shrink:0}
+  .drawer-footer{padding:16px 24px;border-top:1px solid var(--card-border);display:flex;gap:10px;flex-shrink:0;flex-wrap:wrap}
+  .drawer-footer .btn{flex:1;justify-content:center;min-width:120px}
+  .drawer-notes{width:100%;background:rgba(5,12,24,.4);border:1px solid var(--card-border);border-radius:10px;color:var(--text);padding:10px 14px;font-size:.84rem;font-family:inherit;resize:vertical;min-height:80px;outline:none;line-height:1.5;transition:border .2s}
+  .drawer-notes:focus{border-color:rgba(59,130,246,.4)}
+  .drawer-notes::placeholder{color:var(--text-muted)}
+  .drawer-notes-actions{display:flex;gap:8px;margin-top:8px;align-items:center}
+  .drawer-save-note{background:none;border:1px solid var(--card-border);color:var(--text-muted);padding:5px 14px;border-radius:7px;font-size:.78rem;cursor:pointer;transition:all .15s}
+  .drawer-save-note:hover{border-color:rgba(255,255,255,.3);color:#fff}
+  .drawer-save-note.saved{border-color:#34D399;color:#34D399}
+  .deal-stage-select{flex:1;background:var(--card);border:1px solid var(--card-border);color:var(--text);padding:5px 10px;border-radius:7px;font-size:.78rem;outline:none;cursor:pointer}
+  .deal-stage-badge{display:inline-block;padding:3px 10px;border-radius:5px;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+  .ds-watching{background:rgba(255,255,255,.06);color:var(--text-muted)}
+  .ds-contacted{background:rgba(59,130,246,.15);color:var(--accent)}
+
+  /* Kanban */
+  .kanban-board{max-width:1440px;margin:0 auto;padding:0 2rem 3rem;display:flex;gap:14px;overflow-x:auto;align-items:flex-start;min-height:400px}
+  .kanban-col{flex:1;min-width:300px;display:flex;flex-direction:column;gap:10px}
+  .kanban-col-header{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:var(--card);border:1px solid var(--card-border);border-radius:10px;font-size:.78rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;flex-shrink:0}
+  .kanban-col-count{background:rgba(59,130,246,.12);color:var(--text);border-radius:12px;padding:1px 8px;font-size:.72rem;font-weight:700;min-width:22px;text-align:center}
+  .kanban-cards{display:flex;flex-direction:column;gap:8px}
+  .kanban-card{background:var(--card);border:1px solid var(--card-border);border-radius:12px;padding:12px;cursor:pointer;transition:all .2s}
+  .kanban-card:hover{transform:translateY(-2px);border-color:#2A4A70;box-shadow:0 4px 20px rgba(0,0,0,.2)}
+  .kanban-card-name{font-size:.83rem;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:5px}
+  .kanban-card-sub{font-size:.72rem;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
+  .kanban-card-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px;align-items:center}
+
+  /* Chat */
+  .chat-toggle{position:fixed;bottom:1.5rem;right:1.5rem;z-index:150;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#1E40AF,#3B82F6);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 24px rgba(0,0,0,.3);transition:all .3s}
+  .chat-toggle:hover{transform:scale(1.08)}
   .chat-toggle svg{width:26px;height:26px;color:#fff;transition:transform .3s}
-  .chat-toggle.open svg{transform:rotate(90deg)}
-
-  .chat-panel{position:fixed;bottom:5.5rem;right:1.5rem;z-index:150;width:420px;height:540px;background:#111827;border:1px solid var(--card-border);border-radius:16px;display:flex;flex-direction:column;box-shadow:0 12px 48px rgba(0,0,0,.5);transform:translateY(20px) scale(.95);opacity:0;pointer-events:none;transition:all .25s ease}
+  .chat-panel{position:fixed;bottom:5.5rem;right:1.5rem;z-index:150;width:420px;height:540px;background:#0D1F3C;border:1px solid var(--card-border);border-radius:16px;display:flex;flex-direction:column;box-shadow:0 12px 48px rgba(0,0,0,.5);transform:translateY(20px) scale(.95);opacity:0;pointer-events:none;transition:all .25s ease}
   .chat-panel.open{transform:translateY(0) scale(1);opacity:1;pointer-events:all}
-
   .chat-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--card-border);flex-shrink:0}
   .chat-header-left{display:flex;align-items:center;gap:10px}
-  .chat-header-icon{width:32px;height:32px;border-radius:8px;background:var(--gradient);display:flex;align-items:center;justify-content:center}
-  .chat-header-icon svg{width:18px;height:18px;color:#fff}
+  .chat-header-icon{width:32px;height:32px;border-radius:8px;background:rgba(59,130,246,.2);border:1px solid rgba(59,130,246,.3);display:flex;align-items:center;justify-content:center}
+  .chat-header-icon svg{width:18px;height:18px;color:#93c5fd}
   .chat-header-title{font-size:.9rem;font-weight:700;color:#fff}
   .chat-header-sub{font-size:.68rem;color:var(--text-muted)}
   .chat-close{background:none;border:none;color:var(--text-muted);cursor:pointer;padding:4px;border-radius:6px;transition:all .15s}
   .chat-close:hover{color:var(--text);background:rgba(255,255,255,.06)}
   .chat-close svg{width:18px;height:18px}
-
   .chat-messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px}
   .chat-messages::-webkit-scrollbar{width:4px}
   .chat-messages::-webkit-scrollbar-thumb{background:var(--navy);border-radius:2px}
-
-  .chat-msg{max-width:88%;padding:10px 14px;border-radius:12px;font-size:.84rem;line-height:1.55;word-wrap:break-word;white-space:pre-wrap}
-  .chat-msg.user{align-self:flex-end;background:linear-gradient(135deg,rgba(240,120,32,.2),rgba(232,41,74,.15));color:var(--text);border:1px solid rgba(240,120,32,.2);border-bottom-right-radius:4px}
-  .chat-msg.assistant{align-self:flex-start;background:rgba(45,64,99,.25);color:var(--text);border:1px solid rgba(45,64,99,.4);border-bottom-left-radius:4px}
-  .chat-msg.assistant .typing-cursor{display:inline-block;width:2px;height:14px;background:var(--orange);margin-left:2px;animation:blink 1s step-end infinite;vertical-align:text-bottom}
+  .chat-msg{max-width:88%;padding:10px 14px;border-radius:12px;font-size:.84rem;line-height:1.55;word-wrap:break-word}
+  .chat-msg.user{align-self:flex-end;background:rgba(59,130,246,.15);color:var(--text);border:1px solid rgba(59,130,246,.25);border-bottom-right-radius:4px;white-space:pre-wrap}
+  .chat-msg.assistant{align-self:flex-start;background:rgba(45,64,99,.25);color:var(--text);border:1px solid rgba(45,64,99,.4);border-bottom-left-radius:4px;white-space:normal}
+  .chat-msg.assistant .typing-cursor{display:inline-block;width:2px;height:14px;background:#fff;margin-left:2px;animation:blink 1s step-end infinite;vertical-align:text-bottom}
   @keyframes blink{50%{opacity:0}}
   .chat-msg.error{color:#F06888;font-size:.8rem;font-style:italic}
-
   .chat-welcome{text-align:center;padding:2rem 1rem;color:var(--text-muted);font-size:.82rem;line-height:1.6}
   .chat-welcome strong{color:var(--text);display:block;font-size:.95rem;margin-bottom:6px}
   .chat-suggestions{display:flex;flex-direction:column;gap:6px;margin-top:12px}
-  .chat-suggestion{padding:8px 12px;background:rgba(45,64,99,.2);border:1px solid var(--card-border);border-radius:8px;cursor:pointer;font-size:.78rem;color:var(--text-muted);text-align:left;transition:all .15s}
-  .chat-suggestion:hover{border-color:var(--orange);color:var(--text);background:rgba(240,120,32,.06)}
-
+  .chat-suggestion{padding:8px 12px;background:rgba(59,130,246,.08);border:1px solid var(--card-border);border-radius:8px;cursor:pointer;font-size:.78rem;color:var(--text-muted);text-align:left;transition:all .15s}
+  .chat-suggestion:hover{border-color:rgba(59,130,246,.4);color:var(--text);background:rgba(59,130,246,.12)}
   .chat-input-area{padding:12px;border-top:1px solid var(--card-border);display:flex;gap:8px;align-items:flex-end;flex-shrink:0}
-  .chat-input{flex:1;background:rgba(45,64,99,.2);border:1px solid var(--card-border);border-radius:10px;color:var(--text);padding:10px 14px;font-size:.84rem;font-family:inherit;resize:none;outline:none;max-height:100px;min-height:40px;line-height:1.4;transition:border .2s}
-  .chat-input:focus{border-color:var(--orange)}
+  .chat-input{flex:1;background:rgba(45,64,99,.2);border:1px solid var(--card-border);border-radius:10px;color:var(--text);padding:10px 14px;font-size:.84rem;font-family:inherit;resize:none;outline:none;max-height:100px;min-height:40px;line-height:1.4}
+  .chat-input:focus{border-color:rgba(59,130,246,.4)}
   .chat-input::placeholder{color:var(--text-muted)}
-  .chat-send{width:38px;height:38px;border-radius:10px;background:var(--gradient);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
-  .chat-send:hover:not(:disabled){transform:scale(1.05);box-shadow:0 2px 12px rgba(232,41,74,.3)}
+  .chat-send{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#1E40AF,#3B82F6);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
+  .chat-send:hover:not(:disabled){transform:scale(1.05)}
   .chat-send:disabled{opacity:.4;cursor:not-allowed}
   .chat-send svg{width:18px;height:18px;color:#fff}
 
-  /* ── Slide-out Panel ── */
-  .drawer-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);z-index:400;opacity:0;pointer-events:none;transition:opacity .25s}
-  .drawer-backdrop.open{opacity:1;pointer-events:all}
+  /* News */
+  .news-section{max-width:1440px;margin:0 auto;padding:0 2rem 3rem}
+  .news-controls{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:1.25rem}
+  .news-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px}
+  .news-card{background:var(--card);border:1px solid var(--card-border);border-radius:14px;padding:1.25rem;transition:all .2s;text-decoration:none;display:flex;flex-direction:column;color:inherit}
+  .news-card:hover{border-color:#2A4A70;box-shadow:0 4px 24px rgba(0,0,0,.18);transform:translateY(-2px)}
+  .news-card-header{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+  .news-card-source{font-size:.7rem;color:var(--text-muted);font-weight:600}
+  .news-card-dot{width:3px;height:3px;border-radius:50%;background:var(--text-muted);opacity:.4;flex-shrink:0}
+  .news-card-category{font-size:.65rem;padding:2px 8px;border-radius:5px;font-weight:600;text-transform:uppercase;letter-spacing:.03em}
+  .cat-technology{background:rgba(59,130,246,.12);color:rgba(147,197,253,.9);border:1px solid rgba(59,130,246,.2)}
+  .cat-procurement{background:rgba(52,211,153,.1);color:rgba(110,231,183,.9);border:1px solid rgba(52,211,153,.2)}
+  .cat-policy{background:rgba(245,158,11,.1);color:rgba(252,211,77,.9);border:1px solid rgba(245,158,11,.2)}
+  .cat-general{background:rgba(255,255,255,.05);color:var(--text-muted);border:1px solid rgba(255,255,255,.08)}
+  .news-card-title{font-size:.95rem;font-weight:700;color:#fff;line-height:1.4;margin-bottom:6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .news-card-summary{font-size:.8rem;color:var(--text-muted);line-height:1.5;margin-bottom:10px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;flex:1}
+  .news-card-footer{display:flex;align-items:center;gap:8px;margin-top:auto}
+  .news-card-time{font-size:.7rem;color:var(--text-muted);opacity:.6}
 
-  .drawer{position:fixed;top:0;right:0;bottom:0;width:480px;max-width:100vw;background:#111827;border-left:1px solid var(--card-border);z-index:401;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);overflow:hidden}
-  .drawer.open{transform:translateX(0)}
+  .news-tldr{background:linear-gradient(135deg,rgba(59,130,246,.06),rgba(59,130,246,.02));border:1px solid rgba(59,130,246,.12);border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:1.5rem}
+  .news-tldr-header{display:flex;align-items:center;gap:10px;margin-bottom:.85rem}
+  .news-tldr-icon{width:18px;height:18px;color:rgba(147,197,253,.6);flex-shrink:0}
+  .news-tldr-title{font-size:.82rem;font-weight:700;color:rgba(147,197,253,.8);text-transform:uppercase;letter-spacing:.04em}
+  .news-tldr-badge{font-size:.65rem;background:rgba(59,130,246,.12);color:var(--text-muted);padding:2px 8px;border-radius:5px;font-weight:600}
+  .news-tldr-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(380px,1fr));gap:8px}
+  .news-tldr-item{display:flex;align-items:baseline;gap:10px;padding:6px 10px;border-radius:8px;text-decoration:none;color:inherit;transition:background .15s}
+  .news-tldr-item:hover{background:rgba(59,130,246,.08)}
+  .news-tldr-cat{font-size:.6rem;padding:2px 6px;border-radius:4px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;flex-shrink:0;line-height:1.5}
+  .news-tldr-text{font-size:.82rem;font-weight:600;color:rgba(255,255,255,.85);line-height:1.4;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+  .news-tldr-time{font-size:.65rem;color:var(--text-muted);opacity:.5;flex-shrink:0;margin-left:auto;white-space:nowrap}
 
-  .drawer-header{padding:20px 24px 16px;border-bottom:1px solid var(--card-border);display:flex;align-items:flex-start;justify-content:space-between;flex-shrink:0}
-  .drawer-avatar{width:64px;height:64px;border-radius:14px;background:var(--navy);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.4rem;color:var(--text-muted);flex-shrink:0;overflow:hidden;border:2px solid var(--card-border)}
-  .drawer-avatar img{width:100%;height:100%;object-fit:cover}
-  .drawer-identity{flex:1;min-width:0;padding:0 14px}
-  .drawer-name{font-size:1.2rem;font-weight:700;color:#fff;line-height:1.3}
-  .drawer-role{font-size:.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-top:2px}
-  .drawer-company{font-size:.95rem;color:var(--text-muted);margin-top:4px}
-  .drawer-close{background:none;border:none;color:var(--text-muted);cursor:pointer;padding:6px;border-radius:8px;transition:all .15s;flex-shrink:0}
-  .drawer-close:hover{color:var(--text);background:rgba(255,255,255,.06)}
-  .drawer-close svg{width:20px;height:20px}
-
-  .drawer-body{flex:1;overflow-y:auto;padding:20px 24px}
-  .drawer-body::-webkit-scrollbar{width:4px}
-  .drawer-body::-webkit-scrollbar-thumb{background:var(--navy);border-radius:2px}
-
-  .drawer-section{margin-bottom:22px}
-  .drawer-section-label{font-size:.65rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
-  .drawer-desc{font-size:.88rem;color:var(--text-muted);line-height:1.65}
-
-  .drawer-meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  .drawer-meta-item{background:rgba(10,10,10,.4);border:1px solid var(--card-border);border-radius:10px;padding:10px 14px}
-  .drawer-meta-label{font-size:.62rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;font-weight:600;margin-bottom:3px}
-  .drawer-meta-value{font-size:.9rem;color:var(--text);font-weight:600}
-  .drawer-meta-value.raised{background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-
-  .drawer-conf-bar{height:4px;border-radius:2px;background:var(--card-border);margin-top:6px;overflow:hidden}
-  .drawer-conf-fill{height:100%;border-radius:2px;transition:width .4s ease}
-
-  .drawer-links{display:flex;flex-direction:column;gap:8px}
-  .drawer-link{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;border:1px solid var(--card-border);text-decoration:none;color:var(--text-muted);font-size:.84rem;transition:all .15s}
-  .drawer-link:hover{border-color:var(--orange);color:var(--text);background:rgba(240,120,32,.06)}
-  .drawer-link svg{width:16px;height:16px;flex-shrink:0}
-  .drawer-link.linkedin{color:#7EB1E8;border-color:rgba(126,177,232,.2)}
-  .drawer-link.linkedin:hover{border-color:#7EB1E8;background:rgba(126,177,232,.06)}
-  .drawer-link.github{color:#A0A8B8;border-color:rgba(160,168,184,.2)}
-  .drawer-link.github:hover{border-color:#A0A8B8;background:rgba(160,168,184,.06)}
-
-  .drawer-footer{padding:16px 24px;border-top:1px solid var(--card-border);display:flex;gap:10px;flex-shrink:0;flex-wrap:wrap}
-  .drawer-footer .btn{flex:1;justify-content:center;min-width:120px}
-
-  /* ── Notes & Pipeline ── */
-  .drawer-notes{width:100%;background:rgba(10,10,10,.4);border:1px solid var(--card-border);border-radius:10px;color:var(--text);padding:10px 14px;font-size:.84rem;font-family:inherit;resize:vertical;min-height:80px;outline:none;line-height:1.5;transition:border .2s}
-  .drawer-notes:focus{border-color:var(--orange)}
-  .drawer-notes::placeholder{color:var(--text-muted)}
-  .drawer-notes-actions{display:flex;gap:8px;margin-top:8px;align-items:center}
-  .drawer-save-note{background:none;border:1px solid var(--card-border);color:var(--text-muted);padding:5px 14px;border-radius:7px;font-size:.78rem;cursor:pointer;transition:all .15s}
-  .drawer-save-note:hover{border-color:var(--orange);color:var(--orange)}
-  .drawer-save-note.saved{border-color:#34D399;color:#34D399}
-  .deal-stage-select{flex:1;background:var(--card);border:1px solid var(--card-border);color:var(--text);padding:5px 10px;border-radius:7px;font-size:.78rem;outline:none;cursor:pointer}
-  .deal-stage-select:focus{border-color:var(--orange)}
-  .deal-stage-badge{display:inline-block;padding:3px 10px;border-radius:5px;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
-  .ds-watching{background:rgba(136,146,164,.15);color:var(--text-muted)}
-  .ds-reached{background:rgba(240,120,32,.15);color:var(--orange)}
-  .ds-conversation{background:rgba(59,130,246,.15);color:#60A5FA}
-  .ds-passed{background:rgba(232,41,74,.15);color:#F06888}
-  .ds-invested{background:rgba(52,211,153,.15);color:#34D399}
-
-  /* ── Responsive ── */
   @media(max-width:768px){
-  .drawer{width:100vw}
+    .drawer{width:100vw}
     .header{padding:0 1rem}
     .controls{padding:1rem}
     .grid{grid-template-columns:1fr;padding:0 1rem 2rem}
@@ -320,112 +276,109 @@
     .divider{display:none}
     .chat-panel{width:calc(100vw - 1.5rem);right:.75rem;bottom:5rem;height:60vh}
     .chat-toggle{bottom:1rem;right:1rem}
+    .kanban-board{padding:0 1rem 2rem}
+    .news-grid{grid-template-columns:1fr}
+    .news-section{padding:0 1rem 2rem}
   }
 </style>
 </head>
 <body>
 
-<!-- Loading Overlay -->
 <div class="loading-overlay" id="loadingOverlay">
   <div class="spinner"></div>
-  <div class="loading-text" id="loadingText">Sourcing founders…</div>
+  <div class="loading-text" id="loadingText">Sourcing officials…</div>
   <div class="loading-detail" id="loadingDetail"></div>
   <div class="loading-sources">
-    <span class="source-indicator" id="srcGithub">
-      <span class="check">&#10003;</span> GitHub
-    </span>
-    <span class="source-indicator" id="srcHackernews">
-      <span class="check">&#10003;</span> Hacker News
-    </span>
-    <span class="source-indicator" id="srcRss">
-      <span class="check">&#10003;</span> RSS Feeds
-    </span>
-    <span class="source-indicator" id="srcGoogle">
-      <span class="check">&#10003;</span> Google
-    </span>
-    <span class="source-indicator" id="srcExa">
-      <span class="check">&#10003;</span> Exa
-    </span>
+    <span class="source-indicator" id="srcExa"><span class="check">&#10003;</span> Exa</span>
+    <span class="source-indicator" id="srcGoogle"><span class="check">&#10003;</span> Google</span>
+    <span class="source-indicator" id="srcRss"><span class="check">&#10003;</span> RSS</span>
   </div>
 </div>
 
-<!-- Toast -->
 <div class="toast" id="toast"></div>
 
-<!-- Header -->
 <header class="header">
   <div class="header-inner">
     <div class="logo-area">
-      <img src="https://roocapital.com/wp-content/uploads/2025/10/roo-capital-primary-logo-inverse-rgb.svg" alt="Roo Capital" style="height:36px;width:auto" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-      <div style="display:none;align-items:center;gap:14px"><div class="logo-mark">R</div><div class="logo-text">Roo <span>Capital</span></div></div>
+      <div class="logo-mark">GW</div>
+      <div class="logo-text">GovWell Prospects</div>
     </div>
     <div class="header-meta">
+      <div class="header-tabs">
+        <button class="header-tab active" id="tabOfficials" onclick="setActiveTab('officials')">Officials</button>
+        <button class="header-tab" id="tabNews" onclick="setActiveTab('news')">GovTech News</button>
+      </div>
       <div class="live-dot"></div>
-      <div class="header-stat">Tracking <strong id="totalCount">0</strong> founders</div>
+      <div class="header-stat">Tracking <strong id="totalCount">0</strong> officials</div>
       <div class="header-stat">Watchlist <strong id="watchlistCount">0</strong></div>
     </div>
   </div>
 </header>
 
-<!-- Controls -->
 <div class="controls">
   <div class="controls-top">
     <div class="search-box">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <input type="text" id="searchInput" placeholder="Search by founder name, company, sector, stage, or keyword…">
+      <input type="text" id="searchInput" placeholder="Search by name, municipality, title, department…">
       <button class="search-clear" id="searchClear" onclick="clearSearch()">&times;</button>
     </div>
     <button class="btn btn-gradient" id="refreshBtn" onclick="refreshData()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
       Refresh Data
     </button>
-    <button class="btn btn-outline" onclick="exportCSV()" title="Export current view to CSV">
+    <button class="btn btn-outline" onclick="exportCSV()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
       Export CSV
     </button>
-    <a href="/admin.html" class="btn btn-outline" title="Duplicate detection &amp; admin tools" style="text-decoration:none">
+    <a href="/admin.html" class="btn btn-outline" style="text-decoration:none">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a6 6 0 0 1 12 0v2"/></svg>
       Admin
     </a>
-    <select class="sort-select" id="sortSelect" onchange="currentPage=1;fetchFounders()">
-      <option value="recent">Most Recently Funded</option>
-      <option value="amount">Highest Amount Raised</option>
+    <div class="view-toggle">
+      <button class="view-btn active" id="viewGridBtn" onclick="setView('grid')" title="Grid view">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      </button>
+      <button class="view-btn" id="viewKanbanBtn" onclick="setView('kanban')" title="Pipeline view">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="5" height="18" rx="1"/><rect x="10" y="3" width="5" height="12" rx="1"/><rect x="17" y="3" width="5" height="15" rx="1"/></svg>
+      </button>
+    </div>
+    <select class="sort-select" id="sortSelect" onchange="currentPage=1;fetchOfficials()">
+      <option value="recent">Most Recent</option>
+      <option value="population">Largest Municipality</option>
       <option value="name">Alphabetical (A → Z)</option>
       <option value="updated">Last Updated</option>
     </select>
   </div>
   <div class="filter-row">
-    <span class="filter-label">Sector</span>
-    <button class="btn btn-outline btn-sm filter-btn active" data-filter="sector" data-value="all" onclick="toggleFilter(this)">All</button>
-    <button class="btn btn-outline btn-sm filter-btn" data-filter="sector" data-value="Vertical AI" onclick="toggleFilter(this)">Vertical AI</button>
-    <button class="btn btn-outline btn-sm filter-btn" data-filter="sector" data-value="SaaS" onclick="toggleFilter(this)">SaaS</button>
-    <button class="btn btn-outline btn-sm filter-btn" data-filter="sector" data-value="Healthcare Tech" onclick="toggleFilter(this)">Healthcare Tech</button>
-    <button class="btn btn-outline btn-sm filter-btn" data-filter="sector" data-value="Cybersecurity" onclick="toggleFilter(this)">Cybersecurity</button>
-    <button class="btn btn-outline btn-sm filter-btn" data-filter="sector" data-value="Fintech" onclick="toggleFilter(this)">Fintech</button>
-    <button class="btn btn-outline btn-sm filter-btn" data-filter="sector" data-value="Climate Tech" onclick="toggleFilter(this)">Climate Tech</button>
-    <button class="btn btn-outline btn-sm filter-btn" data-filter="sector" data-value="EdTech" onclick="toggleFilter(this)">EdTech</button>
-    <button class="btn btn-outline btn-sm filter-btn" data-filter="sector" data-value="PropTech" onclick="toggleFilter(this)">PropTech</button>
+    <span class="filter-label">Dept</span>
+    <button class="btn btn-outline btn-sm filter-btn active" data-filter="department_type" data-value="all" onclick="toggleFilter(this)">All</button>
+    <button class="btn btn-outline btn-sm filter-btn" data-filter="department_type" data-value="Planning" onclick="toggleFilter(this)">Planning</button>
+    <button class="btn btn-outline btn-sm filter-btn" data-filter="department_type" data-value="Building" onclick="toggleFilter(this)">Building</button>
+    <button class="btn btn-outline btn-sm filter-btn" data-filter="department_type" data-value="Permitting" onclick="toggleFilter(this)">Permitting</button>
+    <button class="btn btn-outline btn-sm filter-btn" data-filter="department_type" data-value="IT" onclick="toggleFilter(this)">IT</button>
+    <button class="btn btn-outline btn-sm filter-btn" data-filter="department_type" data-value="Procurement" onclick="toggleFilter(this)">Procurement</button>
+    <button class="btn btn-outline btn-sm filter-btn" data-filter="department_type" data-value="Executive" onclick="toggleFilter(this)">Executive</button>
     <div class="divider"></div>
-    <span class="filter-label">Stage</span>
-    <button class="btn btn-outline btn-sm filter-btn active" data-filter="stage" data-value="all" onclick="toggleFilter(this)">All</button>
-    <button class="btn btn-outline btn-sm filter-btn" data-filter="stage" data-value="Pre-seed" onclick="toggleFilter(this)">Pre-seed</button>
-    <button class="btn btn-outline btn-sm filter-btn" data-filter="stage" data-value="Seed" onclick="toggleFilter(this)">Seed</button>
-    <button class="btn btn-outline btn-sm filter-btn" data-filter="stage" data-value="Series A" onclick="toggleFilter(this)">Series A</button>
+    <span class="filter-label">Level</span>
+    <button class="btn btn-outline btn-sm filter-btn active" data-filter="government_level" data-value="all" onclick="toggleFilter(this)">All</button>
+    <button class="btn btn-outline btn-sm filter-btn" data-filter="government_level" data-value="City" onclick="toggleFilter(this)">City</button>
+    <button class="btn btn-outline btn-sm filter-btn" data-filter="government_level" data-value="County" onclick="toggleFilter(this)">County</button>
+    <button class="btn btn-outline btn-sm filter-btn" data-filter="government_level" data-value="State" onclick="toggleFilter(this)">State</button>
+    <button class="btn btn-outline btn-sm filter-btn" data-filter="government_level" data-value="Regional" onclick="toggleFilter(this)">Regional</button>
   </div>
 </div>
 
-<!-- Results meta -->
 <div class="results-meta">
-  <div class="results-count">Showing <strong id="showingCount">0</strong> founders</div>
-  <div class="watchlist-toggle" id="watchlistToggle" onclick="toggleWatchlistView()">
+  <div class="results-count">Showing <strong id="showingCount">0</strong> officials</div>
+  <div class="watchlist-toggle" onclick="toggleWatchlistView()">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
     <span id="watchlistLabel">Show Watchlist</span>
   </div>
 </div>
 
-<!-- Founder Detail Drawer -->
+<!-- Drawer -->
 <div class="drawer-backdrop" id="drawerBackdrop" onclick="closeDrawer()"></div>
-<div class="drawer" id="founderDrawer">
+<div class="drawer" id="officialDrawer">
   <div class="drawer-header">
     <div class="drawer-avatar" id="drawerAvatar"></div>
     <div class="drawer-identity">
@@ -446,7 +399,7 @@
       <div class="drawer-desc" id="drawerDesc"></div>
     </div>
     <div class="drawer-section">
-      <div class="drawer-section-label">Deal Info</div>
+      <div class="drawer-section-label">Official Info</div>
       <div class="drawer-meta-grid" id="drawerMeta"></div>
     </div>
     <div class="drawer-section">
@@ -454,7 +407,7 @@
       <div class="drawer-conf-bar"><div class="drawer-conf-fill" id="drawerConfFill"></div></div>
     </div>
     <div class="drawer-section" id="drawerLinksSection">
-      <div class="drawer-section-label">Links</div>
+      <div class="drawer-section-label">Links &amp; Contact</div>
       <div class="drawer-links" id="drawerLinks"></div>
     </div>
     <div class="drawer-section">
@@ -462,19 +415,16 @@
       <div class="drawer-notes-actions" style="margin-top:0">
         <select class="deal-stage-select" id="drawerDealStage" onchange="saveDealStage()">
           <option value="Watching">Watching</option>
-          <option value="Reached Out">Reached Out</option>
-          <option value="In Conversation">In Conversation</option>
-          <option value="Passed">Passed</option>
-          <option value="Invested">Invested</option>
+          <option value="Contacted">Contacted</option>
         </select>
       </div>
     </div>
     <div class="drawer-section">
       <div class="drawer-section-label">Notes</div>
-      <textarea class="drawer-notes" id="drawerNotes" placeholder="Add private notes about this founder…"></textarea>
+      <textarea class="drawer-notes" id="drawerNotes" placeholder="Add notes about this official…"></textarea>
       <div class="drawer-notes-actions">
         <button class="drawer-save-note" id="drawerSaveNote" onclick="saveNote()">Save Note</button>
-        <span id="drawerNoteSaved" style="font-size:.72rem;color:#34D399;opacity:0;transition:opacity .3s">Saved ✓</span>
+        <span id="drawerNoteSaved" style="font-size:.72rem;color:#34D399;opacity:0;transition:opacity .3s">Saved</span>
       </div>
     </div>
   </div>
@@ -494,170 +444,112 @@
   </div>
 </div>
 
-<!-- Thesis Panel Toggle -->
-<button class="thesis-toggle" onclick="toggleThesis()" title="Roo Capital Investment Thesis">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-  Thesis
-</button>
+<!-- Grid -->
+<div class="grid" id="cardGrid"></div>
+<div style="text-align:center;padding:0 2rem 3rem;max-width:1440px;margin:0 auto" id="loadMoreWrap">
+  <button class="btn btn-outline" id="loadMoreBtn" onclick="loadMore()" style="display:none;margin:0 auto">Load More Officials</button>
+  <div id="paginationInfo" style="font-size:.78rem;color:var(--text-muted);margin-top:.75rem"></div>
+</div>
 
-<div class="thesis-backdrop" id="thesisBackdrop" onclick="toggleThesis()"></div>
-
-<div class="thesis-panel" id="thesisPanel">
-  <button class="thesis-close" onclick="toggleThesis()">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-  </button>
-
-  <div class="thesis-logo">
-    <div class="thesis-logo-mark">🦘</div>
-    <div>
-      <div class="thesis-title">Roo Capital</div>
-      <div class="thesis-sub">Investment Thesis &amp; Search Criteria</div>
-    </div>
+<!-- Kanban -->
+<div class="kanban-board" id="kanbanBoard" style="display:none">
+  <div class="kanban-col">
+    <div class="kanban-col-header"><span>Watching</span><span class="kanban-col-count" id="countWatching">0</span></div>
+    <div class="kanban-cards" id="cardsWatching"></div>
   </div>
-
-  <div class="thesis-section">
-    <div class="thesis-section-label">Fund Overview</div>
-    <div class="thesis-body">
-      Early-stage, <strong>AI-focused venture fund</strong> based in NYC &amp; Miami. <strong>$200M AUM</strong>, investing out of Fund II. Six-year track record backing vertical AI companies. In-house executive search firm (Roo Search) with a <strong>30K+ candidate pool</strong>.
-    </div>
-    <div style="margin-top:12px">
-      <div class="thesis-stat"><span class="thesis-stat-label">Stage</span><span class="thesis-stat-value orange">Pre-seed → Series A</span></div>
-      <div class="thesis-stat"><span class="thesis-stat-label">Check Size</span><span class="thesis-stat-value">$500K – $5M</span></div>
-      <div class="thesis-stat"><span class="thesis-stat-label">Geography</span><span class="thesis-stat-value">NYC · Miami · Remote</span></div>
-      <div class="thesis-stat"><span class="thesis-stat-label">Lead / Follow</span><span class="thesis-stat-value">Both</span></div>
-    </div>
-  </div>
-
-  <div class="thesis-section">
-    <div class="thesis-section-label">Investment Thesis</div>
-    <div class="thesis-body">
-      We back <strong>technical founders</strong> building vertical AI applications with clear enterprise distribution. We prioritize founders with <strong>deep domain expertise</strong> — ex-FAANG, ex-operator, or industry insider — who have an unfair advantage in their market. We believe the next wave of AI value will be captured by vertical-specific applications, not horizontal platforms.
-    </div>
-  </div>
-
-  <div class="thesis-section">
-    <div class="thesis-section-label">Target Sectors</div>
-    <div class="thesis-pill-row">
-      <span class="thesis-pill hot">Vertical AI</span>
-      <span class="thesis-pill hot">Fintech</span>
-      <span class="thesis-pill hot">Healthcare Tech</span>
-      <span class="thesis-pill hot">Cybersecurity</span>
-      <span class="thesis-pill">SaaS</span>
-      <span class="thesis-pill">Climate Tech</span>
-      <span class="thesis-pill">EdTech</span>
-      <span class="thesis-pill">PropTech</span>
-    </div>
-  </div>
-
-  <div class="thesis-section">
-    <div class="thesis-section-label">Ideal Founder Profile</div>
-    <div class="thesis-body">
-      <div style="margin-bottom:6px">✦ <strong>Ex-FAANG or deep domain operator</strong> — built something before or worked in the belly of the beast</div>
-      <div style="margin-bottom:6px">✦ <strong>NYC-based or NY-connected</strong> — active in the ecosystem</div>
-      <div style="margin-bottom:6px">✦ <strong>Technical or technical co-founder</strong> — can ship fast, owns the product</div>
-      <div style="margin-bottom:6px">✦ <strong>Pre-seed to Seed</strong> — early enough that we can add real value</div>
-      <div>✦ <strong>Stealth or low-profile</strong> — we want to find them before everyone else does</div>
-    </div>
-  </div>
-
-  <div class="thesis-section">
-    <div class="thesis-section-label">Search Criteria</div>
-    <div class="thesis-body">
-      <div style="margin-bottom:6px">⬡ Raising or recently raised <strong>$500K – $10M</strong></div>
-      <div style="margin-bottom:6px">⬡ <strong>NYC metro area</strong> — Manhattan, Brooklyn, or remote NYC-affiliated</div>
-      <div style="margin-bottom:6px">⬡ Company age <strong>&lt; 3 years</strong></div>
-      <div style="margin-bottom:6px">⬡ <strong>Enterprise or prosumer</strong> distribution — not pure consumer</div>
-      <div>⬡ <strong>AI-native</strong> or heavily AI-augmented product</div>
-    </div>
-  </div>
-
-  <div class="thesis-section">
-    <div class="thesis-section-label">Outreach Cadence</div>
-    <div class="thesis-body">
-      <div class="thesis-stat"><span class="thesis-stat-label">Initial email</span><span class="thesis-stat-value orange">Day 1</span></div>
-      <div class="thesis-stat"><span class="thesis-stat-label">Follow-up 1</span><span class="thesis-stat-value">+2–4 days</span></div>
-      <div class="thesis-stat"><span class="thesis-stat-label">Follow-up 2</span><span class="thesis-stat-value">+2–4 days</span></div>
-      <div class="thesis-stat"><span class="thesis-stat-label">Final follow-up</span><span class="thesis-stat-value">+1 week</span></div>
-      <div class="thesis-stat"><span class="thesis-stat-label">Re-engage</span><span class="thesis-stat-value">60–90 days</span></div>
-    </div>
+  <div class="kanban-col">
+    <div class="kanban-col-header"><span>Contacted</span><span class="kanban-col-count" id="countContacted">0</span></div>
+    <div class="kanban-cards" id="cardsContacted"></div>
   </div>
 </div>
 
-<!-- Card Grid -->
-<div class="grid" id="cardGrid"></div>
-<div style="text-align:center;padding:0 2rem 3rem;max-width:1440px;margin:0 auto" id="loadMoreWrap">
-  <button class="btn btn-outline" id="loadMoreBtn" onclick="loadMore()" style="display:none;margin:0 auto">Load More Founders</button>
-  <div id="paginationInfo" style="font-size:.78rem;color:var(--text-muted);margin-top:.75rem"></div>
+<!-- News Section -->
+<div id="newsSection" style="display:none">
+  <div class="news-section">
+    <div class="news-controls">
+      <div class="search-box" style="flex:1;min-width:200px">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="newsSearchInput" placeholder="Search govtech news...">
+      </div>
+      <button class="btn btn-gradient" id="newsRefreshBtn" onclick="refreshNews()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+        Refresh News
+      </button>
+      <div class="filter-row">
+        <span class="filter-label">Category</span>
+        <button class="btn btn-outline btn-sm news-cat-btn active" data-cat="all" onclick="setNewsCategory(this)">All</button>
+        <button class="btn btn-outline btn-sm news-cat-btn" data-cat="technology" onclick="setNewsCategory(this)">Technology</button>
+        <button class="btn btn-outline btn-sm news-cat-btn" data-cat="procurement" onclick="setNewsCategory(this)">Procurement</button>
+        <button class="btn btn-outline btn-sm news-cat-btn" data-cat="policy" onclick="setNewsCategory(this)">Policy</button>
+        <button class="btn btn-outline btn-sm news-cat-btn" data-cat="general" onclick="setNewsCategory(this)">General</button>
+      </div>
+    </div>
+    <div class="news-tldr" id="newsTldr" style="display:none">
+      <div class="news-tldr-header">
+        <svg class="news-tldr-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        <span class="news-tldr-title">Today's Highlights</span>
+        <span class="news-tldr-badge" id="tldrCount"></span>
+      </div>
+      <div class="news-tldr-list" id="tldrList"></div>
+    </div>
+    <div class="results-meta" style="max-width:none;padding:0 0 .75rem">
+      <div class="results-count">Showing <strong id="newsShowingCount">0</strong> articles</div>
+    </div>
+    <div class="news-grid" id="newsGrid"></div>
+    <div style="text-align:center;padding:1.5rem 0">
+      <button class="btn btn-outline" id="newsLoadMoreBtn" onclick="loadMoreNews()" style="display:none;margin:0 auto">Load More Articles</button>
+    </div>
+  </div>
 </div>
 
 <script>
 // ─── State ───
-let founders = [];
-let totalFounders = 0;
+let officials = [];
+let totalOfficials = 0;
 let watchlistCount = 0;
 let showWatchlistOnly = false;
-let activeFilters = { sector: 'all', stage: 'all', source: 'all' };
+let activeFilters = { department_type: 'all', government_level: 'all', source: 'all' };
 const PAGE_SIZE = 24;
 let currentPage = 1;
 let refreshPollTimer = null;
-
-// Track when this session started for "new" badge
+let currentView = 'grid';
+let kanbanOfficials = [];
 const SESSION_START = Date.now();
-const LAST_VISIT_KEY = 'roo_last_visit';
+const LAST_VISIT_KEY = 'govwell_last_visit';
 const lastVisit = localStorage.getItem(LAST_VISIT_KEY);
 localStorage.setItem(LAST_VISIT_KEY, new Date().toISOString());
 
-const SECTOR_MAP = {
-  'Vertical AI':      { cls: 'tag-ai',      label: 'Vertical AI' },
-  'SaaS':             { cls: 'tag-saas',     label: 'SaaS' },
-  'Healthcare Tech':  { cls: 'tag-health',   label: 'Healthcare Tech' },
-  'Cybersecurity':    { cls: 'tag-cyber',    label: 'Cybersecurity' },
-  'Fintech':          { cls: 'tag-fintech',  label: 'Fintech' },
-  'Climate Tech':     { cls: 'tag-climate',  label: 'Climate Tech' },
-  'EdTech':           { cls: 'tag-edtech',   label: 'EdTech' },
-  'PropTech':         { cls: 'tag-proptech', label: 'PropTech' },
-};
-
-// ─── API Calls ───
-async function fetchFounders() {
+// ─── API ───
+async function fetchOfficials() {
   const search = document.getElementById('searchInput').value.trim();
   const sort = document.getElementById('sortSelect').value;
-
   const params = new URLSearchParams({
-    search,
-    sector: activeFilters.sector,
-    stage: activeFilters.stage,
-    source: activeFilters.source,
-    sort,
-    limit: String(currentPage * PAGE_SIZE),
-    offset: '0',
+    search, department_type: activeFilters.department_type, government_level: activeFilters.government_level,
+    source: activeFilters.source, sort, limit: String(currentPage * PAGE_SIZE), offset: '0',
     watchlist: String(showWatchlistOnly),
   });
-
   try {
-    const resp = await fetch(`/api/founders?${params}`);
+    const resp = await fetch(`/api/officials?${params}`);
     const data = await resp.json();
-    founders = data.founders;
-    totalFounders = data.total;
+    officials = data.officials;
+    totalOfficials = data.total;
     watchlistCount = data.watchlistCount;
     renderCards();
     updateHeader();
-  } catch (err) {
-    console.error('Failed to fetch founders:', err);
-  }
+    if (currentView === 'kanban') loadKanban();
+  } catch (err) { console.error('Failed to fetch officials:', err); }
 }
 
 function updateHeader() {
-  document.getElementById('totalCount').textContent = totalFounders;
+  document.getElementById('totalCount').textContent = totalOfficials;
   document.getElementById('watchlistCount').textContent = watchlistCount;
 }
 
-// ─── Highlight search matches ───
 function highlightText(text, query) {
   if (!query) return esc(text);
   const escaped = esc(text);
   const terms = query.toLowerCase().split(/\s+/).filter(t => t.length > 1);
-  if (terms.length === 0) return escaped;
+  if (!terms.length) return escaped;
   const regex = new RegExp('(' + terms.map(t => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|') + ')', 'gi');
   return escaped.replace(regex, '<span class="highlight">$1</span>');
 }
@@ -666,552 +558,452 @@ function highlightText(text, query) {
 function renderCards() {
   const grid = document.getElementById('cardGrid');
   const query = document.getElementById('searchInput').value.trim();
-
-  document.getElementById('showingCount').textContent = totalFounders;
-
-  // Pagination
+  document.getElementById('showingCount').textContent = totalOfficials;
   const loadMoreBtn = document.getElementById('loadMoreBtn');
   const pagInfo = document.getElementById('paginationInfo');
-  if (founders.length < totalFounders) {
+  if (officials.length < totalOfficials) {
     loadMoreBtn.style.display = 'inline-flex';
-    pagInfo.textContent = `Showing ${founders.length} of ${totalFounders} founders`;
+    pagInfo.textContent = `Showing ${officials.length} of ${totalOfficials} officials`;
   } else {
     loadMoreBtn.style.display = 'none';
-    pagInfo.textContent = totalFounders > PAGE_SIZE ? `Showing all ${totalFounders} founders` : '';
+    pagInfo.textContent = totalOfficials > PAGE_SIZE ? `Showing all ${totalOfficials} officials` : '';
   }
-
-  if (founders.length === 0) {
-    grid.innerHTML = `
-      <div class="empty-state">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <h3>No founders found</h3>
-        <p>${showWatchlistOnly ? 'Your watchlist is empty. Save founders to see them here.' : 'Try adjusting your filters or search terms.'}</p>
-      </div>`;
+  if (officials.length === 0) {
+    grid.innerHTML = `<div class="empty-state">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <h3>No officials found</h3>
+      <p>${showWatchlistOnly ? 'Your watchlist is empty.' : 'Try adjusting your filters or search terms.'}</p>
+    </div>`;
     return;
   }
-
-  grid.innerHTML = founders.map(f => {
-    const sectorInfo = SECTOR_MAP[f.sector] || { cls: 'tag-ai', label: f.sector };
-    const isSaved = f.is_watchlisted;
-    const initials = (f.name || '').split(' ').map(w => w[0]).join('').slice(0, 2);
-    const avatarContent = f.avatar_url
-      ? `<img src="${esc(f.avatar_url)}" alt="${esc(f.name)}" onerror="this.parentElement.textContent='${initials}'">`
-      : initials;
-
-    const liUrl = f.linkedin_url || `https://www.linkedin.com/search/results/people/?keywords=${encodeURIComponent(f.name)}`;
-    const isUnverified = (f.confidence_score || 0) < 0.4;
-    const conf = f.confidence_score || 0;
+  grid.innerHTML = officials.map(o => {
+    const isSaved = o.is_watchlisted;
+    const initials = (o.name || '').split(' ').map(w => w[0]).join('').slice(0, 2);
+    const liUrl = o.linkedin_url || `https://www.linkedin.com/search/results/people/?keywords=${encodeURIComponent(o.name + ' ' + (o.municipality || ''))}`;
+    const conf = o.confidence_score || 0;
     const confCls = conf >= 0.8 ? 'conf-high' : conf >= 0.5 ? 'conf-mid' : 'conf-low';
-    const confLabel = conf >= 0.8 ? 'High confidence' : conf >= 0.5 ? 'Medium confidence' : 'Low confidence';
-    const isNew = lastVisit && f.updated_at && new Date(f.updated_at) > new Date(lastVisit);
-
+    const isNew = lastVisit && o.updated_at && new Date(o.updated_at) > new Date(lastVisit);
+    const pop = o.population ? Number(o.population).toLocaleString() : '—';
     return `
-    <div class="card ${f.is_stealth ? 'stealth-card' : ''}" onclick="openDrawer(${f.id})" style="cursor:pointer">
+    <div class="card" onclick="openDrawer(${o.id})">
       <div class="card-top">
-        <div class="avatar">${avatarContent}</div>
+        <div class="avatar">${initials}</div>
         <div class="card-identity">
-          <div class="founder-name" style="display:flex;align-items:center;gap:6px">
-            <span class="confidence-dot ${confCls}" title="${confLabel}"></span>
-            <span>${highlightText(f.name, query)}</span>
-            ${f.is_stealth ? `<span class="stealth-lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>STEALTH</span>` : ''}
-          </div>
-          <div class="founder-role">${esc(f.role || 'Founder')}</div>
-          <div class="company-name">${highlightText(f.company || '', query)}</div>
+          <div class="official-name"><span class="confidence-dot ${confCls}"></span><span>${highlightText(o.name, query)}</span></div>
+          <div class="official-title-line">${esc(o.title || o.department || '')}</div>
+          <div class="official-municipality">${highlightText(o.municipality || '', query)}${o.state ? ', ' + esc(o.state) : ''}</div>
         </div>
       </div>
-      <button class="card-save ${isSaved ? 'saved' : ''}" onclick="event.stopPropagation();toggleWatchlist(${f.id})" title="${isSaved ? 'Remove from Watchlist' : 'Save to Watchlist'}">
+      <button class="card-save ${isSaved ? 'saved' : ''}" onclick="event.stopPropagation();toggleWatchlist(${o.id})" title="${isSaved ? 'Remove from Watchlist' : 'Save to Watchlist'}">
         <svg viewBox="0 0 24 24" fill="${isSaved ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
       </button>
-      <div class="company-desc">${highlightText(f.description || '', query)}</div>
+      <div class="card-desc">${highlightText(o.description || '', query)}</div>
       <div class="tags">
-        <span class="tag ${sectorInfo.cls}">${sectorInfo.label}</span>
-        <span class="tag tag-stage">${esc(f.stage || '')}</span>
-        ${f.is_stealth ? '<span class="tag tag-stealth">Stealth</span>' : ''}
-        ${isUnverified ? '<span class="tag tag-unverified">Unverified</span>' : ''}
+        <span class="tag tag-dept">${esc(o.department_type || 'Other')}</span>
+        <span class="tag tag-level">${esc(o.government_level || '—')}</span>
         ${isNew ? '<span class="tag tag-new">NEW</span>' : ''}
-        ${f.deal_stage && f.deal_stage !== 'Watching' ? `<span class="deal-stage-badge ${dealStageCls(f.deal_stage)}">${esc(f.deal_stage)}</span>` : ''}
+        ${o.deal_stage && o.deal_stage !== 'Watching' ? `<span class="deal-stage-badge ds-contacted">${esc(o.deal_stage)}</span>` : ''}
       </div>
       <div class="metrics">
-        <div class="metric">
-          <span class="metric-label">Total Raised</span>
-          <span class="metric-value raised">${esc(f.raised || '—')}</span>
-        </div>
-        <div class="metric">
-          <span class="metric-label">Stage</span>
-          <span class="metric-value">${esc(f.stage || '—')}</span>
-        </div>
-        <div class="metric">
-          <span class="metric-label">Location</span>
-          <span class="metric-value">${esc(f.location || '—')}</span>
-        </div>
-        <div class="metric">
-          <span class="metric-label">Source</span>
-          <span class="metric-value">${esc(f.source || '—')}</span>
-        </div>
+        <div class="metric"><span class="metric-label">Population</span><span class="metric-value pop">${pop}</span></div>
+        <div class="metric"><span class="metric-label">Level</span><span class="metric-value">${esc(o.government_level || '—')}</span></div>
+        <div class="metric"><span class="metric-label">State</span><span class="metric-value">${esc(o.state || '—')}</span></div>
+        <div class="metric"><span class="metric-label">Source</span><span class="metric-value">${esc(o.source || '—')}</span></div>
       </div>
       <div class="card-footer">
         <div class="card-links">
-          <a href="${esc(liUrl)}" target="_blank" rel="noopener" class="card-link linkedin-link">
+          <a href="${esc(liUrl)}" target="_blank" rel="noopener" class="card-link" onclick="event.stopPropagation()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
-            LinkedIn
-          </a>
-          ${f.github_url ? `<a href="${esc(f.github_url)}" target="_blank" rel="noopener" class="card-link github-link">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
-            GitHub</a>` : ''}
-          ${f.website ? `<a href="${esc(f.website)}" target="_blank" rel="noopener" class="card-link">
+            LinkedIn</a>
+          ${o.email ? `<a href="mailto:${esc(o.email)}" class="card-link" onclick="event.stopPropagation()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            Email</a>` : ''}
+          ${o.website ? `<a href="${esc(o.website)}" target="_blank" rel="noopener" class="card-link" onclick="event.stopPropagation()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
             Website</a>` : ''}
         </div>
-        <div class="card-date">${f.funded_date ? 'Funded ' + formatDate(f.funded_date) : ''}</div>
+        <div class="card-date">${o.discovered_date ? formatDate(o.discovered_date) : ''}</div>
       </div>
-      <div class="card-source">${esc(f.source || '')}</div>
+      <div class="card-source">${esc(o.source || '')}</div>
     </div>`;
   }).join('');
 }
 
-// ─── Utilities ───
-function dealStageCls(stage) {
-  const map = {
-    'Watching': 'ds-watching',
-    'Reached Out': 'ds-reached',
-    'In Conversation': 'ds-conversation',
-    'Passed': 'ds-passed',
-    'Invested': 'ds-invested',
-  };
-  return map[stage] || 'ds-watching';
+// ─── Kanban ───
+function setView(view) {
+  currentView = view;
+  document.getElementById('viewGridBtn').classList.toggle('active', view === 'grid');
+  document.getElementById('viewKanbanBtn').classList.toggle('active', view === 'kanban');
+  document.getElementById('cardGrid').style.display = view === 'grid' ? '' : 'none';
+  document.getElementById('loadMoreWrap').style.display = view === 'grid' ? '' : 'none';
+  document.getElementById('kanbanBoard').style.display = view === 'kanban' ? '' : 'none';
+  if (view === 'kanban') loadKanban();
 }
-
-function esc(str) {
-  const d = document.createElement('div');
-  d.textContent = str || '';
-  return d.innerHTML;
-}
-
-function formatDate(dateStr) {
-  if (!dateStr) return '';
-  const d = new Date(dateStr + 'T00:00:00');
-  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-}
-
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2500);
-}
-
-function clearSearch() {
-  document.getElementById('searchInput').value = '';
-  currentPage = 1;
-  fetchFounders();
-}
-
-function exportCSV() {
-  if (founders.length === 0) { showToast('No founders to export'); return; }
-  const cols = ['name','role','company','sector','stage','raised','location','source','funded_date','website','linkedin_url','github_url','confidence_score','is_stealth'];
-  const header = cols.join(',');
-  const rows = founders.map(f => cols.map(c => {
-    const v = f[c] == null ? '' : String(f[c]);
-    return '"' + v.replace(/"/g, '""') + '"';
-  }).join(','));
-  const blob = new Blob([header + '\n' + rows.join('\n')], { type: 'text/csv' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = `roo-founders-${new Date().toISOString().slice(0,10)}.csv`;
-  a.click();
-  showToast(`Exported ${founders.length} founders`);
-}
-
-function loadMore() {
-  currentPage++;
-  fetchFounders();
-}
-
-// ─── Watchlist (server-side) ───
-async function toggleWatchlist(id) {
-  const founder = founders.find(f => f.id === id);
-  if (!founder) return;
-
+async function loadKanban() {
+  const params = new URLSearchParams({
+    search: document.getElementById('searchInput').value.trim(),
+    department_type: activeFilters.department_type, government_level: activeFilters.government_level,
+    source: activeFilters.source, sort: document.getElementById('sortSelect').value,
+    limit: '1000', offset: '0', watchlist: String(showWatchlistOnly),
+  });
   try {
-    if (founder.is_watchlisted) {
-      await fetch(`/api/watchlist/${id}`, { method: 'DELETE' });
-      showToast('Removed from watchlist');
-    } else {
-      await fetch(`/api/watchlist/${id}`, { method: 'POST' });
-      showToast('Saved to watchlist');
-    }
-    await fetchFounders();
-  } catch (err) {
-    showToast('Failed to update watchlist');
+    const resp = await fetch(`/api/officials?${params}`);
+    const data = await resp.json();
+    kanbanOfficials = data.officials;
+    renderKanban();
+  } catch (err) { console.error('Failed to load kanban:', err); }
+}
+function renderKanban() {
+  const stages = ['Watching', 'Contacted'];
+  const colIds = { Watching: 'cardsWatching', Contacted: 'cardsContacted' };
+  const countIds = { Watching: 'countWatching', Contacted: 'countContacted' };
+  const grouped = { Watching: [], Contacted: [] };
+  kanbanOfficials.forEach(o => { (grouped[o.deal_stage] || grouped.Watching).push(o); });
+  for (const stage of stages) {
+    const list = grouped[stage];
+    document.getElementById(countIds[stage]).textContent = list.length;
+    const colEl = document.getElementById(colIds[stage]);
+    if (list.length === 0) { colEl.innerHTML = '<div style="text-align:center;padding:1.5rem;color:var(--text-muted);font-size:.75rem;opacity:.45">No officials</div>'; continue; }
+    colEl.innerHTML = list.map(o => {
+      const initials = (o.name || '').split(' ').map(w => w[0]).join('').slice(0, 2);
+      const conf = o.confidence_score || 0;
+      const confCls = conf >= 0.8 ? 'conf-high' : conf >= 0.5 ? 'conf-mid' : 'conf-low';
+      return `<div class="kanban-card" onclick="openDrawer(${o.id})">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+          <div class="avatar" style="width:34px;height:34px;font-size:.78rem;border-radius:8px">${initials}</div>
+          <div style="min-width:0;flex:1">
+            <div class="kanban-card-name"><span class="confidence-dot ${confCls}"></span>${esc(o.name)}</div>
+            <div class="kanban-card-sub">${esc(o.municipality || '')}${o.state ? ', ' + esc(o.state) : ''}</div>
+          </div>
+        </div>
+        <div class="kanban-card-tags">
+          <span class="tag tag-dept" style="padding:2px 7px;font-size:.63rem">${esc(o.department_type || 'Other')}</span>
+          <span class="tag tag-level" style="padding:2px 7px;font-size:.63rem">${esc(o.government_level || '')}</span>
+          ${o.population ? `<span style="font-size:.7rem;color:var(--accent);font-weight:600;margin-left:auto">Pop: ${Number(o.population).toLocaleString()}</span>` : ''}
+        </div>
+      </div>`;
+    }).join('');
   }
 }
 
+// ─── Utilities ───
+function dealStageCls(stage) { return stage === 'Contacted' ? 'ds-contacted' : 'ds-watching'; }
+function esc(str) { const d = document.createElement('div'); d.textContent = str || ''; return d.innerHTML; }
+function formatDate(dateStr) { if (!dateStr) return ''; const d = new Date(dateStr + 'T00:00:00'); return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }); }
+function showToast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2500); }
+function clearSearch() { document.getElementById('searchInput').value = ''; currentPage = 1; fetchOfficials(); }
+function loadMore() { currentPage++; fetchOfficials(); }
+function exportCSV() {
+  if (!officials.length) { showToast('No officials to export'); return; }
+  const cols = ['name','title','department','municipality','state','county','government_level','department_type','population','email','phone','linkedin_url','website','source','confidence_score','deal_stage','discovered_date'];
+  const header = cols.join(',');
+  const rows = officials.map(o => cols.map(c => { const v = o[c] == null ? '' : String(o[c]); return '"' + v.replace(/"/g, '""') + '"'; }).join(','));
+  const blob = new Blob([header + '\n' + rows.join('\n')], { type: 'text/csv' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = `govwell-officials-${new Date().toISOString().slice(0,10)}.csv`; a.click();
+  showToast(`Exported ${officials.length} officials`);
+}
+
+// ─── Watchlist ───
+async function toggleWatchlist(id) {
+  const o = officials.find(x => x.id === id); if (!o) return;
+  try {
+    if (o.is_watchlisted) { await fetch(`/api/watchlist/${id}`, { method: 'DELETE' }); showToast('Removed from watchlist'); }
+    else { await fetch(`/api/watchlist/${id}`, { method: 'POST' }); showToast('Saved to watchlist'); }
+    await fetchOfficials();
+  } catch { showToast('Failed to update watchlist'); }
+}
 function toggleWatchlistView() {
   showWatchlistOnly = !showWatchlistOnly;
   document.getElementById('watchlistLabel').textContent = showWatchlistOnly ? 'Show All' : 'Show Watchlist';
-  currentPage = 1;
-  fetchFounders();
+  currentPage = 1; fetchOfficials();
 }
 
 // ─── Filters ───
 function toggleFilter(btn) {
-  const filterType = btn.dataset.filter;
-  const value = btn.dataset.value;
-  document.querySelectorAll(`.filter-btn[data-filter="${filterType}"]`).forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  activeFilters[filterType] = value;
-  currentPage = 1;
-  fetchFounders();
+  const ft = btn.dataset.filter, val = btn.dataset.value;
+  document.querySelectorAll(`.filter-btn[data-filter="${ft}"]`).forEach(b => b.classList.remove('active'));
+  btn.classList.add('active'); activeFilters[ft] = val; currentPage = 1; fetchOfficials();
 }
-
-// ─── Search (debounced) ───
 let searchTimer;
-document.getElementById('searchInput').addEventListener('input', () => {
-  clearTimeout(searchTimer);
-  searchTimer = setTimeout(() => { currentPage = 1; fetchFounders(); }, 300);
-});
+document.getElementById('searchInput').addEventListener('input', () => { clearTimeout(searchTimer); searchTimer = setTimeout(() => { currentPage = 1; fetchOfficials(); }, 300); });
 
 // ─── Refresh ───
 async function refreshData() {
   const overlay = document.getElementById('loadingOverlay');
   overlay.classList.add('active');
-  document.getElementById('loadingText').textContent = 'Sourcing founders…';
-  document.getElementById('loadingDetail').textContent = '';
-
-  ['srcGithub', 'srcHackernews', 'srcRss', 'srcGoogle', 'srcExa'].forEach(id => {
-    const el = document.getElementById(id);
-    el.classList.remove('done', 'error');
-  });
-
+  document.getElementById('loadingText').textContent = 'Sourcing officials…';
+  ['srcExa','srcGoogle','srcRss'].forEach(id => { document.getElementById(id).classList.remove('done','error'); });
   try {
     await fetch('/api/refresh', { method: 'POST' });
-
-    // Poll for status
     refreshPollTimer = setInterval(async () => {
       try {
         const resp = await fetch('/api/refresh/status');
         const data = await resp.json();
         const status = data.status;
-
         if (!status || !status.running) {
           clearInterval(refreshPollTimer);
-          refreshPollTimer = null;
-
-          // Mark remaining sources
           for (const [key, info] of Object.entries(status.sources || {})) {
-            const elId = 'src' + key.charAt(0).toUpperCase() + key.slice(1);
-            const el = document.getElementById(elId);
-            if (el) {
-              if (info.status === 'done') el.classList.add('done');
-              else if (info.status === 'error') el.classList.add('error');
-            }
+            const el = document.getElementById('src' + key.charAt(0).toUpperCase() + key.slice(1));
+            if (el) { if (info.status === 'done') el.classList.add('done'); else if (info.status === 'error') el.classList.add('error'); }
           }
-
-          document.getElementById('loadingText').textContent = `Found ${status.totalAdded} new founders`;
+          document.getElementById('loadingText').textContent = `Found ${status.totalAdded} new officials`;
           await new Promise(r => setTimeout(r, 800));
           overlay.classList.remove('active');
-          await fetchFounders();
-          showToast(`Refresh complete — ${status.totalAdded} new founders added`);
+          await fetchOfficials();
+          showToast(`Refresh complete — ${status.totalAdded} new officials`);
           return;
         }
-
-        // Update source indicators
         for (const [key, info] of Object.entries(status.sources || {})) {
-          const elId = 'src' + key.charAt(0).toUpperCase() + key.slice(1);
-          const el = document.getElementById(elId);
-          if (el) {
-            if (info.status === 'done') el.classList.add('done');
-            else if (info.status === 'error') el.classList.add('error');
-          }
+          const el = document.getElementById('src' + key.charAt(0).toUpperCase() + key.slice(1));
+          if (el) { if (info.status === 'done') el.classList.add('done'); else if (info.status === 'error') el.classList.add('error'); }
         }
-      } catch { /* ignore poll errors */ }
+      } catch {}
     }, 1000);
-
-  } catch (err) {
-    overlay.classList.remove('active');
-    showToast('Failed to start refresh');
-  }
+  } catch { overlay.classList.remove('active'); showToast('Failed to start refresh'); }
 }
 
-// ─── Init ───
-fetchFounders();
+fetchOfficials();
 
-// ─── Founder Drawer ───
-let drawerFounderId = null;
-
+// ─── Drawer ───
+let drawerOfficialId = null;
 function openDrawer(id) {
-  const f = founders.find(f => f.id === id);
-  if (!f) return;
-  drawerFounderId = id;
-
-  // Avatar
-  const avatarEl = document.getElementById('drawerAvatar');
-  const initials = (f.name || '').split(' ').map(w => w[0]).join('').slice(0, 2);
-  avatarEl.innerHTML = f.avatar_url
-    ? `<img src="${esc(f.avatar_url)}" alt="${esc(f.name)}" onerror="this.parentElement.textContent='${initials}'">`
-    : initials;
-
-  // Identity
-  document.getElementById('drawerName').textContent = f.name || '';
-  document.getElementById('drawerRole').textContent = f.role || 'Founder';
-  document.getElementById('drawerCompany').textContent = f.company || '';
-
-  // Tags
-  const sectorInfo = SECTOR_MAP[f.sector] || { cls: 'tag-ai', label: f.sector };
-  const tagsHtml = [
-    `<span class="tag ${sectorInfo.cls}">${sectorInfo.label}</span>`,
-    `<span class="tag tag-stage">${esc(f.stage || '')}</span>`,
-    f.is_stealth ? '<span class="tag tag-stealth">Stealth</span>' : '',
+  const o = officials.find(x => x.id === id) || kanbanOfficials.find(x => x.id === id); if (!o) return;
+  drawerOfficialId = id;
+  const initials = (o.name || '').split(' ').map(w => w[0]).join('').slice(0, 2);
+  document.getElementById('drawerAvatar').textContent = initials;
+  document.getElementById('drawerName').textContent = o.name || '';
+  document.getElementById('drawerRole').textContent = o.title || o.department || '';
+  document.getElementById('drawerCompany').textContent = `${o.municipality || ''}${o.state ? ', ' + o.state : ''}`;
+  document.getElementById('drawerTags').innerHTML = [
+    `<span class="tag tag-dept">${esc(o.department_type || 'Other')}</span>`,
+    `<span class="tag tag-level">${esc(o.government_level || '')}</span>`,
+    o.position_type ? `<span class="tag tag-stage">${esc(o.position_type)}</span>` : '',
   ].filter(Boolean).join('');
-  document.getElementById('drawerTags').innerHTML = tagsHtml;
-
-  // Description
-  const descEl = document.getElementById('drawerDesc');
-  const descSection = document.getElementById('drawerDescSection');
-  if (f.description) {
-    descEl.textContent = f.description;
-    descSection.style.display = '';
-  } else {
-    descSection.style.display = 'none';
-  }
-
-  // Deal info grid
-  const conf = f.confidence_score || 0;
+  const descEl = document.getElementById('drawerDesc'), descSec = document.getElementById('drawerDescSection');
+  if (o.description) { descEl.textContent = o.description; descSec.style.display = ''; } else { descSec.style.display = 'none'; }
+  const conf = o.confidence_score || 0;
+  const pop = o.population ? Number(o.population).toLocaleString() : '—';
   document.getElementById('drawerMeta').innerHTML = `
-    <div class="drawer-meta-item">
-      <div class="drawer-meta-label">Total Raised</div>
-      <div class="drawer-meta-value raised">${esc(f.raised || '—')}</div>
-    </div>
-    <div class="drawer-meta-item">
-      <div class="drawer-meta-label">Stage</div>
-      <div class="drawer-meta-value">${esc(f.stage || '—')}</div>
-    </div>
-    <div class="drawer-meta-item">
-      <div class="drawer-meta-label">Location</div>
-      <div class="drawer-meta-value">${esc(f.location || '—')}</div>
-    </div>
-    <div class="drawer-meta-item">
-      <div class="drawer-meta-label">Funded</div>
-      <div class="drawer-meta-value">${f.funded_date ? formatDate(f.funded_date) : '—'}</div>
-    </div>
-    <div class="drawer-meta-item">
-      <div class="drawer-meta-label">Source</div>
-      <div class="drawer-meta-value">${esc(f.source || '—')}</div>
-    </div>
-    <div class="drawer-meta-item">
-      <div class="drawer-meta-label">Updated</div>
-      <div class="drawer-meta-value">${f.updated_at ? formatDate(f.updated_at.slice(0,10)) : '—'}</div>
-    </div>
-  `;
-
-  // Confidence bar
+    <div class="drawer-meta-item"><div class="drawer-meta-label">Municipality</div><div class="drawer-meta-value">${esc(o.municipality || '—')}</div></div>
+    <div class="drawer-meta-item"><div class="drawer-meta-label">State</div><div class="drawer-meta-value">${esc(o.state || '—')}</div></div>
+    <div class="drawer-meta-item"><div class="drawer-meta-label">Population</div><div class="drawer-meta-value pop">${pop}</div></div>
+    <div class="drawer-meta-item"><div class="drawer-meta-label">Level</div><div class="drawer-meta-value">${esc(o.government_level || '—')}</div></div>
+    <div class="drawer-meta-item"><div class="drawer-meta-label">Source</div><div class="drawer-meta-value">${esc(o.source || '—')}</div></div>
+    <div class="drawer-meta-item"><div class="drawer-meta-label">Discovered</div><div class="drawer-meta-value">${o.discovered_date ? formatDate(o.discovered_date) : '—'}</div></div>`;
   const confPct = Math.round(conf * 100);
   const confColor = conf >= 0.8 ? '#34D399' : conf >= 0.5 ? '#F59E0B' : '#F06888';
   document.getElementById('drawerConfLabel').textContent = `Signal Confidence — ${confPct}%`;
-  const fill = document.getElementById('drawerConfFill');
-  fill.style.width = confPct + '%';
-  fill.style.background = confColor;
-
-  // Links
-  const liUrl = f.linkedin_url || `https://www.linkedin.com/search/results/people/?keywords=${encodeURIComponent(f.name)}`;
-  let linksHtml = `
-    <a href="${esc(liUrl)}" target="_blank" rel="noopener" class="drawer-link linkedin" onclick="event.stopPropagation()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
-      LinkedIn Profile
-    </a>`;
-  if (f.github_url) linksHtml += `
-    <a href="${esc(f.github_url)}" target="_blank" rel="noopener" class="drawer-link github" onclick="event.stopPropagation()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
-      GitHub
-    </a>`;
-  if (f.website) linksHtml += `
-    <a href="${esc(f.website)}" target="_blank" rel="noopener" class="drawer-link" onclick="event.stopPropagation()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-      Website
-    </a>`;
+  const fill = document.getElementById('drawerConfFill'); fill.style.width = confPct + '%'; fill.style.background = confColor;
+  const liUrl = o.linkedin_url || `https://www.linkedin.com/search/results/people/?keywords=${encodeURIComponent(o.name + ' ' + (o.municipality || ''))}`;
+  let linksHtml = `<a href="${esc(liUrl)}" target="_blank" rel="noopener" class="drawer-link" onclick="event.stopPropagation()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+    LinkedIn Profile</a>`;
+  if (o.email) linksHtml += `<a href="mailto:${esc(o.email)}" class="drawer-link" onclick="event.stopPropagation()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+    ${esc(o.email)}</a>`;
+  if (o.phone) linksHtml += `<a href="tel:${esc(o.phone)}" class="drawer-link" onclick="event.stopPropagation()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72"/></svg>
+    ${esc(o.phone)}</a>`;
+  if (o.website) linksHtml += `<a href="${esc(o.website)}" target="_blank" rel="noopener" class="drawer-link" onclick="event.stopPropagation()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+    Website</a>`;
   document.getElementById('drawerLinks').innerHTML = linksHtml;
-
-  // Notes & Pipeline Stage
-  document.getElementById('drawerNotes').value = f.notes || '';
-  const dealStageEl = document.getElementById('drawerDealStage');
-  dealStageEl.value = f.deal_stage || 'Watching';
+  document.getElementById('drawerNotes').value = o.notes || '';
+  document.getElementById('drawerDealStage').value = o.deal_stage || 'Watching';
   document.getElementById('drawerNoteSaved').style.opacity = '0';
-
-  // Watchlist button
-  updateDrawerWatchlistBtn(f.is_watchlisted);
-
-  // Open
+  updateDrawerWatchlistBtn(o.is_watchlisted);
   document.getElementById('drawerBackdrop').classList.add('open');
-  document.getElementById('founderDrawer').classList.add('open');
+  document.getElementById('officialDrawer').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
-
-async function saveNote() {
-  if (!drawerFounderId) return;
-  const notes = document.getElementById('drawerNotes').value;
-  try {
-    const res = await fetch(`/api/founders/${drawerFounderId}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ notes }),
-    });
-    if (!res.ok) throw new Error('Save failed');
-    // Update local state
-    const f = founders.find(f => f.id === drawerFounderId);
-    if (f) f.notes = notes;
-    // Flash "Saved ✓"
-    const saved = document.getElementById('drawerNoteSaved');
-    saved.style.opacity = '1';
-    setTimeout(() => { saved.style.opacity = '0'; }, 2000);
-    // Pulse the save button green
-    const btn = document.getElementById('drawerSaveNote');
-    btn.classList.add('saved');
-    setTimeout(() => btn.classList.remove('saved'), 2000);
-  } catch {
-    showToast('Failed to save note');
-  }
-}
-
-async function saveDealStage() {
-  if (!drawerFounderId) return;
-  const deal_stage = document.getElementById('drawerDealStage').value;
-  try {
-    const res = await fetch(`/api/founders/${drawerFounderId}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ deal_stage }),
-    });
-    if (!res.ok) throw new Error('Save failed');
-    // Update local state
-    const f = founders.find(f => f.id === drawerFounderId);
-    if (f) f.deal_stage = deal_stage;
-    showToast(`Stage → ${deal_stage}`);
-    // Re-render the card (so badge updates)
-    renderFounders();
-  } catch {
-    showToast('Failed to save stage');
-  }
-}
-
-async function drawerDraftOutreach() {
-  if (!drawerFounderId) return;
-  const f = founders.find(f => f.id === drawerFounderId);
-  if (!f) return;
-
-  closeDrawer();
-  if (!chatOpen) toggleChat();
-
-  const prompt = `Draft a brief, warm, investor outreach email to ${f.name}, ${f.role || 'Founder'} at ${f.company}. ` +
-    `They are building in ${f.sector || 'tech'} and have raised ${f.raised || 'an undisclosed amount'}. ` +
-    `Keep it under 150 words, genuine, non-salesy. Sign off as Joaquin from Roo Capital.`;
-
-  const input = document.getElementById('chatInput');
-  input.value = prompt;
-  input.dispatchEvent(new Event('input'));
-  // Auto-send
-  sendChatMessage();
-}
-
 function closeDrawer() {
   document.getElementById('drawerBackdrop').classList.remove('open');
-  document.getElementById('founderDrawer').classList.remove('open');
-  document.body.style.overflow = '';
-  drawerFounderId = null;
+  document.getElementById('officialDrawer').classList.remove('open');
+  document.body.style.overflow = ''; drawerOfficialId = null;
 }
-
+async function saveNote() {
+  if (!drawerOfficialId) return;
+  const notes = document.getElementById('drawerNotes').value;
+  try {
+    const res = await fetch(`/api/officials/${drawerOfficialId}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ notes }) });
+    if (!res.ok) throw new Error();
+    const o = officials.find(x => x.id === drawerOfficialId); if (o) o.notes = notes;
+    const saved = document.getElementById('drawerNoteSaved'); saved.style.opacity = '1'; setTimeout(() => saved.style.opacity = '0', 2000);
+    const btn = document.getElementById('drawerSaveNote'); btn.classList.add('saved'); setTimeout(() => btn.classList.remove('saved'), 2000);
+  } catch { showToast('Failed to save note'); }
+}
+async function saveDealStage() {
+  if (!drawerOfficialId) return;
+  const deal_stage = document.getElementById('drawerDealStage').value;
+  try {
+    const res = await fetch(`/api/officials/${drawerOfficialId}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ deal_stage }) });
+    if (!res.ok) throw new Error();
+    const o = officials.find(x => x.id === drawerOfficialId); if (o) o.deal_stage = deal_stage;
+    showToast(`Stage → ${deal_stage}`); renderCards(); if (currentView === 'kanban') renderKanban();
+  } catch { showToast('Failed to save stage'); }
+}
 function updateDrawerWatchlistBtn(isSaved) {
-  const btn = document.getElementById('drawerWatchlistBtn');
-  const label = document.getElementById('drawerWatchlistLabel');
-  const icon = btn.querySelector('svg');
-  icon.setAttribute('fill', isSaved ? 'currentColor' : 'none');
+  const btn = document.getElementById('drawerWatchlistBtn'), label = document.getElementById('drawerWatchlistLabel');
+  btn.querySelector('svg').setAttribute('fill', isSaved ? 'currentColor' : 'none');
   label.textContent = isSaved ? 'Remove from Watchlist' : 'Save to Watchlist';
-  btn.classList.toggle('btn-outline', !isSaved);
 }
-
 async function drawerToggleWatchlist() {
-  if (!drawerFounderId) return;
-  const founder = founders.find(f => f.id === drawerFounderId);
-  if (!founder) return;
-  if (founder.is_watchlisted) {
-    await fetch(`/api/watchlist/${drawerFounderId}`, { method: 'DELETE' });
-    showToast('Removed from watchlist');
-  } else {
-    await fetch(`/api/watchlist/${drawerFounderId}`, { method: 'POST' });
-    showToast('Saved to watchlist');
-  }
-  await fetchFounders();
-  // Re-sync button state
-  const updated = founders.find(f => f.id === drawerFounderId);
+  if (!drawerOfficialId) return;
+  const o = officials.find(x => x.id === drawerOfficialId); if (!o) return;
+  if (o.is_watchlisted) { await fetch(`/api/watchlist/${drawerOfficialId}`, { method: 'DELETE' }); showToast('Removed'); }
+  else { await fetch(`/api/watchlist/${drawerOfficialId}`, { method: 'POST' }); showToast('Saved'); }
+  await fetchOfficials();
+  const updated = officials.find(x => x.id === drawerOfficialId);
   if (updated) updateDrawerWatchlistBtn(updated.is_watchlisted);
 }
-
-function drawerAskAI() {
-  const f = founders.find(f => f.id === drawerFounderId);
-  if (!f) return;
-  closeDrawer();
-  // Open chat and pre-fill
-  if (!chatOpen) toggleChat();
+function drawerDraftOutreach() {
+  const o = officials.find(x => x.id === drawerOfficialId); if (!o) return;
+  closeDrawer(); if (!chatOpen) toggleChat();
   const input = document.getElementById('chatInput');
-  input.value = `Tell me about ${f.name} at ${f.company}`;
-  input.dispatchEvent(new Event('input'));
+  input.value = `Draft an outreach email to ${o.name}, ${o.title || ''} in ${o.municipality || ''}${o.state ? ', ' + o.state : ''}. Use Joaquin's Roo Capital template to intro them to GovWell.`;
+  sendChatMessage();
+}
+function drawerAskAI() {
+  const o = officials.find(x => x.id === drawerOfficialId); if (!o) return;
+  closeDrawer(); if (!chatOpen) toggleChat();
+  const input = document.getElementById('chatInput');
+  input.value = `Tell me about ${o.name} at ${o.municipality || ''}`;
   input.focus();
 }
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });
 
-// ─── Thesis Panel ───
-function toggleThesis() {
-  const panel = document.getElementById('thesisPanel');
-  const backdrop = document.getElementById('thesisBackdrop');
-  const open = panel.classList.toggle('open');
-  backdrop.classList.toggle('open', open);
-  document.body.style.overflow = open ? 'hidden' : '';
+// ─── Tabs ───
+let activeTab = 'officials';
+function setActiveTab(tab) {
+  activeTab = tab;
+  document.getElementById('tabOfficials').classList.toggle('active', tab === 'officials');
+  document.getElementById('tabNews').classList.toggle('active', tab === 'news');
+  const vis = tab === 'officials';
+  document.querySelector('.controls').style.display = vis ? '' : 'none';
+  document.querySelector('.results-meta').style.display = vis ? '' : 'none';
+  document.getElementById('cardGrid').style.display = vis && currentView === 'grid' ? '' : 'none';
+  document.getElementById('loadMoreWrap').style.display = vis && currentView === 'grid' ? '' : 'none';
+  document.getElementById('kanbanBoard').style.display = vis && currentView === 'kanban' ? '' : 'none';
+  document.getElementById('newsSection').style.display = tab === 'news' ? '' : 'none';
+  if (tab === 'news') { fetchHighlights(); if (newsItems.length === 0) fetchNews(); }
 }
 
-// Close on Escape
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') {
-    closeDrawer();
-    // Also close thesis panel if open
-    const panel = document.getElementById('thesisPanel');
-    if (panel.classList.contains('open')) toggleThesis();
+// ─── News ───
+let newsItems = [];
+let totalNews = 0;
+let newsCategory = 'all';
+const NEWS_PAGE_SIZE = 30;
+let newsPage = 1;
+const CATEGORY_MAP = {
+  technology:   { cls: 'cat-technology',   label: 'Technology' },
+  procurement:  { cls: 'cat-procurement',  label: 'Procurement' },
+  policy:       { cls: 'cat-policy',       label: 'Policy' },
+  general:      { cls: 'cat-general',      label: 'General' },
+};
+async function fetchHighlights() {
+  try {
+    const resp = await fetch('/api/news/highlights'); const data = await resp.json();
+    renderHighlights(data.items || []);
+  } catch {}
+}
+function renderHighlights(items) {
+  const box = document.getElementById('newsTldr'), list = document.getElementById('tldrList'), badge = document.getElementById('tldrCount');
+  if (!items.length) { box.style.display = 'none'; return; }
+  badge.textContent = `${items.length} in the last 24h`; box.style.display = '';
+  list.innerHTML = items.map(item => {
+    const catInfo = CATEGORY_MAP[item.category] || { cls: 'cat-general', label: item.category };
+    return `<a href="${esc(item.url)}" target="_blank" rel="noopener" class="news-tldr-item">
+      <span class="news-tldr-cat ${catInfo.cls}">${catInfo.label}</span>
+      <span class="news-tldr-text">${esc(item.title)}</span>
+      <span class="news-tldr-time">${relativeTime(item.published_at)}</span></a>`;
+  }).join('');
+}
+async function fetchNews() {
+  const search = document.getElementById('newsSearchInput').value.trim();
+  const params = new URLSearchParams({ category: newsCategory, search, limit: String(newsPage * NEWS_PAGE_SIZE), offset: '0' });
+  try {
+    const resp = await fetch(`/api/news?${params}`); const data = await resp.json();
+    newsItems = data.items; totalNews = data.total; renderNewsCards();
+  } catch {}
+}
+function renderNewsCards() {
+  const grid = document.getElementById('newsGrid');
+  document.getElementById('newsShowingCount').textContent = totalNews;
+  document.getElementById('newsLoadMoreBtn').style.display = newsItems.length < totalNews ? 'inline-flex' : 'none';
+  if (!newsItems.length) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+      <h3>No news articles yet</h3><p>Click "Refresh News" to fetch the latest govtech news.</p></div>`; return;
   }
-});
+  grid.innerHTML = newsItems.map(item => {
+    const catInfo = CATEGORY_MAP[item.category] || { cls: 'cat-general', label: item.category };
+    return `<a href="${esc(item.url)}" target="_blank" rel="noopener" class="news-card">
+      <div class="news-card-header"><span class="news-card-source">${esc(item.source_name)}</span><span class="news-card-dot"></span><span class="news-card-category ${catInfo.cls}">${catInfo.label}</span></div>
+      <div class="news-card-title">${esc(item.title)}</div>
+      ${item.summary ? `<div class="news-card-summary">${esc(item.summary)}</div>` : ''}
+      <div class="news-card-footer"><span class="news-card-time">${relativeTime(item.published_at)}</span></div></a>`;
+  }).join('');
+}
+function relativeTime(dateStr) {
+  if (!dateStr) return '';
+  const diff = Date.now() - new Date(dateStr).getTime();
+  const mins = Math.floor(diff / 60000);
+  if (mins < 1) return 'Just now'; if (mins < 60) return `${mins}m ago`;
+  const hrs = Math.floor(mins / 60); if (hrs < 24) return `${hrs}h ago`;
+  const days = Math.floor(hrs / 24);
+  if (days === 1) return 'Yesterday'; if (days < 7) return `${days}d ago`;
+  return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
+function setNewsCategory(btn) { document.querySelectorAll('.news-cat-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); newsCategory = btn.dataset.cat; newsPage = 1; fetchNews(); }
+function loadMoreNews() { newsPage++; fetchNews(); }
+let newsSearchTimer;
+document.getElementById('newsSearchInput').addEventListener('input', () => { clearTimeout(newsSearchTimer); newsSearchTimer = setTimeout(() => { newsPage = 1; fetchNews(); }, 300); });
+async function refreshNews() {
+  const btn = document.getElementById('newsRefreshBtn');
+  btn.disabled = true; btn.innerHTML = '<span class="spinner" style="width:16px;height:16px;border-width:2px"></span> Refreshing...';
+  try {
+    await fetch('/api/news/refresh', { method: 'POST' });
+    const pollTimer = setInterval(async () => {
+      try {
+        const resp = await fetch('/api/news/status'); const data = await resp.json();
+        if (!data.status || !data.status.running) {
+          clearInterval(pollTimer);
+          btn.disabled = false; btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg> Refresh News`;
+          await fetchNews(); fetchHighlights();
+          showToast(`News refreshed — ${data.status.added || 0} new articles`);
+        }
+      } catch {}
+    }, 1500);
+  } catch { btn.disabled = false; btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg> Refresh News`; showToast('Failed to refresh news'); }
+}
 </script>
 
 <!-- Chat Widget -->
-<button class="chat-toggle" id="chatToggle" onclick="toggleChat()" title="Chat with Roo Capital AI">
+<button class="chat-toggle" id="chatToggle" onclick="toggleChat()" title="GovWell Prospect AI">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
 </button>
-
 <div class="chat-panel" id="chatPanel">
   <div class="chat-header">
     <div class="chat-header-left">
-      <div class="chat-header-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-      </div>
-      <div>
-        <div class="chat-header-title">Roo Capital AI</div>
-        <div class="chat-header-sub">VC Analyst Assistant</div>
-      </div>
+      <div class="chat-header-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+      <div><div class="chat-header-title">GovWell Prospect AI</div><div class="chat-header-sub">Sales Intelligence Assistant</div></div>
     </div>
-    <button class="chat-close" onclick="toggleChat()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-    </button>
+    <button class="chat-close" onclick="toggleChat()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
   </div>
-
   <div class="chat-messages" id="chatMessages">
     <div class="chat-welcome">
-      <strong>Roo Capital AI Analyst</strong>
-      Ask me about founders, sectors, deal evaluation, or outreach strategy.
+      <strong>GovWell Prospect AI</strong>
+      Ask about officials, municipalities, outreach strategy, or GovWell fit.
       <div class="chat-suggestions">
-        <button class="chat-suggestion" onclick="sendSuggestion(this)">Which Vertical AI founders raised the most?</button>
-        <button class="chat-suggestion" onclick="sendSuggestion(this)">Compare cybersecurity startups in the pipeline</button>
-        <button class="chat-suggestion" onclick="sendSuggestion(this)">Draft an outreach email to Chieh Huang at Pelgo</button>
+        <button class="chat-suggestion" onclick="sendSuggestion(this)">Which planning directors are in the largest cities?</button>
+        <button class="chat-suggestion" onclick="sendSuggestion(this)">Draft an outreach email for a city manager</button>
+        <button class="chat-suggestion" onclick="sendSuggestion(this)">What states have the most officials tracked?</button>
       </div>
     </div>
   </div>
-
   <div class="chat-input-area">
-    <textarea class="chat-input" id="chatInput" placeholder="Ask about founders, sectors, deals…" rows="1" onkeydown="handleChatKey(event)"></textarea>
+    <textarea class="chat-input" id="chatInput" placeholder="Ask about officials, municipalities…" rows="1" onkeydown="handleChatKey(event)"></textarea>
     <button class="chat-send" id="chatSend" onclick="sendChatMessage()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
     </button>
@@ -1219,159 +1011,63 @@ document.addEventListener('keydown', e => {
 </div>
 
 <script>
-// ─── Chat State ───
-let chatOpen = false;
-let chatHistory = [];
-let chatStreaming = false;
-
-function toggleChat() {
-  chatOpen = !chatOpen;
-  document.getElementById('chatPanel').classList.toggle('open', chatOpen);
-  document.getElementById('chatToggle').classList.toggle('open', chatOpen);
-  if (chatOpen) document.getElementById('chatInput').focus();
-}
-
-function sendSuggestion(btn) {
-  document.getElementById('chatInput').value = btn.textContent;
-  sendChatMessage();
-}
-
-function handleChatKey(e) {
-  if (e.key === 'Enter' && !e.shiftKey) {
-    e.preventDefault();
-    sendChatMessage();
-  }
-}
-
-function autoResizeInput() {
-  const input = document.getElementById('chatInput');
-  input.style.height = 'auto';
-  input.style.height = Math.min(input.scrollHeight, 100) + 'px';
-}
-
-document.getElementById('chatInput').addEventListener('input', autoResizeInput);
+let chatOpen = false, chatHistory = [], chatStreaming = false;
+function toggleChat() { chatOpen = !chatOpen; document.getElementById('chatPanel').classList.toggle('open', chatOpen); document.getElementById('chatToggle').classList.toggle('open', chatOpen); if (chatOpen) document.getElementById('chatInput').focus(); }
+function sendSuggestion(btn) { document.getElementById('chatInput').value = btn.textContent; sendChatMessage(); }
+function handleChatKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChatMessage(); } }
+document.getElementById('chatInput').addEventListener('input', function() { this.style.height = 'auto'; this.style.height = Math.min(this.scrollHeight, 100) + 'px'; });
 
 function renderMarkdown(text) {
-  // Escape HTML first
   const e = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   let html = e(text);
-
-  // Code blocks (```...```)
-  html = html.replace(/```[\w]*\n?([\s\S]*?)```/g, (_,c) =>
-    `<pre style="background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.08);border-radius:7px;padding:10px 14px;overflow-x:auto;font-size:.78rem;margin:6px 0"><code>${c.trim()}</code></pre>`);
-
-  // Inline code
+  html = html.replace(/```[\w]*\n?([\s\S]*?)```/g, (_,c) => `<pre style="background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.08);border-radius:7px;padding:10px 14px;overflow-x:auto;font-size:.78rem;margin:6px 0"><code>${c.trim()}</code></pre>`);
   html = html.replace(/`([^`]+)`/g, '<code style="background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.08);border-radius:4px;padding:1px 6px;font-size:.82em">$1</code>');
-
-  // Headers
   html = html.replace(/^### (.+)$/gm, '<div style="font-size:.82rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin:10px 0 4px">$1</div>');
-  html = html.replace(/^## (.+)$/gm, '<div style="font-size:.9rem;font-weight:700;color:var(--orange);margin:10px 0 4px">$1</div>');
-  html = html.replace(/^# (.+)$/gm, '<div style="font-size:1rem;font-weight:700;color:var(--text);margin:10px 0 5px">$1</div>');
-
-  // Bold + italic
-  html = html.replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>');
+  html = html.replace(/^## (.+)$/gm, '<div style="font-size:.9rem;font-weight:700;color:#fff;margin:10px 0 4px">$1</div>');
   html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
   html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
-
-  // Bullet lists — group consecutive lines starting with - or *
-  html = html.replace(/((?:^[•\-\*] .+\n?)+)/gm, match => {
-    const items = match.trim().split('\n').map(l =>
-      `<li style="margin:3px 0">${l.replace(/^[•\-\*] /,'')}</li>`).join('');
-    return `<ul style="margin:6px 0;padding-left:18px;list-style:disc">${items}</ul>`;
-  });
-
-  // Numbered lists
-  html = html.replace(/((?:^\d+\. .+\n?)+)/gm, match => {
-    const items = match.trim().split('\n').map(l =>
-      `<li style="margin:3px 0">${l.replace(/^\d+\. /,'')}</li>`).join('');
-    return `<ol style="margin:6px 0;padding-left:18px">${items}</ol>`;
-  });
-
-  // Horizontal rule
-  html = html.replace(/^---$/gm, '<hr style="border:none;border-top:1px solid rgba(255,255,255,.08);margin:10px 0">');
-
-  // Line breaks (double newline = paragraph gap, single = <br>)
+  html = html.replace(/((?:^[•\-\*] .+\n?)+)/gm, match => { const items = match.trim().split('\n').map(l => `<li style="margin:3px 0">${l.replace(/^[•\-\*] /,'')}</li>`).join(''); return `<ul style="margin:6px 0;padding-left:18px;list-style:disc">${items}</ul>`; });
+  html = html.replace(/((?:^\d+\. .+\n?)+)/gm, match => { const items = match.trim().split('\n').map(l => `<li style="margin:3px 0">${l.replace(/^\d+\. /,'')}</li>`).join(''); return `<ol style="margin:6px 0;padding-left:18px">${items}</ol>`; });
   html = html.replace(/\n\n/g, '<div style="height:6px"></div>');
   html = html.replace(/\n/g, '<br>');
-
   return html;
 }
-
 function appendMessage(role, content) {
   const container = document.getElementById('chatMessages');
-  // Remove welcome on first message
-  const welcome = container.querySelector('.chat-welcome');
-  if (welcome) welcome.remove();
-
-  const div = document.createElement('div');
-  div.className = `chat-msg ${role}`;
-  if (role === 'assistant') {
-    div.innerHTML = renderMarkdown(content);
-  } else {
-    div.textContent = content;
-  }
-  container.appendChild(div);
-  container.scrollTop = container.scrollHeight;
-  return div;
+  const welcome = container.querySelector('.chat-welcome'); if (welcome) welcome.remove();
+  const div = document.createElement('div'); div.className = `chat-msg ${role}`;
+  if (role === 'assistant') div.innerHTML = renderMarkdown(content); else div.textContent = content;
+  container.appendChild(div); container.scrollTop = container.scrollHeight; return div;
 }
-
 async function sendChatMessage() {
   if (chatStreaming) return;
-  const input = document.getElementById('chatInput');
-  const message = input.value.trim();
-  if (!message) return;
-
-  input.value = '';
-  input.style.height = 'auto';
-
-  // Add user message
-  appendMessage('user', message);
-  chatHistory.push({ role: 'user', content: message });
-
-  // Create assistant message placeholder
+  const input = document.getElementById('chatInput'), message = input.value.trim(); if (!message) return;
+  input.value = ''; input.style.height = 'auto';
+  appendMessage('user', message); chatHistory.push({ role: 'user', content: message });
   const container = document.getElementById('chatMessages');
-  const assistantDiv = document.createElement('div');
-  assistantDiv.className = 'chat-msg assistant';
-  assistantDiv.innerHTML = '<span class="typing-cursor"></span>';
-  container.appendChild(assistantDiv);
-  container.scrollTop = container.scrollHeight;
-
-  // Disable input
-  chatStreaming = true;
-  document.getElementById('chatSend').disabled = true;
-
+  const assistantDiv = document.createElement('div'); assistantDiv.className = 'chat-msg assistant';
+  assistantDiv.innerHTML = '<span class="typing-cursor"></span>'; container.appendChild(assistantDiv); container.scrollTop = container.scrollHeight;
+  chatStreaming = true; document.getElementById('chatSend').disabled = true;
   let fullResponse = '';
-
   try {
-    const resp = await fetch('/api/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message, history: chatHistory.slice(-20) }),
-    });
-
-    if (!resp.ok) {
-      const err = await resp.json().catch(() => ({ error: 'Chat unavailable' }));
-      assistantDiv.textContent = err.error || 'Something went wrong';
-      assistantDiv.classList.add('error');
-      chatStreaming = false;
-      document.getElementById('chatSend').disabled = false;
-      return;
+    const resp = await fetch('/api/chat/stream', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message, history: chatHistory.slice(-20) }) });
+    if (!resp.ok) { const err = await resp.json().catch(() => ({ error: 'Chat unavailable' })); assistantDiv.textContent = err.error; assistantDiv.classList.add('error'); chatStreaming = false; document.getElementById('chatSend').disabled = false; return; }
+    const reader = resp.body.getReader(), decoder = new TextDecoder(); let buffer = '';
+    outer: while (true) {
+      const { done, value } = await reader.read(); if (done) break;
+      buffer += decoder.decode(value, { stream: true }); const lines = buffer.split('\n'); buffer = lines.pop();
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue; const payload = line.slice(6).trim();
+        if (payload === '[DONE]') break outer;
+        try { const { delta, error } = JSON.parse(payload); if (error) { assistantDiv.textContent = error; assistantDiv.classList.add('error'); break outer; }
+          if (delta) { fullResponse += delta; assistantDiv.innerHTML = renderMarkdown(fullResponse) + '<span class="typing-cursor"></span>'; container.scrollTop = container.scrollHeight; }
+        } catch {}
+      }
     }
-
-    const data = await resp.json();
-    fullResponse = data.reply || '';
-
-    assistantDiv.textContent = fullResponse || 'No response received.';
+    assistantDiv.innerHTML = renderMarkdown(fullResponse || 'No response received.');
     chatHistory.push({ role: 'assistant', content: fullResponse });
-
-  } catch (err) {
-    assistantDiv.textContent = 'Failed to connect. Check that ANTHROPIC_API_KEY is set in .env and restart the server.';
-    assistantDiv.classList.add('error');
-  }
-
-  chatStreaming = false;
-  document.getElementById('chatSend').disabled = false;
-  container.scrollTop = container.scrollHeight;
+  } catch { assistantDiv.textContent = 'Failed to connect. Check ANTHROPIC_API_KEY.'; assistantDiv.classList.add('error'); }
+  chatStreaming = false; document.getElementById('chatSend').disabled = false; container.scrollTop = container.scrollHeight;
 }
 </script>
 </body>

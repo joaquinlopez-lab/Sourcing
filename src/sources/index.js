@@ -1,117 +1,202 @@
-import { fetchGitHubFounders } from './github.js';
-import { fetchHNFounders } from './hackernews.js';
-import { fetchRSSFounders } from './rss-feeds.js';
-import { fetchGoogleFounders } from './google-search.js';
-import { fetchExaFounders } from './exa.js';
-import { upsertFounder, logRefreshStart, logRefreshEnd } from '../db/queries.js';
+import Anthropic from '@anthropic-ai/sdk';
+import { fetchExaOfficials } from './exa.js';
+import { fetchGoogleOfficials } from './google-search.js';
+import { fetchRSSOfficials } from './rss-feeds.js';
+import { upsertOfficial, logRefreshStart, logRefreshEnd } from '../db/queries.js';
 import { dedup } from '../services/dedup.js';
-import { enrichFounder } from '../services/enrichment.js';
+import { enrichOfficial } from '../services/enrichment.js';
+import {
+  REAL_NAME_RE, GOV_TITLE_KEYWORDS, KNOWN_FEDERAL_FIGURES, NON_OFFICIAL_PATTERNS,
+} from '../utils/constants.js';
 
-// Track in-progress refresh
 let refreshState = null;
 
 export function getRefreshStatus() {
   return refreshState;
 }
 
-// ── Validation gate — every founder from every source must pass this ──
+// ── Validation gate — every official must pass this ──
 
-// Known tech journalists / writers that get misidentified as founders
-const JOURNALIST_BLOCKLIST = new Set([
-  'mary ann azevedo', 'anthony ha', 'connie loizos', 'kate clark',
-  'ingrid lunden', 'natasha mascarenhas', 'harri weber', 'sarah perez',
-  'manish singh', 'alex wilhelm', 'kirsten korosec', 'amir efrati',
-  'eric newcomer', 'elaine watson', 'kirstyn brendlen', 'kristina klaas',
-  'chris walker', 'growth list team', 'access intercomm',
-]);
-
-// Words that indicate the "name" is actually an org/article/junk, not a person
 const JUNK_NAME_PATTERNS = [
-  /^(written by|guide to|claims|nyc supports|arab founders)/i,
-  /^(tech:nyc|techcrunch|list of|funded|series [abc])/i,
-  /\b(team|inc|llc|corp|markets|intercomm|newsletter)\b/i,
-  /^[a-z]/,           // starts with lowercase = username, not a name
+  /^[a-z]/,           // starts with lowercase
   /^[A-Z]{2,}\b/,     // ALL CAPS first word = acronym
-  /[_\d@]/,           // underscores, numbers, @ = username
-  /^.{0,4}$/,         // too short to be a real name
+  /[_\d@]/,           // usernames
+  /^.{0,4}$/,         // too short
   /^.{50,}$/,         // too long
 ];
 
-// Validates name looks like "First Last" (2-4 words, proper case)
-const REAL_NAME_RE = /^[A-Z][a-z]{1,20} [A-Z][a-z]{1,20}(\s[A-Z][a-z]{1,20}){0,2}$/;
+function validateOfficial(official) {
+  const name = (official.name || '').trim();
 
-function validateFounder(founder) {
-  const name = (founder.name || '').trim();
-
-  // 1. Must have a name
   if (!name) return 'no name';
-
-  // 2. Name must look like a real person (First Last)
   if (!REAL_NAME_RE.test(name)) return `bad name format: "${name}"`;
+  if (KNOWN_FEDERAL_FIGURES.has(name.toLowerCase())) return `federal figure: "${name}"`;
 
-  // 3. Not a known journalist
-  if (JOURNALIST_BLOCKLIST.has(name.toLowerCase())) return `journalist: "${name}"`;
-
-  // 4. Name doesn't match junk patterns
   for (const re of JUNK_NAME_PATTERNS) {
     if (re.test(name)) return `junk name: "${name}"`;
   }
 
-  // 5. Must have a real company name
-  const company = (founder.company || '').trim();
-  if (!company || company === 'Unknown') return 'no company';
-  if (company.startsWith('http')) return `company is URL: "${company}"`;
-  if (/^\w+ Labs$/i.test(company) && company.split(' ')[0].length < 4) return `fake lab name: "${company}"`;
-  if (/^stealth(\s*(startup|mode|ai))?$/i.test(company)) return `placeholder company: "${company}"`;
-  if (/university|college|professor|rutgers|nyu|columbia/i.test(company)) return `academic institution: "${company}"`;
+  // Must have a municipality
+  const municipality = (official.municipality || '').trim();
+  if (!municipality) return 'no municipality';
 
-  // 6. Description can't be mostly HTML/navigation junk
-  const desc = (founder.description || '');
-  const junkRatio = (desc.match(/\[|#{2,}|📅|---|\|/g) || []).length;
-  if (junkRatio > 3) return `junk description`;
+  // Must have a title or department
+  const title = (official.title || '').trim();
+  const department = (official.department || '').trim();
+  if (!title && !department) return 'no title or department';
 
-  return null; // passes validation
+  // Title must contain at least one gov-relevant keyword
+  const combinedTitle = `${title} ${department}`.toLowerCase();
+  const hasGovKeyword = GOV_TITLE_KEYWORDS.some(kw => combinedTitle.includes(kw));
+  if (!hasGovKeyword) return `no gov keyword in title: "${title}"`;
+
+  // Must not match non-official patterns
+  for (const re of NON_OFFICIAL_PATTERNS) {
+    if (re.test(combinedTitle)) return `non-official pattern: "${title}"`;
+  }
+
+  // Description quality
+  const desc = (official.description || '');
+  if (/Agree & Join LinkedIn|clicking Continue/i.test(desc)) return 'LinkedIn boilerplate';
+
+  return null;
 }
 
-// Process results from a single source: validate, dedup, enrich, upsert
-function processSourceResults(name, rawFounders) {
-  const unique = dedup(rawFounders);
+// ── AI batch validation ──
+
+let _anthropicClient = null;
+function getAnthropicClient() {
+  if (!_anthropicClient) {
+    const apiKey = process.env.ANTHROPIC_API_KEY;
+    if (!apiKey) return null;
+    _anthropicClient = new Anthropic({ apiKey });
+  }
+  return _anthropicClient;
+}
+
+async function aiBatchValidate(officials) {
+  const client = getAnthropicClient();
+  if (!client) return new Map();
+
+  const numbered = officials.map((o, i) =>
+    `${i + 1}. Name: ${o.name} | Title: ${o.title || ''} | Municipality: ${o.municipality || ''} | Dept: ${o.department_type || ''} | Desc: ${(o.description || '').slice(0, 150)}`
+  ).join('\n');
+
+  try {
+    const msg = await client.messages.create({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 200,
+      messages: [{
+        role: 'user',
+        content: `You are a strict filter for a US local government official sourcing tool.
+For EACH person below, answer YES or NO. Answer NO if ANY apply:
+- Person is from the private sector (not a government employee)
+- Person is a journalist, writer, or blogger
+- Person is a federal government official (Congress, White House, federal agencies)
+- Person is a political candidate, not a current office holder
+- Municipality name is a parsing artifact or not a real US municipality
+- Title/role is not related to local government operations
+- Person works for a private consulting firm, not the government itself
+- Person appears to be from outside the United States
+
+${numbered}
+
+Reply with ONLY a numbered list like:
+1. YES
+2. NO
+3. YES`,
+      }],
+    });
+
+    const reply = (msg.content[0]?.text || '').trim();
+    const results = new Map();
+    for (const line of reply.split('\n')) {
+      const m = line.match(/^(\d+)\.\s*(YES|NO)/i);
+      if (m) {
+        const idx = parseInt(m[1]) - 1;
+        if (idx >= 0 && idx < officials.length) {
+          results.set(idx, m[2].toUpperCase() === 'YES');
+        }
+      }
+    }
+    return results;
+  } catch (err) {
+    console.warn('[AI Gate Batch] Error:', err.message);
+    return new Map();
+  }
+}
+
+// Process results from a single source
+async function processSourceResults(name, rawOfficials) {
+  const unique = dedup(rawOfficials);
   let added = 0;
   let rejected = 0;
-  for (const founder of unique) {
-    const rejection = validateFounder(founder);
+  let aiRejected = 0;
+
+  // Step 1: Rule-based validation
+  const rulePassedOfficials = [];
+  for (const official of unique) {
+    const rejection = validateOfficial(official);
     if (rejection) {
       console.log(`[Validate] REJECTED from ${name}: ${rejection}`);
       rejected++;
-      continue;
+    } else {
+      rulePassedOfficials.push(official);
     }
-    const enriched = enrichFounder(founder);
-    const result = upsertFounder(enriched);
-    if (result.action === 'inserted') added++;
   }
-  if (rejected > 0) console.log(`[Validate] ${name}: rejected ${rejected}/${unique.length} profiles`);
+
+  // Step 2: Batch AI validation
+  if (rulePassedOfficials.length > 0) {
+    const BATCH_SIZE = 20;
+    const aiPassedOfficials = [];
+
+    for (let i = 0; i < rulePassedOfficials.length; i += BATCH_SIZE) {
+      const batch = rulePassedOfficials.slice(i, i + BATCH_SIZE);
+      const results = await aiBatchValidate(batch);
+
+      for (let j = 0; j < batch.length; j++) {
+        const passed = results.get(j);
+        if (passed === false) {
+          console.log(`[AI Gate] REJECTED from ${name}: ${batch[j].name} @ ${batch[j].municipality}`);
+          aiRejected++;
+        } else {
+          aiPassedOfficials.push(batch[j]);
+        }
+      }
+    }
+
+    // Step 3: Enrich and upsert
+    for (const official of aiPassedOfficials) {
+      const enriched = enrichOfficial(official);
+      const result = upsertOfficial(enriched);
+      if (result.action === 'inserted') added++;
+    }
+  }
+
+  if (rejected > 0 || aiRejected > 0) {
+    console.log(`[Validate] ${name}: rule-rejected=${rejected} ai-rejected=${aiRejected} passed=${rulePassedOfficials.length - aiRejected}`);
+  }
   return added;
 }
 
-// Run a single source with logging and state updates
 async function runSource(name, fn, onProgress) {
   refreshState.sources[name].status = 'running';
   const logId = logRefreshStart(name);
 
   try {
-    const rawFounders = await fn((msg) => {
+    const rawOfficials = await fn((msg) => {
       if (onProgress) onProgress(name, msg);
     });
 
-    refreshState.sources[name].found = rawFounders.length;
+    refreshState.sources[name].found = rawOfficials.length;
 
-    const added = processSourceResults(name, rawFounders);
+    const added = await processSourceResults(name, rawOfficials);
 
     refreshState.sources[name].added = added;
     refreshState.sources[name].status = 'done';
     refreshState.totalAdded += added;
 
-    logRefreshEnd(logId, rawFounders.length, added);
+    logRefreshEnd(logId, rawOfficials.length, added);
   } catch (err) {
     console.error(`Source ${name} failed:`, err.message);
     refreshState.sources[name].status = 'error';
@@ -125,22 +210,17 @@ export async function runAllSources(onProgress) {
     running: true,
     startedAt: new Date().toISOString(),
     sources: {
-      github: { status: 'pending', found: 0, added: 0 },
-      hackernews: { status: 'pending', found: 0, added: 0 },
-      rss: { status: 'pending', found: 0, added: 0 },
+      exa:    { status: 'pending', found: 0, added: 0 },
       google: { status: 'pending', found: 0, added: 0 },
-      exa: { status: 'pending', found: 0, added: 0 },
+      rss:    { status: 'pending', found: 0, added: 0 },
     },
     totalAdded: 0,
   };
 
-  // Run all sources in parallel for speed
   await Promise.all([
-    runSource('github', fetchGitHubFounders, onProgress),
-    runSource('hackernews', fetchHNFounders, onProgress),
-    runSource('rss', fetchRSSFounders, onProgress),
-    runSource('google', fetchGoogleFounders, onProgress),
-    runSource('exa', fetchExaFounders, onProgress),
+    runSource('exa', fetchExaOfficials, onProgress),
+    runSource('google', fetchGoogleOfficials, onProgress),
+    runSource('rss', fetchRSSOfficials, onProgress),
   ]);
 
   refreshState.running = false;

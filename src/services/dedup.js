@@ -1,4 +1,4 @@
-// Name normalization + dedup within a batch
+// Name + municipality normalization + dedup within a batch
 
 function normalizeName(name) {
   return (name || '')
@@ -8,13 +8,12 @@ function normalizeName(name) {
     .replace(/[^a-z\s]/g, '');
 }
 
-function normalizeCompany(company) {
-  return (company || '')
+function normalizeMunicipality(muni) {
+  return (muni || '')
     .toLowerCase()
     .trim()
+    .replace(/\b(city of|town of|village of|county of|borough of)\b/g, '')
     .replace(/\s+/g, ' ')
-    .replace(/\b(inc|llc|ltd|co|corp|corporation|labs|studio|studios)\b\.?/gi, '')
-    .replace(/[^a-z0-9\s]/g, '')
     .trim();
 }
 
@@ -31,24 +30,25 @@ function similarity(a, b) {
   return intersection / (bigramsA.size + bigramsB.size - intersection);
 }
 
-export function dedup(founders) {
-  const seen = new Map(); // key -> founder
+export function dedup(officials) {
+  const seen = new Map();
   const result = [];
 
-  for (const f of founders) {
-    const nameKey = normalizeName(f.name);
-    const companyKey = normalizeCompany(f.company);
-    const dedupKey = `${nameKey}|${companyKey}`;
+  for (const o of officials) {
+    const nameKey = normalizeName(o.name);
+    const muniKey = normalizeMunicipality(o.municipality);
+    const deptKey = (o.department_type || '').toLowerCase().trim();
+    const dedupKey = `${nameKey}|${muniKey}|${deptKey}`;
 
     if (seen.has(dedupKey)) continue;
 
     // Fuzzy match against existing entries
     let isDuplicate = false;
-    for (const [key, existing] of seen) {
-      const [existingName, existingCompany] = key.split('|');
+    for (const [key] of seen) {
+      const [existingName, existingMuni] = key.split('|');
       if (
         similarity(nameKey, existingName) > 0.8 &&
-        similarity(companyKey, existingCompany) > 0.7
+        similarity(muniKey, existingMuni) > 0.7
       ) {
         isDuplicate = true;
         break;
@@ -56,8 +56,8 @@ export function dedup(founders) {
     }
 
     if (!isDuplicate) {
-      seen.set(dedupKey, f);
-      result.push(f);
+      seen.set(dedupKey, o);
+      result.push(o);
     }
   }
 

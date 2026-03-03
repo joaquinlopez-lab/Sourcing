@@ -2,5 +2,8 @@ node_modules/
 data/founders.db
 data/founders.db-wal
 data/founders.db-shm
+data/officials.db
+data/officials.db-wal
+data/officials.db-shm
 .env
 .netlify/

@@ -1,9 +1,14 @@
 import { createLimiter } from '../utils/rate-limiter.js';
+import {
+  REAL_NAME_RE, GOV_TITLE_KEYWORDS,
+  classifyDepartmentType, classifyPositionType, classifyGovernmentLevel, normalizeState,
+} from '../utils/constants.js';
 
 const throttle = createLimiter('google', { maxRequests: 5, windowMs: 60_000 });
 
-// Google Custom Search Engine — optional, needs GOOGLE_CSE_KEY and GOOGLE_CSE_ID in .env
-export async function fetchGoogleFounders(onProgress) {
+const GOV_TITLE_RE = /\b(city manager|city administrator|planning director|building official|building director|CIO|CTO|IT director|procurement|purchasing|code enforcement|public works|permitting|zoning|building department|planning department|community development)\b/i;
+
+export async function fetchGoogleOfficials(onProgress) {
   const apiKey = process.env.GOOGLE_CSE_KEY;
   const searchEngineId = process.env.GOOGLE_CSE_ID;
 
@@ -13,17 +18,19 @@ export async function fetchGoogleFounders(onProgress) {
   }
 
   const queries = [
-    'site:linkedin.com/in NYC startup founder 2025',
-    'site:linkedin.com/in "New York" CEO stealth startup',
-    'site:crunchbase.com "New York" seed funding 2025',
+    'site:linkedin.com/in "city manager" OR "planning director" OR "building official" local government',
+    'site:linkedin.com/in "CIO" OR "IT director" municipal government',
+    '"staff directory" "planning" OR "building" OR "permits" director contact site:*.gov',
+    '"city manager" OR "city administrator" contact email site:*.gov',
+    '"procurement officer" OR "purchasing director" local government municipality',
+    '"building department" director OR manager city government contact',
   ];
 
-  const founders = [];
+  const officials = [];
   const seenUrls = new Set();
 
   for (let i = 0; i < queries.length; i++) {
-    if (onProgress) onProgress(`Google Search (${i + 1}/${queries.length})…`);
-
+    if (onProgress) onProgress(`Google Search (${i + 1}/${queries.length})...`);
     await throttle();
 
     try {
@@ -39,48 +46,82 @@ export async function fetchGoogleFounders(onProgress) {
         seenUrls.add(link);
 
         const isLinkedIn = link.includes('linkedin.com/in/');
-        const isCrunchbase = link.includes('crunchbase.com');
+        const isGovSite = /\.gov\b|\.us\b/.test(link);
 
-        if (!isLinkedIn && !isCrunchbase) continue;
+        if (!isLinkedIn && !isGovSite) continue;
 
-        // Extract name from title
-        // LinkedIn: "FirstName LastName - Title - Company | LinkedIn"
-        // Crunchbase: "CompanyName - Crunchbase Company Profile"
+        const snippet = item.snippet || '';
+        const combined = `${item.title || ''} ${snippet}`;
+
+        // Must have government title keyword
+        if (!GOV_TITLE_RE.test(combined)) continue;
+
         let name = '';
-        let company = '';
+        let officialTitle = '';
+        let municipality = '';
         let linkedinUrl = null;
 
         if (isLinkedIn) {
+          // LinkedIn title: "John Smith - City Manager - City of Austin | LinkedIn"
           const parts = (item.title || '').split(/\s*[-–—|]\s*/);
           name = parts[0]?.trim() || '';
-          company = parts[2]?.trim() || parts[1]?.trim() || '';
+          officialTitle = parts[1]?.trim() || '';
+          municipality = parts[2]?.trim() || '';
           linkedinUrl = link;
+
+          if (!REAL_NAME_RE.test(name)) continue;
+          if (!GOV_TITLE_RE.test(`${officialTitle} ${municipality} ${snippet}`)) continue;
+
         } else {
-          company = (item.title || '').replace(/\s*[-–—].*/,'').trim();
-          name = `${company} Founder`;
+          // Gov site — try to extract name from snippet
+          const namePatterns = [
+            /([A-Z][a-z]+ [A-Z][a-z]+),?\s+(?:the\s+)?(?:city manager|planning director|building|IT director|CIO|procurement|public works|code enforcement)/i,
+            /(?:Director|Manager|Chief|Administrator|Officer):\s*([A-Z][a-z]+ [A-Z][a-z]+)/i,
+          ];
+
+          for (const re of namePatterns) {
+            const m = combined.match(re);
+            if (m && REAL_NAME_RE.test(m[1].trim())) {
+              name = m[1].trim();
+              break;
+            }
+          }
+          if (!name) continue;
+
+          // Extract title
+          const titleMatch = combined.match(/((?:City|Town|County|Deputy|Assistant)?\s*(?:Manager|Administrator|Director|Chief|Officer|Clerk|Engineer|Planner|Inspector|Commissioner|Superintendent)(?:\s+of\s+[\w\s]+)?)/i);
+          officialTitle = titleMatch ? titleMatch[1].trim() : '';
+
+          // Extract municipality
+          const muniMatch = combined.match(/(?:City of|Town of|Village of|County of)\s+([A-Z][a-zA-Z\s]+?)(?:\s*[,|.\n]|$)/);
+          municipality = muniMatch ? muniMatch[0].replace(/[,|.\n]$/, '').trim() : '';
         }
 
         if (!name) continue;
 
-        const snippet = item.snippet || '';
-        const isStealth = snippet.toLowerCase().includes('stealth');
+        const emailMatch = snippet.match(/[\w.+-]+@[\w-]+\.(?:gov|us|org)\b/);
+        const phoneMatch = snippet.match(/\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}/);
+        const state = normalizeState(extractStateFromSnippet(combined));
 
-        founders.push({
+        officials.push({
           name,
-          role: isStealth ? 'Founder (Stealth)' : 'Founder',
-          company: company || 'Unknown',
-          description: snippet.slice(0, 200),
-          sector: classifySectorFromSnippet(snippet),
-          stage: 'Seed',
-          raised: '',
-          location: 'New York, NY',
+          title: officialTitle,
+          department: officialTitle,
+          municipality,
+          state,
+          county: '',
+          government_level: classifyGovernmentLevel(combined, link),
+          department_type: classifyDepartmentType(officialTitle, ''),
+          position_type: classifyPositionType(officialTitle),
+          population: 0,
+          description: snippet.slice(0, 250),
+          email: emailMatch ? emailMatch[0] : null,
+          phone: phoneMatch ? phoneMatch[0] : null,
           linkedin_url: linkedinUrl,
-          website: isCrunchbase ? link : null,
-          github_url: null,
-          avatar_url: null,
+          website: isGovSite ? link : null,
           source: 'google',
-          funded_date: new Date().toISOString().slice(0, 10),
-          is_stealth: isStealth,
+          source_url: link,
+          discovered_date: new Date().toISOString().slice(0, 10),
           confidence_score: 0.6,
         });
       }
@@ -89,13 +130,12 @@ export async function fetchGoogleFounders(onProgress) {
     }
   }
 
-  return founders;
+  return officials;
 }
 
-function classifySectorFromSnippet(text) {
-  const lower = (text || '').toLowerCase();
-  if (/\b(ai|machine learning|ml|deep learning|llm|gpt|neural)\b/.test(lower)) return 'Vertical AI';
-  if (/\b(cyber|security|infosec|encryption|threat)\b/.test(lower)) return 'Cybersecurity';
-  if (/\b(health|medical|bio|pharma|clinical|patient)\b/.test(lower)) return 'Healthcare Tech';
-  return 'SaaS';
+function extractStateFromSnippet(text) {
+  // Look for state abbreviation patterns
+  const stateMatch = text.match(/,\s*([A-Z]{2})\b/);
+  if (stateMatch) return stateMatch[1];
+  return '';
 }

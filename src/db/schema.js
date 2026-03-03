@@ -2,27 +2,29 @@ import db from './connection.js';
 
 export function initSchema() {
   db.exec(`
-    CREATE TABLE IF NOT EXISTS founders (
+    CREATE TABLE IF NOT EXISTS officials (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT NOT NULL,
-      role TEXT DEFAULT 'Founder',
-      company TEXT,
-      description TEXT,
-      sector TEXT,
-      stage TEXT,
-      raised TEXT,
-      raised_amount REAL DEFAULT 0,
-      location TEXT DEFAULT 'New York, NY',
+      title TEXT DEFAULT '',
+      department TEXT DEFAULT '',
+      municipality TEXT DEFAULT '',
+      state TEXT DEFAULT '',
+      county TEXT DEFAULT '',
+      government_level TEXT DEFAULT 'City',
+      department_type TEXT DEFAULT '',
+      position_type TEXT DEFAULT '',
+      population INTEGER DEFAULT 0,
+      description TEXT DEFAULT '',
+      email TEXT,
+      phone TEXT,
       linkedin_url TEXT,
       website TEXT,
-      github_url TEXT,
-      avatar_url TEXT,
-      source TEXT DEFAULT 'seed',
-      funded_date TEXT,
-      is_stealth INTEGER DEFAULT 0,
-      confidence_score REAL DEFAULT 0.3,
+      source TEXT DEFAULT 'exa',
+      source_url TEXT,
+      confidence_score REAL DEFAULT 0.5,
       notes TEXT DEFAULT '',
       deal_stage TEXT DEFAULT 'Watching',
+      discovered_date TEXT,
       created_at TEXT DEFAULT (datetime('now')),
       updated_at TEXT DEFAULT (datetime('now'))
     )
@@ -30,10 +32,10 @@ export function initSchema() {
 
   db.exec(`
     CREATE TABLE IF NOT EXISTS watchlist (
-      founder_id INTEGER NOT NULL,
+      official_id INTEGER NOT NULL,
       added_at TEXT DEFAULT (datetime('now')),
-      PRIMARY KEY (founder_id),
-      FOREIGN KEY (founder_id) REFERENCES founders(id) ON DELETE CASCADE
+      PRIMARY KEY (official_id),
+      FOREIGN KEY (official_id) REFERENCES officials(id) ON DELETE CASCADE
     )
   `);
 
@@ -50,15 +52,35 @@ export function initSchema() {
     )
   `);
 
-  // ── Migrations for existing databases ──
-  try { db.exec(`ALTER TABLE founders ADD COLUMN notes TEXT DEFAULT ''`); } catch {}
-  try { db.exec(`ALTER TABLE founders ADD COLUMN deal_stage TEXT DEFAULT 'Watching'`); } catch {}
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS govtech_news (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      title TEXT NOT NULL,
+      url TEXT NOT NULL UNIQUE,
+      source_name TEXT NOT NULL,
+      source_type TEXT DEFAULT 'rss',
+      summary TEXT,
+      category TEXT DEFAULT 'general',
+      published_at TEXT,
+      image_url TEXT,
+      fetched_at TEXT DEFAULT (datetime('now'))
+    )
+  `);
 
-  // Indexes for common queries
-  db.exec(`CREATE INDEX IF NOT EXISTS idx_founders_sector ON founders(sector)`);
-  db.exec(`CREATE INDEX IF NOT EXISTS idx_founders_stage ON founders(stage)`);
-  db.exec(`CREATE INDEX IF NOT EXISTS idx_founders_source ON founders(source)`);
-  db.exec(`CREATE INDEX IF NOT EXISTS idx_founders_name ON founders(name)`);
-  db.exec(`CREATE INDEX IF NOT EXISTS idx_founders_company ON founders(company)`);
-  db.exec(`CREATE INDEX IF NOT EXISTS idx_founders_funded_date ON founders(funded_date DESC)`);
+  // Indexes
+  db.exec(`CREATE INDEX IF NOT EXISTS idx_officials_state ON officials(state)`);
+  db.exec(`CREATE INDEX IF NOT EXISTS idx_officials_dept_type ON officials(department_type)`);
+  db.exec(`CREATE INDEX IF NOT EXISTS idx_officials_gov_level ON officials(government_level)`);
+  db.exec(`CREATE INDEX IF NOT EXISTS idx_officials_position_type ON officials(position_type)`);
+  db.exec(`CREATE INDEX IF NOT EXISTS idx_officials_municipality ON officials(municipality)`);
+  db.exec(`CREATE INDEX IF NOT EXISTS idx_officials_name ON officials(name)`);
+  db.exec(`CREATE INDEX IF NOT EXISTS idx_officials_email ON officials(email)`);
+  db.exec(`CREATE INDEX IF NOT EXISTS idx_officials_population ON officials(population)`);
+  db.exec(`CREATE INDEX IF NOT EXISTS idx_officials_deal_stage ON officials(deal_stage)`);
+  db.exec(`CREATE INDEX IF NOT EXISTS idx_officials_discovered ON officials(discovered_date)`);
+  db.exec(`CREATE INDEX IF NOT EXISTS idx_officials_source ON officials(source)`);
+
+  db.exec(`CREATE INDEX IF NOT EXISTS idx_govnews_category ON govtech_news(category)`);
+  db.exec(`CREATE INDEX IF NOT EXISTS idx_govnews_published ON govtech_news(published_at DESC)`);
+  db.exec(`CREATE INDEX IF NOT EXISTS idx_govnews_url ON govtech_news(url)`);
 }

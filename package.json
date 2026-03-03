@@ -1,12 +1,12 @@
 {
-  "name": "roo-capital-sourcing",
+  "name": "govwell-prospect-sourcing",
   "version": "1.0.0",
-  "description": "Roo Capital Founder Sourcing — real-time NYC startup founder discovery",
+  "description": "GovWell Prospect Sourcing — US local government official discovery for GovWell sales",
   "type": "module",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "node --watch server.js"
+    "start": "node --env-file=.env server.js",
+    "dev": "node --env-file=.env --watch server.js"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.77.0",
@@ -15,6 +15,7 @@
     "express": "^4.21.2",
     "node-cron": "^3.0.3",
     "nodemailer": "^8.0.1",
+    "resend": "^6.9.2",
     "rss-parser": "^3.13.0",
     "serverless-http": "^4.0.0"
   }
